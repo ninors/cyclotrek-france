@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "updatedAt": "2026-10-21T15:43:29.749Z",
+  "updatedAt": "2026-10-21T15:43:42.242Z",
   "updatedBy": {
     "id": "usr_1792596095925_d9mudt",
     "name": "Nino Roux Soumy",
@@ -12,28 +12,23 @@
     "name": "Randonnée CycloTrek France",
     "activeProfile": "trekking",
     "waypoints": [],
-    "interpointNotes": [
-      {
-        "id": "nt_1792597407730_agg5v8",
-        "lat": 47.843797,
-        "lng": 1.713867,
-        "category": "info",
-        "title": "test",
-        "text": "",
-        "author": {
-          "id": "usr_1792596095925_d9mudt",
-          "firstName": "Nino",
-          "lastName": "Roux Soumy",
-          "name": "Nino Roux Soumy",
-          "initials": "NR",
-          "gradient": "linear-gradient(135deg, #14b8a6, #0f766e)",
-          "createdAt": "2026-10-21T15:21:35.925Z"
-        },
-        "createdAt": "2026-10-21T15:43:27.730Z"
-      }
-    ],
+    "interpointNotes": [],
     "postits": [],
     "auditLog": [
+      {
+        "id": "act_1792597420238_owpl9",
+        "type": "delete_map_note",
+        "description": "Note retirée : \"test\"",
+        "timestamp": "2026-10-21T15:43:40.238Z",
+        "author": {
+          "id": "usr_1792596095925_d9mudt",
+          "name": "Nino Roux Soumy",
+          "firstName": "Nino",
+          "initials": "NR",
+          "gradient": "linear-gradient(135deg, #14b8a6, #0f766e)"
+        },
+        "details": null
+      },
       {
         "id": "act_1792597407737_z33c3",
         "type": "add_map_note",
