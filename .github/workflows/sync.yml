@@ -1,0 +1,48 @@
+name: CycloTrek Route Sync & Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      author:
+        description: 'Nom du participant'
+        required: false
+        default: 'CycloTrek User'
+  repository_dispatch:
+    types: [sync-trek]
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/**'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  sync-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Handle Repository Dispatch Payload
+        if: github.event_name == 'repository_dispatch'
+        run: |
+          mkdir -p data
+          echo '${{ toJson(github.event.client_payload) }}' > data/route.json
+          git config user.name "CycloTrek Bot"
+          git config user.email "bot@cyclotrek.local"
+          git add data/route.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(trek): sync by ${{ github.event.client_payload.updatedBy.name || 'participant' }} [skip ci]" && git push)
+
+      - name: Validate JSON Data Integrity
+        run: |
+          if [ -f "data/route.json" ]; then
+            python3 -m json.tool data/route.json > /dev/null && echo "✅ data/route.json is valid"
+          else
+            echo "ℹ️ No data/route.json yet."
+          fi

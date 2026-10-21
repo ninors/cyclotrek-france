@@ -1,0 +1,4509 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CycloTrek France - Planificateur de Randonnées à Vélo</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Planifiez votre randonnée à vélo en France. Tracez vos itinéraires point par point en privilégiant les voies vertes, consultez le dénivelé, la météo en direct, les campings et points d'eau, et exportez vers votre Garmin.">
+  <meta name="keywords" content="vélo, trek, randonnée, voies vertes, vtc, garmin, gpx, météo, camping, point d'eau, france, cyclotourisme">
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  
+  <!-- Google Fonts (Outfit & Inter) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <style>
+    /* ----------------------------------------------------
+       CycloTrek France - CSS Design System & Stylesheet
+    ---------------------------------------------------- */
+
+    :root {
+      /* Color Palette */
+      --primary: #2ecc71;
+      --primary-hover: #27ae60;
+      --primary-glow: rgba(46, 204, 113, 0.2);
+      --primary-light: rgba(46, 204, 113, 0.08);
+      
+      --secondary: #3498db;
+      --secondary-hover: #2980b9;
+      
+      --danger: #e74c3c;
+      --danger-hover: #c0392b;
+      --danger-light: rgba(231, 76, 60, 0.1);
+      
+      --warning: #f1c40f;
+      --warning-hover: #f39c12;
+      
+      --bg-app: #f8fafc;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      
+      /* Glassmorphism settings */
+      --glass-bg: rgba(255, 255, 255, 0.76);
+      --glass-border: rgba(255, 255, 255, 0.55);
+      --glass-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.06), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+      --glass-blur: blur(20px) saturate(190%);
+      
+      /* Layout sizes */
+      --top-bar-height: 72px;
+      --sidebar-width: 440px;
+      --border-radius-lg: 20px;
+      --border-radius-md: 12px;
+      --border-radius-sm: 8px;
+    }
+
+    /* Reset and Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-app);
+      color: var(--text-main);
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+    }
+
+    /* Fullscreen Leaflet Map */
+    #map {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+      background-color: #e5e9f0;
+    }
+
+    /* Override Leaflet UI to fit our design */
+    .leaflet-bar {
+      border: none !important;
+      box-shadow: var(--glass-shadow) !important;
+    }
+
+    .leaflet-bar a {
+      background-color: var(--glass-bg) !important;
+      border: 1px solid var(--glass-border) !important;
+      backdrop-filter: var(--glass-blur) !important;
+      color: var(--text-main) !important;
+      transition: all 0.2s ease;
+      border-radius: var(--border-radius-sm) !important;
+      margin-bottom: 4px;
+    }
+
+    .leaflet-bar a:hover {
+      background-color: #ffffff !important;
+      color: var(--primary) !important;
+    }
+
+    .leaflet-control-zoom {
+      margin-bottom: 24px !important;
+      margin-right: 24px !important;
+    }
+
+    .leaflet-popup-content-wrapper {
+      background: var(--glass-bg) !important;
+      backdrop-filter: var(--glass-blur) !important;
+      border: 1px solid var(--glass-border) !important;
+      box-shadow: var(--glass-shadow) !important;
+      border-radius: var(--border-radius-md) !important;
+      color: var(--text-main) !important;
+    }
+
+    .leaflet-popup-tip {
+      background: var(--glass-bg) !important;
+      border: 1px solid var(--glass-border) !important;
+    }
+
+    /* App Shell Overlay */
+    .app-shell {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 999; /* Higher than map & leaflet zoom */
+      pointer-events: none; /* Let clicks pass through empty spaces to the map */
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+    }
+
+    /* Glass panel core styling */
+    .glass-panel {
+      pointer-events: auto; /* Re-enable clicks for UI elements */
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      border-radius: var(--border-radius-lg);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .glass-panel:hover {
+      border-color: rgba(255, 255, 255, 0.85);
+      box-shadow: 0 12px 40px -5px rgba(15, 23, 42, 0.09), 0 4px 16px -2px rgba(15, 23, 42, 0.04);
+    }
+
+    .glass-panel-inner {
+      background: rgba(255, 255, 255, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: var(--border-radius-md);
+      padding: 12px;
+    }
+
+    /* Top Navigation Bar - FIXED z-index to show autocomplete above sidebar */
+    .top-bar {
+      width: 100%;
+      height: var(--top-bar-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      margin-bottom: 16px;
+      z-index: 1010; /* Strictly higher than sidebar */
+      position: relative;
+    }
+
+    /* Logo Area */
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      background-color: var(--primary-light);
+      color: var(--primary);
+      border-radius: var(--border-radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(46, 204, 113, 0.2);
+    }
+
+    .logo-icon i {
+      width: 24px;
+      height: 24px;
+      stroke-width: 2.5px;
+    }
+
+    .logo-text h1 {
+      font-size: 20px;
+      line-height: 1.1;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-tagline {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* Search Engine */
+    .search-container {
+      position: relative;
+      flex: 0 1 420px;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      color: var(--text-muted);
+      width: 18px;
+      height: 18px;
+      pointer-events: none;
+    }
+
+    #address-input {
+      width: 100%;
+      height: 46px;
+      padding: 0 44px;
+      border-radius: 23px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #address-input:focus {
+      background: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-glow);
+    }
+
+    .clear-btn {
+      position: absolute;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border-radius: 50%;
+      transition: background-color 0.2s;
+    }
+
+    .clear-btn:hover {
+      background-color: rgba(15, 23, 42, 0.05);
+      color: var(--text-main);
+    }
+
+    .search-results-dropdown {
+      position: absolute;
+      top: 54px;
+      left: 0;
+      right: 0;
+      max-height: 280px;
+      overflow-y: auto;
+      z-index: 1050; /* Ensure search results sit above EVERYTHING */
+      border-radius: var(--border-radius-md);
+      padding: 6px;
+      pointer-events: auto;
+    }
+
+    .search-result-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--text-main);
+    }
+
+    .search-result-item:hover {
+      background-color: var(--primary-light);
+    }
+
+    .search-result-item i {
+      width: 16px;
+      height: 16px;
+      color: var(--primary);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* Quick Toggles */
+    .quick-toggles {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toggle-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: rgba(255, 255, 255, 0.6);
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toggle-btn:hover {
+      background-color: rgba(255, 255, 255, 0.95);
+      border-color: var(--text-muted);
+    }
+
+    .toggle-btn.active {
+      background-color: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary-hover);
+      box-shadow: 0 0 0 1px rgba(46, 204, 113, 0.15);
+    }
+
+    .toggle-btn.active i {
+      stroke-width: 2.5px;
+    }
+
+    /* Custom Color Active Toggles */
+    #toggle-toilets-btn.active {
+      background-color: rgba(155, 89, 182, 0.08);
+      border-color: #9b59b6;
+      color: #9b59b6;
+    }
+    #toggle-viewpoints-btn.active {
+      background-color: rgba(241, 196, 15, 0.08);
+      border-color: #f1c40f;
+      color: #f39c12;
+    }
+
+    .icon-btn-secondary {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: rgba(255, 255, 255, 0.6);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .icon-btn-secondary:hover {
+      background: #ffffff;
+      color: var(--text-main);
+      border-color: var(--text-muted);
+    }
+
+    /* Premium Custom Map Style Dropdown */
+    .map-style-dropdown {
+      position: absolute;
+      top: 48px;
+      right: 0;
+      width: 270px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 8px;
+      z-index: 1060;
+      border-radius: var(--border-radius-md);
+      pointer-events: auto;
+    }
+
+    .map-style-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .map-style-item:hover {
+      background-color: var(--primary-light);
+    }
+
+    .map-style-item.active {
+      background-color: var(--primary-light);
+      border-color: var(--primary);
+    }
+
+    .map-style-thumb {
+      width: 64px;
+      height: 42px;
+      border-radius: var(--border-radius-sm);
+      background-size: cover;
+      background-position: center;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      flex-shrink: 0;
+    }
+
+    .map-style-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .map-style-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .map-style-desc {
+      font-size: 10px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Sidebar Panel - FIXED z-index to be lower than top bar autocomplete */
+    .sidebar {
+      position: absolute;
+      top: calc(var(--top-bar-height) + 32px);
+      left: 16px;
+      bottom: 16px;
+      width: var(--sidebar-width);
+      z-index: 1005; /* Standard sidebar stacking */
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-scrollable {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Sidebar Sections */
+    .sidebar-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .section-title i {
+      width: 18px;
+      height: 18px;
+      color: var(--primary);
+    }
+
+    /* Buttons */
+    .btn-text-danger {
+      background: none;
+      border: none;
+      color: var(--danger);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border-radius: var(--border-radius-sm);
+      transition: background-color 0.2s;
+    }
+
+    .btn-text-danger:hover {
+      background-color: var(--danger-light);
+    }
+
+    .btn-primary {
+      width: 100%;
+      height: 48px;
+      border-radius: 24px;
+      background-color: var(--primary);
+      color: #ffffff;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+      box-shadow: 0 6px 16px rgba(46, 204, 113, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+    }
+
+    .btn-secondary {
+      width: 100%;
+      height: 48px;
+      border-radius: 24px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      color: var(--text-main);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: #ffffff;
+      border-color: var(--text-muted);
+    }
+
+    .btn-icon {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+      background-color: rgba(15, 23, 42, 0.05);
+      color: var(--text-main);
+    }
+
+    /* Waypoints Section */
+    .waypoints-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .waypoints-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .waypoint-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: var(--border-radius-md);
+      transition: all 0.2s ease;
+      animation: slideInLeft 0.3s ease;
+    }
+
+    .waypoint-item:hover {
+      background: rgba(255, 255, 255, 0.8);
+      border-color: rgba(15, 23, 42, 0.1);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+    }
+
+    .waypoint-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: var(--primary-light);
+      color: var(--primary-hover);
+      border: 1px solid rgba(46, 204, 113, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .waypoint-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .waypoint-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .add-waypoint-tip {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border: 1px dashed rgba(15, 23, 42, 0.15);
+      border-radius: var(--border-radius-md);
+      color: var(--text-muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .add-waypoint-tip i {
+      color: var(--primary);
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    /* Donut Chart for Surface Type Analysis */
+    .donut-chart-container {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: rgba(255, 255, 255, 0.45);
+      padding: 16px;
+      border-radius: var(--border-radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .donut-chart {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+      flex-shrink: 0;
+      transition: background 0.3s ease;
+    }
+
+    .donut-chart::after {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      bottom: 15px;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      border-radius: 50%;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .donut-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    /* Alternatives Comparison */
+    .alternatives-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .alternative-card {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: var(--border-radius-md);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .alternative-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background-color: var(--text-light);
+      opacity: 0.5;
+      transition: all 0.2s;
+    }
+
+    .alternative-card:hover {
+      background: rgba(255, 255, 255, 0.85);
+      border-color: rgba(15, 23, 42, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .alternative-card.active {
+      background: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 4px 15px rgba(46, 204, 113, 0.08);
+    }
+
+    .alternative-card.active::before {
+      background-color: var(--primary);
+      opacity: 1;
+    }
+
+    /* Profile specific colors */
+    .alternative-card[data-profile="fastbike"].active::before {
+      background-color: var(--secondary);
+    }
+    .alternative-card[data-profile="fastbike"].active {
+      border-color: var(--secondary);
+    }
+
+    .alternative-card[data-profile="safety"].active::before {
+      background-color: var(--warning-hover);
+    }
+    .alternative-card[data-profile="safety"].active {
+      border-color: var(--warning-hover);
+    }
+
+    .alt-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .alt-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .alt-name i {
+      width: 14px;
+      height: 14px;
+    }
+
+    .alt-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background-color: rgba(15, 23, 42, 0.05);
+      color: var(--text-muted);
+    }
+
+    .alt-details {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .alt-detail-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .alt-detail-item i {
+      width: 14px;
+      height: 14px;
+      color: var(--text-light);
+    }
+
+    .alt-primary-metric {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    /* Elevation Widget */
+    .elevation-summary {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .elevation-chart-container {
+      position: relative;
+      background: rgba(255, 255, 255, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: var(--border-radius-md);
+      padding: 12px 10px 6px 10px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #elevation-svg {
+      width: 100%;
+      height: 90px;
+      display: block;
+      overflow: visible;
+    }
+
+    .elevation-chart-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .elevation-tooltip {
+      position: absolute;
+      top: 8px;
+      background: rgba(15, 23, 42, 0.85);
+      color: #ffffff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 600;
+      pointer-events: none;
+      z-index: 20;
+      backdrop-filter: blur(4px);
+      white-space: nowrap;
+      transform: translateX(-50%);
+    }
+
+    /* Live Weather */
+    .weather-widget {
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .weather-loader {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(46, 204, 113, 0.1);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .weather-content {
+      display: flex;
+      overflow-x: auto;
+      gap: 12px;
+      width: 100%;
+      padding-bottom: 4px;
+    }
+
+    .weather-content::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .weather-content::-webkit-scrollbar-thumb {
+      background: rgba(15, 23, 42, 0.08);
+      border-radius: 4px;
+    }
+
+    .weather-card {
+      flex: 0 0 110px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 10px;
+      border-radius: var(--border-radius-sm);
+      background-color: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+    }
+
+    .weather-card-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      max-width: 90px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .weather-icon {
+      width: 28px;
+      height: 28px;
+      color: var(--primary);
+      margin: 2px 0;
+    }
+
+    .weather-temp {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .weather-desc {
+      font-size: 9px;
+      color: var(--text-muted);
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .weather-wind {
+      font-size: 8px;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    /* Synthèse / Actions */
+    .trek-summary-card {
+      padding: 16px;
+      background: #ffffff;
+      border-radius: var(--border-radius-md);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.01);
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+
+    .text-up {
+      color: var(--danger);
+    }
+
+    .text-down {
+      color: var(--secondary);
+    }
+
+    .stages-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+      padding-left: 12px;
+      border-left: 2px solid rgba(15, 23, 42, 0.05);
+    }
+
+    .stage-step {
+      position: relative;
+      padding-left: 14px;
+    }
+
+    .stage-step::before {
+      content: '';
+      position: absolute;
+      left: -17px;
+      top: 5px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      border: 2px solid #ffffff;
+    }
+
+    .stage-step.step-end::before {
+      background-color: var(--danger);
+    }
+
+    .stage-info {
+      font-size: 12px;
+    }
+
+    .stage-title {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .stage-distance {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    .action-buttons-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    /* Modals System */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.15);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 10000; /* Higher than top bar */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 580px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h2 {
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-main);
+    }
+
+    .color-primary {
+      color: var(--primary);
+    }
+
+    .close-modal-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s;
+    }
+
+    .close-modal-btn:hover {
+      background-color: rgba(15, 23, 42, 0.05);
+      color: var(--text-main);
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-main);
+    }
+
+    .modal-body h3 {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 18px 0 10px 0;
+      color: var(--text-muted);
+    }
+
+    .modal-body h3:first-of-type {
+      margin-top: 0;
+    }
+
+    .modal-body p {
+      margin-bottom: 12px;
+    }
+
+    .modal-body ul, .modal-body ol {
+      margin-bottom: 16px;
+      padding-left: 20px;
+    }
+
+    .modal-body li {
+      margin-bottom: 8px;
+    }
+
+    .modal-body a {
+      color: var(--primary-hover);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(46, 204, 113, 0.3);
+    }
+
+    .modal-body a:hover {
+      border-color: var(--primary-hover);
+    }
+
+    .modal-body code {
+      font-family: monospace;
+      background-color: rgba(15, 23, 42, 0.05);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid rgba(15, 23, 42, 0.06);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .modal-footer button {
+      width: auto;
+      padding: 0 24px;
+      height: 40px;
+    }
+
+    /* POI Modal Special Elements */
+    .poi-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      background-color: var(--primary-light);
+      color: var(--primary-hover);
+      font-weight: 600;
+      font-size: 11px;
+      margin-bottom: 14px;
+    }
+
+    .poi-tag.water {
+      background-color: rgba(52, 152, 219, 0.1);
+      color: var(--secondary);
+    }
+
+    .poi-meta {
+      background: rgba(15, 23, 42, 0.03);
+      padding: 14px;
+      border-radius: var(--border-radius-md);
+      margin-top: 14px;
+      font-size: 13px;
+    }
+
+    .poi-meta-row {
+      display: flex;
+      margin-bottom: 6px;
+    }
+
+    .poi-meta-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .poi-meta-label {
+      width: 120px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .poi-meta-value {
+      flex: 1;
+      color: var(--text-main);
+    }
+
+    /* Viewpoint image style inside modal */
+    .poi-image-container {
+      margin-top: 14px;
+      border-radius: var(--border-radius-md);
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+      background: rgba(15, 23, 42, 0.03);
+      position: relative;
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .poi-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .poi-image-error {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 20px;
+      line-height: 1.4;
+    }
+
+    /* Toast Notifications - FIXED bottom-right to avoid overlapping top-bar */
+    .toast-container {
+      position: fixed;
+      bottom: 24px; 
+      right: 24px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      pointer-events: auto;
+      min-width: 300px;
+      max-width: 400px;
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: var(--border-radius-md);
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transform: translateX(120%);
+      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast-icon {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+    .toast-message {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-main);
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .toast-success .toast-icon { color: var(--primary); }
+    .toast-success { border-left: 4px solid var(--primary); }
+
+    .toast-error .toast-icon { color: var(--danger); }
+    .toast-error { border-left: 4px solid var(--danger); }
+
+    .toast-info .toast-icon { color: var(--secondary); }
+    .toast-info { border-left: 4px solid var(--secondary); }
+
+    .toast-warning .toast-icon { color: var(--warning-hover); }
+    .toast-warning { border-left: 4px solid var(--warning-hover); }
+
+    /* Custom Markers on Map */
+    .custom-marker-poi {
+      background: none;
+      border: none;
+    }
+
+    .poi-marker-container {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #ffffff;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
+      border: 2.5px solid var(--primary);
+      color: var(--primary);
+      transition: transform 0.2s ease;
+    }
+
+    .poi-marker-container.water {
+      border-color: var(--secondary);
+      color: var(--secondary);
+    }
+
+    .poi-marker-container.toilet {
+      border-color: #9b59b6;
+      color: #9b59b6;
+      font-weight: 800;
+      font-size: 11px;
+      background-color: #fdf5ff;
+    }
+
+    .poi-marker-container.viewpoint {
+      border-color: #f1c40f;
+      color: #f39c12;
+      background-color: #fffbeb;
+    }
+
+    .poi-marker-container:hover {
+      transform: scale(1.15);
+    }
+
+    .poi-marker-container i {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Custom Waypoint Pins on Map */
+    .waypoint-pin {
+      background: none;
+      border: none;
+    }
+
+    .waypoint-pin-container {
+      width: 32px;
+      height: 32px;
+      border-radius: 50% 50% 50% 0;
+      background: var(--primary);
+      border: 2px solid #ffffff;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      transform: rotate(-45deg);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      position: absolute;
+      top: -32px;
+      left: -16px;
+    }
+
+    .waypoint-pin-container span {
+      display: inline-block;
+      transform: rotate(45deg);
+    }
+
+    .waypoint-pin-container.end {
+      background: var(--danger);
+    }
+
+    /* Interactive sync marker styling */
+    .hover-sync-marker {
+      background: none;
+      border: none;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
+      100% { transform: scale(0.9); opacity: 1; }
+    }
+
+    /* Helper Utilities */
+    .hidden {
+      display: none !important;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-15px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .animated-scale {
+      animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Sidebar tab layout styling */
+    .sidebar-tabs {
+      display: flex;
+      background: rgba(15, 23, 42, 0.03);
+      border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+      padding: 6px;
+      gap: 4px;
+      border-top-left-radius: inherit;
+      border-top-right-radius: inherit;
+    }
+
+    .tab-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      padding: 10px 4px 8px 4px;
+      border-radius: var(--border-radius-md);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .tab-btn:hover {
+      background: rgba(15, 23, 42, 0.04);
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--primary-hover);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    }
+
+    .tab-btn.active i {
+      stroke-width: 2.5px;
+    }
+
+    .tab-btn i {
+      width: 18px;
+      height: 18px;
+      transition: transform 0.2s ease;
+    }
+
+    .tab-btn:active i {
+      transform: scale(0.9);
+    }
+
+    .tab-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      animation: fadeIn 0.35s ease-out;
+    }
+
+    .tab-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px;
+      text-align: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .tab-placeholder i {
+      color: var(--text-light);
+      margin-bottom: 16px;
+      opacity: 0.7;
+    }
+
+    .tab-placeholder h3 {
+      font-size: 15px;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .tab-placeholder p {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      max-width: 280px;
+    }
+
+    /* Weather simulation panel & warnings styling */
+    .sim-settings-panel {
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: var(--border-radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.01);
+    }
+
+    .sim-select {
+      height: 34px;
+      border-radius: var(--border-radius-sm);
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      padding: 0 10px;
+      font-size: 13px;
+      color: var(--text-main);
+      background-color: #ffffff;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .sim-select:focus {
+      border-color: var(--primary);
+    }
+
+    .sim-speed-input {
+      height: 34px;
+      width: 60px;
+      border-radius: var(--border-radius-sm);
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      background-color: #ffffff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .sim-speed-input:focus {
+      border-color: var(--primary);
+    }
+
+    .weather-alerts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Modal Share overlay & contents styling */
+    #share-canvas {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+
+    /* Media Queries */
+    @media (max-width: 900px) {
+      .app-shell {
+        padding: 8px;
+        height: 100%;
+        overflow: hidden;
+      }
+      
+      .top-bar {
+        height: auto;
+        flex-direction: column;
+        padding: 12px;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+      
+      .search-container {
+        width: 100%;
+        flex: none;
+      }
+      
+      .quick-toggles {
+        width: 100%;
+        justify-content: space-around;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+      
+      .sidebar {
+        position: relative;
+        top: auto;
+        left: auto;
+        bottom: auto;
+        width: 100%;
+        flex: 1;
+        max-height: 60vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fullscreen Map -->
+  <div id="map"></div>
+
+  <!-- Main App Shell -->
+  <div class="app-shell">
+    
+    <!-- Top Navigation Bar -->
+    <header class="top-bar glass-panel" id="top-bar">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <i data-lucide="bike"></i>
+        </div>
+        <div class="logo-text">
+          <h1>CycloTrek</h1>
+          <span class="logo-tagline">France</span>
+        </div>
+      </div>
+
+      <!-- Address Search Engine -->
+      <div class="search-container">
+        <i data-lucide="search" class="search-icon"></i>
+        <input type="text" id="address-input" placeholder="Rechercher une ville, une adresse en France..." autocomplete="off">
+        <button id="clear-search-btn" class="clear-btn hidden" aria-label="Effacer la recherche">
+          <i data-lucide="x"></i>
+        </button>
+        <!-- Address Autocomplete Dropdown -->
+        <div id="search-results" class="search-results-dropdown glass-panel hidden"></div>
+      </div>
+
+      <!-- Quick Toggle Layers -->
+      <div class="quick-toggles">
+        <button id="toggle-campings-btn" class="toggle-btn" title="Afficher les Campings">
+          <i data-lucide="tent"></i>
+          <span>Campings</span>
+        </button>
+        <button id="toggle-water-btn" class="toggle-btn" title="Afficher les Points d'eau">
+          <i data-lucide="droplet"></i>
+          <span>Points d'eau</span>
+        </button>
+        <button id="toggle-toilets-btn" class="toggle-btn" title="Afficher les Toilettes publiques">
+          <i data-lucide="pocket"></i>
+          <span>Toilettes</span>
+        </button>
+        <button id="toggle-viewpoints-btn" class="toggle-btn" title="Afficher les points de vue étoilés">
+          <i data-lucide="star"></i>
+          <span>Points de vue</span>
+        </button>
+        <button id="toggle-ways-btn" class="toggle-btn active" title="Afficher le réseau cyclable (Voies vertes...)">
+          <i data-lucide="map-pin"></i>
+          <span>Voies Vertes</span>
+        </button>
+        
+        <!-- Custom Map Style Dropdown Container -->
+        <div class="map-style-container" style="position: relative;">
+          <button id="map-style-btn" class="toggle-btn" title="Changer le style de carte">
+            <i data-lucide="layers"></i>
+            <span>Style Carte</span>
+          </button>
+          <div id="map-style-dropdown" class="map-style-dropdown glass-panel hidden">
+            <div class="map-style-item active" data-style="sobre">
+              <div class="map-style-thumb" style="background-image: url('https://a.basemaps.cartocdn.com/light_all/12/2074/1410.png'), linear-gradient(#e5e9f0, #cbd5e1);"></div>
+              <div class="map-style-info">
+                <span class="map-style-name">Sobre (CartoDB)</span>
+                <span class="map-style-desc">Carte claire épurée</span>
+              </div>
+            </div>
+            <div class="map-style-item" data-style="relief">
+              <div class="map-style-thumb" style="background-image: url('https://a.tile.opentopomap.org/12/2074/1410.png'), linear-gradient(#d6ebd9, #a3b899);"></div>
+              <div class="map-style-info">
+                <span class="map-style-name">Relief (Topo)</span>
+                <span class="map-style-desc">Altitudes & reliefs</span>
+              </div>
+            </div>
+            <div class="map-style-item" data-style="cyclosm">
+              <div class="map-style-thumb" style="background-image: url('https://a.tile-cyclosm.openapi.fr/cyclosm/12/2074/1410.png'), linear-gradient(#e8f5e9, #c8e6c9);"></div>
+              <div class="map-style-info">
+                <span class="map-style-name">Cyclable (CyclOSM)</span>
+                <span class="map-style-desc">Infrastructures vélo</span>
+              </div>
+            </div>
+            <div class="map-style-item" data-style="satellite">
+              <div class="map-style-thumb" style="background-image: url('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/12/1410/2074'), linear-gradient(#1e293b, #0f172a);"></div>
+              <div class="map-style-info">
+                <span class="map-style-name">Satellite (Esri)</span>
+                <span class="map-style-desc">Vue satellite HD</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button id="info-btn" class="icon-btn-secondary" title="À propos de CycloTrek">
+          <i data-lucide="help-circle"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Sidebar Panel (Left Side) -->
+    <aside class="sidebar glass-panel" id="sidebar">
+      
+      <!-- Tabs Navigation -->
+      <div class="sidebar-tabs">
+        <button class="tab-btn active" data-tab="plan" title="Planifier l'itinéraire">
+          <i data-lucide="milestone"></i>
+          <span>Planifier</span>
+        </button>
+        <button class="tab-btn" data-tab="analysis" title="Analyse du relief et du revêtement">
+          <i data-lucide="bar-chart-3"></i>
+          <span>Analyse</span>
+        </button>
+        <button class="tab-btn" data-tab="weather" title="Simulation météo chronologique">
+          <i data-lucide="cloud-sun"></i>
+          <span>Météo</span>
+        </button>
+        <button class="tab-btn" data-tab="export" title="Exporter et partager">
+          <i data-lucide="download"></i>
+          <span>Garmin</span>
+        </button>
+      </div>
+
+      <div class="sidebar-scrollable">
+        
+        <!-- Tab 1: Planifier -->
+        <div class="tab-panel" id="panel-plan">
+          <!-- Waypoints Management -->
+          <section class="sidebar-section" id="section-waypoints">
+            <div class="section-header">
+              <h2 class="section-title"><i data-lucide="milestone"></i> Mon Itinéraire</h2>
+              <div style="display:flex; align-items:center;">
+                <button id="save-route-btn" class="btn-text-danger hidden" style="color:var(--primary);margin-right:8px;" title="Sauvegarder dans le cache local">
+                  <i data-lucide="save"></i> Sauver
+                </button>
+                <button id="clear-route-btn" class="btn-text-danger hidden" title="Effacer tout l'itinéraire">
+                  <i data-lucide="trash-2"></i> Effacer
+                </button>
+              </div>
+            </div>
+            
+            <div class="waypoints-container">
+              <div id="waypoints-list" class="waypoints-list">
+                <!-- Waypoints dynamic items inserted here -->
+              </div>
+              <div class="add-waypoint-tip" id="add-waypoint-tip">
+                <i data-lucide="navigation"></i>
+                <p>Cliquez n'importe où sur la carte pour ajouter des points de passage.</p>
+              </div>
+              <button id="import-gpx-trigger-btn" class="btn-secondary" style="height:36px;font-size:12px;margin-top:6px;width:100%;">
+                <i data-lucide="upload"></i> Importer un fichier GPX
+              </button>
+            </div>
+          </section>
+
+          <!-- Local Saved Routes Cache Section -->
+          <section class="sidebar-section" id="section-saved">
+            <div class="section-header">
+              <h2 class="section-title"><i data-lucide="bookmark"></i> Mes Sauvegardes</h2>
+            </div>
+            <div class="glass-panel-inner" style="display:flex; flex-direction:column; gap:8px;" id="saved-routes-list">
+              <!-- Saved routes list items -->
+            </div>
+          </section>
+        </div>
+
+        <!-- Tab 2: Analyse -->
+        <div class="tab-panel hidden" id="panel-analysis">
+          <!-- Placeholder Analysis -->
+          <div class="tab-placeholder" id="placeholder-analysis">
+            <i data-lucide="bar-chart-3" style="width:48px;height:48px;"></i>
+            <h3>Aucun tracé actif</h3>
+            <p>Ajoutez au moins deux points de passage sur la carte pour générer l'analyse du relief et des revêtements.</p>
+          </div>
+          
+          <div id="content-analysis" class="hidden" style="display:flex; flex-direction:column; gap:24px;">
+            <!-- Route Alternatives (Similar to Google Maps) -->
+            <section class="sidebar-section" id="section-alternatives">
+              <div class="section-header">
+                <h2 class="section-title"><i data-lucide="git-fork"></i> Comparateur d'Itinéraires</h2>
+              </div>
+              <div class="alternatives-list" id="alternatives-list">
+                <!-- Alternative routes generated here -->
+              </div>
+            </section>
+
+            <!-- Donut Chart Surface Analysis -->
+            <section class="sidebar-section" id="section-surfaces">
+              <div class="section-header">
+                <h2 class="section-title"><i data-lucide="pie-chart"></i> Revêtement des chemins</h2>
+              </div>
+              <div class="donut-chart-container">
+                <div id="donut-chart" class="donut-chart"></div>
+                <div class="donut-legend" id="donut-legend">
+                  <!-- Dynamic legend items -->
+                </div>
+              </div>
+            </section>
+
+            <!-- Elevation Profile Widget -->
+            <section class="sidebar-section" id="section-elevation">
+              <div class="section-header">
+                <h2 class="section-title"><i data-lucide="trending-up"></i> Profil d'Altitude</h2>
+                <span class="elevation-summary" id="elevation-summary">+0m / -0m</span>
+              </div>
+              <div class="elevation-chart-container">
+                <div id="elevation-chart-tooltip" class="elevation-tooltip hidden"></div>
+                <svg id="elevation-svg" viewBox="0 0 300 120" preserveAspectRatio="none">
+                  <!-- SVG Path drawn programmatically -->
+                </svg>
+                <div class="elevation-chart-labels">
+                  <span id="elevation-lbl-start">0 km</span>
+                  <span id="elevation-lbl-middle">--</span>
+                  <span id="elevation-lbl-end">0 km</span>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <!-- Tab 3: Météo -->
+        <div class="tab-panel hidden" id="panel-weather">
+          <!-- Placeholder Weather -->
+          <div class="tab-placeholder" id="placeholder-weather">
+            <i data-lucide="cloud-sun" style="width:48px;height:48px;"></i>
+            <h3>Aucun tracé actif</h3>
+            <p>Simulez la météo tout au long de votre trajet en définissant un point de départ et d'arrivée.</p>
+          </div>
+          
+          <div id="content-weather" class="hidden" style="display:flex; flex-direction:column; gap:16px;">
+            <!-- Simulation Settings Panel -->
+            <div class="sim-settings-panel">
+              <div style="font-size:12px; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:6px;">
+                <i data-lucide="sliders" style="width:14px; height:14px;"></i> Paramètres de simulation
+              </div>
+              <div style="display:flex; gap:12px;">
+                <div style="flex:1.2; display:flex; flex-direction:column; gap:4px;">
+                  <label style="font-size:10px; color:var(--text-muted); font-weight:600; text-transform:uppercase;">Départ :</label>
+                  <select id="sim-depart-time" class="sim-select">
+                    <!-- Dynamic choices -->
+                  </select>
+                </div>
+                <div style="flex:0.8; display:flex; flex-direction:column; gap:4px;">
+                  <label style="font-size:10px; color:var(--text-muted); font-weight:600; text-transform:uppercase;">Vitesse :</label>
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <input type="number" id="sim-speed" min="8" max="40" value="16" class="sim-speed-input">
+                    <span style="font-size:12px; color:var(--text-muted); font-weight:500;">km/h</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Climate Alerts Box -->
+            <div id="weather-alerts-container" class="weather-alerts-list hidden">
+              <!-- Alerts populated by script -->
+            </div>
+
+            <!-- Live Weather Widget -->
+            <section class="sidebar-section" id="section-weather" style="margin-top:4px;">
+              <div class="section-header">
+                <h2 class="section-title"><i data-lucide="cloud-sun"></i> Météo Chronologique (Simulée)</h2>
+              </div>
+              <div class="weather-widget glass-panel-inner" id="weather-widget">
+                <div class="weather-loader">
+                  <div class="spinner"></div>
+                  <span>Récupération des prévisions météo...</span>
+                </div>
+                <div class="weather-content hidden" id="weather-content" style="display:flex; overflow-x:auto; gap:12px; padding:4px 0;">
+                  <!-- Weather info cards generated dynamically -->
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <!-- Tab 4: Garmin & Share -->
+        <div class="tab-panel hidden" id="panel-export">
+          <!-- Placeholder Export -->
+          <div class="tab-placeholder" id="placeholder-export">
+            <i data-lucide="download" style="width:48px;height:48px;"></i>
+            <h3>Aucun tracé actif</h3>
+            <p>Tracez un itinéraire pour pouvoir l'exporter ou le partager en image.</p>
+          </div>
+          
+          <div id="content-export" class="hidden" style="display:flex; flex-direction:column; gap:20px;">
+            <!-- Trek Stats & Stages / Export -->
+            <section class="sidebar-section" id="section-actions">
+              <div class="section-header">
+                <h2 class="section-title"><i data-lucide="flag"></i> Synthèse de la Randonnée</h2>
+              </div>
+              
+              <div class="trek-summary-card">
+                <div class="stat-grid">
+                  <div class="stat-item">
+                    <span class="stat-label">Distance totale</span>
+                    <span class="stat-value" id="summary-distance">-- km</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Durée estimée</span>
+                    <span class="stat-value" id="summary-duration">-- h --</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Dénivelé +</span>
+                    <span class="stat-value text-up" id="summary-elevation-gain">-- m</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Dénivelé -</span>
+                    <span class="stat-value text-down" id="summary-elevation-loss">-- m</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="stages-timeline" id="stages-timeline">
+                <!-- Steps / stages summarized here -->
+              </div>
+
+              <div class="action-buttons-container" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+                <button id="export-gpx-btn" class="btn-primary" style="width:100%;">
+                  <i data-lucide="download"></i> Exporter en GPX
+                </button>
+                <button id="share-trek-btn" class="btn-secondary" style="width:100%; border-color:var(--primary); color:var(--primary-hover);">
+                  <i data-lucide="share-2"></i> Partager mon Trek en Image
+                </button>
+                <button id="garmin-guide-btn" class="btn-secondary" style="width:100%;">
+                  <i data-lucide="watch"></i> Synchroniser sur Garmin
+                </button>
+              </div>
+            </section>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- LOCAL MODALS -->
+  
+  <!-- About / Help Modal -->
+  <div id="modal-about" class="modal-overlay hidden">
+    <div class="modal-content glass-panel animated-scale">
+      <div class="modal-header">
+        <h2><i data-lucide="bike" class="color-primary"></i> À propos de CycloTrek France</h2>
+        <button class="close-modal-btn" data-modal="modal-about">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><strong>CycloTrek France</strong> est une application web moderne conçue pour les passionnés de randonnées à vélo et de cyclotourisme.</p>
+        
+        <h3>💡 Fonctionnalités Clés</h3>
+        <ul>
+          <li><strong>Création d'itinéraires point par point :</strong> Cliquez sur la carte pour définir vos étapes.</li>
+          <li><strong>Comparateur d'itinéraires :</strong> Visualisez plusieurs trajets alternatifs. Notre algorithme privilégie les voies vertes, pistes cyclables et chemins plats adaptés aux VTC (profil Trekking).</li>
+          <li><strong>Analyse de revêtement :</strong> Un diagramme en camembert détaille la composition du trajet en asphalte, gravier ou terre.</li>
+          <li><strong>Mes Sauvegardes :</strong> Enregistrez vos trajets préférés dans le cache de votre navigateur et rechargez-les en un clic.</li>
+          <li><strong>Import/Export GPX :</strong> Téléchargez vos tracés enrichis pour montre Garmin Forerunner 165, ou importez des fichiers GPX existants (simplifiés automatiquement pour l'édition).</li>
+          <li><strong>Affichage des infrastructures :</strong> Activez les campings, les points d'eau potable, les toilettes publiques et le réseau national des véloroutes officielles (Waymarked Trails) directement sur la carte.</li>
+          <li><strong>Points de vue étoilés :</strong> Trouvez les plus beaux panoramas à proximité de votre parcours avec descriptions et photos réelles issues de Wikimedia Commons.</li>
+          <li><strong>Calque Satellite :</strong> Visualisez le terrain réel grâce à la vue satellite haute définition.</li>
+        </ul>
+
+        <h3>📡 Technologies & Sources</h3>
+        <p>Cette application fonctionne exclusivement côté client et utilise des services libres et ouverts :</p>
+        <ul>
+          <li>Fonds de carte : OpenStreetMap, CartoDB Positron, CyclOSM et Esri Satellite.</li>
+          <li>Calcul d'itinéraires : Moteur open-source <a href="https://brouter.de" target="_blank">BRouter</a>.</li>
+          <li>Infrastructures & Points d'intérêt : <a href="https://wiki.openstreetmap.org/wiki/Overpass_API" target="_blank">Overpass API (OSM)</a>.</li>
+          <li>Photos réelles : API publique de <a href="https://commons.wikimedia.org" target="_blank">Wikimedia Commons</a>.</li>
+          <li>Prévisions Météo : <a href="https://open-meteo.com" target="_blank">Open-Meteo</a>.</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" data-modal="modal-about">Commencer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Garmin Sync Guide Modal -->
+  <div id="modal-garmin" class="modal-overlay hidden">
+    <div class="modal-content glass-panel animated-scale">
+      <div class="modal-header">
+        <h2><i data-lucide="watch" class="color-primary"></i> Guide Garmin Forerunner 165 Music</h2>
+        <button class="close-modal-btn" data-modal="modal-garmin">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>La montre **Garmin Forerunner 165 Music** (ainsi que la plupart des montres Garmin récentes) permet de suivre un itinéraire de randonnée tracé à l'avance grâce à son écran de navigation.</p>
+        
+        <h3>Méthode 1 : Via l'application Garmin Connect (Recommandée)</h3>
+        <ol>
+          <li>Générez votre tracé et cliquez sur le bouton <strong>"Exporter en GPX"</strong> sur CycloTrek.</li>
+          <li>Ouvrez l'application **Garmin Connect** sur votre smartphone (ou le site web <a href="https://connect.garmin.com" target="_blank">connect.garmin.com</a>).</li>
+          <li>Allez dans le menu <strong>Entraînement et planification &gt; Parcours</strong>.</li>
+          <li>Cliquez sur <strong>Importer</strong> et sélectionnez le fichier `.gpx` téléchargé.</li>
+          <li>Définissez le type de parcours sur **Cyclotourisme** ou **Cyclisme sur route**, puis nommez votre parcours.</li>
+          <li>Cliquez sur <strong>Enregistrer</strong>, puis appuyez sur l'icône **"Envoyer vers l'appareil"** en haut de l'écran.</li>
+          <li>Synchronisez votre montre Forerunner 165 Music en Bluetooth. Votre parcours sera disponible dans l'activité de cyclisme de votre montre.</li>
+        </ol>
+
+        <h3>Méthode 2 : Par connexion USB (Sur ordinateur)</h3>
+        <ol>
+          <li>Branchez votre montre Garmin Forerunner 165 Music à votre ordinateur à l'aide de son câble USB.</li>
+          <li>Téléchargez le fichier `.gpx` depuis CycloTrek.</li>
+          <li>Ouvrez le dossier de stockage de votre montre Garmin dans l'explorateur de fichiers de votre système.</li>
+          <li>Naviguez vers le dossier <code>Garmin</code> puis ouvrez le sous-dossier <code>NewFiles</code>.</li>
+          <li>Copiez-y directement le fichier `.gpx` téléchargé.</li>
+          <li>Débranchez la montre proprement. Elle convertira automatiquement le fichier en parcours au démarrage.</li>
+        </ol>
+
+        <h3>🧭 Lancer le tracé sur la montre</h3>
+        <p>Sur votre Forerunner 165 Music : appuyez sur le bouton principal &gt; Sélectionnez l'activité <strong>Vélo</strong> ou <strong>Trek</strong> &gt; Maintenez le bouton <strong>Up/Menu</strong> enfoncé &gt; Sélectionnez <strong>Navigation &gt; Parcours</strong> &gt; Choisissez votre tracé &gt; Sélectionnez <strong>Faire le parcours</strong>.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" data-modal="modal-garmin">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Point of Interest Modal -->
+  <div id="modal-poi" class="modal-overlay hidden">
+    <div class="modal-content glass-panel animated-scale">
+      <div class="modal-header">
+        <h2 id="poi-title">Détail du point d'intérêt</h2>
+        <button class="close-modal-btn" data-modal="modal-poi">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="poi-body">
+        <!-- Dynamic content: name, address, source, details -->
+      </div>
+      <div class="modal-footer">
+        <button id="poi-add-waypoint-btn" class="btn-primary">
+          <i data-lucide="plus"></i> Ajouter comme étape
+        </button>
+        <button class="btn-secondary" data-modal="modal-poi">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Poster Modal (Garmin-Style Canvas) -->
+  <div id="modal-share" class="modal-overlay hidden">
+    <div class="modal-content glass-panel animated-scale" style="max-width:850px; width:90%;">
+      <div class="modal-header">
+        <h2><i data-lucide="share-2" class="color-primary"></i> Partager mon Itinéraire (Générateur Garmin-Style)</h2>
+        <button class="close-modal-btn" data-modal="modal-share">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body" style="display:flex; flex-direction:row; gap:24px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:300px; display:flex; flex-direction:column; gap:16px;">
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">Personnalisez l'affiche de votre parcours. Choisissez un thème de couleurs premium et générez une carte graphique vectorielle de votre tracé avec l'ensemble des statistiques de la randonnée.</p>
+          
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <label style="font-size:12px; font-weight:700; color:var(--text-main);">Thème Graphique :</label>
+            <select id="share-theme-select" class="sim-select" style="width:100%;">
+              <option value="dark">Minimaliste Sombre</option>
+              <option value="forest">Forêt Verte</option>
+              <option value="sunset">Coucher de Soleil</option>
+              <option value="cosmic">Nuit Cosmique</option>
+            </select>
+          </div>
+
+          <div style="margin-top:auto; display:flex; flex-direction:column; gap:8px; padding-top:24px;">
+            <button id="download-share-btn" class="btn-primary" style="width:100%; height:40px;">
+              <i data-lucide="download"></i> Télécharger l'Image PNG
+            </button>
+            <button class="btn-secondary" data-modal="modal-share" style="width:100%; height:38px;">Fermer</button>
+          </div>
+        </div>
+        <div style="flex:1.2; min-width:300px; display:flex; justify-content:center; align-items:center; background:rgba(0,0,0,0.03); padding:12px; border-radius:var(--border-radius-md); border:1px dashed rgba(15, 23, 42, 0.1);">
+          <canvas id="share-canvas" width="800" height="800" style="max-width:100%; height:auto; aspect-ratio:1/1; border-radius:var(--border-radius-sm); box-shadow:0 8px 30px rgba(0,0,0,0.15); display:block;"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden inputs for file loading -->
+  <input type="file" id="import-gpx-input" accept=".gpx" class="hidden">
+
+  <!-- Toast Notification Center -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- JavaScript Code -->
+  <script>
+    /* ----------------------------------------------------
+       CycloTrek France - Core Application Logic
+    ---------------------------------------------------- */
+
+    // App State
+    const state = {
+      map: null,
+      waypoints: [], // Array of { id, lat, lng, name, marker }
+      routes: {}, // Stores GeoJSON for each profile: { trekking, fastbike, safety }
+      activeProfile: 'trekking', // default active profile
+      activeRouteData: null, // Stores active route geometry and properties
+      showCampings: false,
+      showWater: false,
+      showToilets: false,
+      showViewpoints: false,
+      showWays: true,
+      poiMarkers: [],
+      activeOverlayLayers: {},
+      hoverMapMarker: null, // Temporary marker for elevation chart sync
+      mapStyle: 'sobre', // sobre, relief, cyclosm, satellite
+      lastOverpassBbox: '',
+      overpassTimeout: null,
+    };
+
+    // Map Tile Layers Configuration
+    const tileLayers = {
+      sobre: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+      }),
+      relief: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+        maxZoom: 17,
+        attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+      }),
+      cyclosm: L.tileLayer('https://{s}.tile-cyclosm.openapi.fr/cyclosm/{z}/{x}/{y}.png', {
+        maxZoom: 20,
+        attribution: '<a href="https://github.com/cyclosm/cyclosm-cartocss-style/releases" title="CyclOSM - OpenStreetMap cycling map">CyclOSM</a> | Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }),
+      satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 19,
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+      }),
+      cyclingOverlay: L.tileLayer('https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        opacity: 0.85,
+        attribution: 'Cycling routes &copy; <a href="https://cycling.waymarkedtrails.org">Waymarked Trails</a>'
+      })
+    };
+
+    // Icons definitions (SVG inline representations)
+    const svgIcons = {
+      camp: `<div class="poi-marker-container"><i data-lucide="tent"></i></div>`,
+      water: `<div class="poi-marker-container water"><i data-lucide="droplet"></i></div>`,
+      toilet: `<div class="poi-marker-container toilet">WC</div>`,
+      viewpoint: `<div class="poi-marker-container viewpoint"><i data-lucide="star"></i></div>`
+    };
+
+    // Weather Code mapping to WMO codes (descriptions + icons)
+    const weatherCodes = {
+      0: { desc: 'Ciel dégagé', icon: 'sun' },
+      1: { desc: 'Principalement dégagé', icon: 'sun-dim' },
+      2: { desc: 'Partiellement nuageux', icon: 'cloud-sun' },
+      3: { desc: 'Couvert', icon: 'cloud' },
+      45: { desc: 'Brouillard', icon: 'cloud-fog' },
+      48: { desc: 'Brouillard givrant', icon: 'cloud-fog' },
+      51: { desc: 'Bruine légère', icon: 'cloud-drizzle' },
+      53: { desc: 'Bruine modérée', icon: 'cloud-drizzle' },
+      55: { desc: 'Bruine dense', icon: 'cloud-drizzle' },
+      61: { desc: 'Pluie faible', icon: 'cloud-rain' },
+      63: { desc: 'Pluie modérée', icon: 'cloud-rain' },
+      65: { desc: 'Pluie forte', icon: 'cloud-rain' },
+      80: { desc: 'Averses de pluie faibles', icon: 'cloud-lightning' },
+      81: { desc: 'Averses de pluie modérées', icon: 'cloud-lightning' },
+      82: { desc: 'Averses de pluie violentes', icon: 'cloud-lightning' },
+      95: { desc: 'Orage faible ou modéré', icon: 'cloud-lightning' },
+      96: { desc: 'Orage avec grêle légère', icon: 'cloud-lightning' },
+    };
+
+    /* ----------------------------------------------------
+       Initialization
+    ---------------------------------------------------- */
+    document.addEventListener('DOMContentLoaded', () => {
+      initMap();
+      initUIEvents();
+      initSimulationHours();
+      updateSavedRoutesListUI(); // Load saved items from localStorage cache
+      
+      showToast('Bienvenue sur CycloTrek ! Cliquez sur la carte pour tracer votre premier parcours.', 'info', 5000);
+      
+      // Auto-open help modal on first load
+      setTimeout(() => {
+        openLocalModal('modal-about');
+      }, 800);
+    });
+
+    // Populate departure hour select with 24 hours of option offsets
+    function initSimulationHours() {
+      const select = document.getElementById('sim-depart-time');
+      if (!select) return;
+      select.innerHTML = '';
+      
+      const now = new Date();
+      const currentHour = now.getHours();
+      
+      for (let i = 0; i < 24; i++) {
+        const simHour = (currentHour + i) % 24;
+        const opt = document.createElement('option');
+        opt.value = i; // Store hours offset from now
+        
+        let label = '';
+        if (i === 0) {
+          label = `Maintenant (${simHour}h00)`;
+        } else {
+          label = `Dans ${i}h (${simHour}h00)`;
+        }
+        opt.textContent = label;
+        select.appendChild(opt);
+      }
+    }
+
+    // Initialize Leaflet Map
+    function initMap() {
+      // Center on France
+      state.map = L.map('map', {
+        zoomControl: false, // Disabling to custom position
+        center: [46.603354, 1.888334],
+        zoom: 6,
+        minZoom: 5
+      });
+
+      // Default layers
+      tileLayers.sobre.addTo(state.map);
+      tileLayers.cyclingOverlay.addTo(state.map);
+      state.activeOverlayLayers['cycling'] = tileLayers.cyclingOverlay;
+
+      // Custom position zoom control
+      L.control.zoom({
+        position: 'bottomright'
+      }).addTo(state.map);
+
+      // Map click handler (add waypoints)
+      state.map.on('click', (e) => {
+        // Prevent adding waypoint if clicking on markers/POIs
+        if (e.originalEvent.target.closest('.leaflet-marker-icon')) return;
+        addWaypointAtLatLng(e.latlng);
+      });
+
+      // Map move/zoom handlers for Overpass API POIs loading
+      state.map.on('moveend', () => {
+        if (state.showCampings || state.showWater || state.showToilets || state.showViewpoints) {
+          debounceLoadPOIs();
+        }
+      });
+
+      // Init icon render (for Lucide)
+      lucide.createIcons();
+    }
+
+    // Initialize UI Events
+    function initUIEvents() {
+      // Address search
+      const searchInput = document.getElementById('address-input');
+      const clearSearchBtn = document.getElementById('clear-search-btn');
+      const searchResults = document.getElementById('search-results');
+
+      let searchTimeout = null;
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.trim();
+        if (query.length > 0) {
+          clearSearchBtn.classList.remove('hidden');
+        } else {
+          clearSearchBtn.classList.add('hidden');
+          searchResults.classList.add('hidden');
+        }
+
+        clearTimeout(searchTimeout);
+        if (query.length > 2) {
+          searchTimeout = setTimeout(() => searchAddress(query), 400);
+        }
+      });
+
+      clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        clearSearchBtn.classList.add('hidden');
+        searchResults.classList.add('hidden');
+        searchInput.focus();
+      });
+
+      // Close dropdowns on outer click
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-container')) {
+          searchResults.classList.add('hidden');
+        }
+        if (!e.target.closest('.map-style-container')) {
+          document.getElementById('map-style-dropdown').classList.add('hidden');
+        }
+      });
+
+      // Toggles in top bar
+      document.getElementById('toggle-campings-btn').addEventListener('click', (e) => {
+        state.showCampings = !state.showCampings;
+        e.currentTarget.classList.toggle('active', state.showCampings);
+        togglePOICollection('camping', state.showCampings);
+      });
+
+      document.getElementById('toggle-water-btn').addEventListener('click', (e) => {
+        state.showWater = !state.showWater;
+        e.currentTarget.classList.toggle('active', state.showWater);
+        togglePOICollection('water', state.showWater);
+      });
+
+      document.getElementById('toggle-toilets-btn').addEventListener('click', (e) => {
+        state.showToilets = !state.showToilets;
+        e.currentTarget.classList.toggle('active', state.showToilets);
+        togglePOICollection('toilet', state.showToilets);
+      });
+
+      document.getElementById('toggle-viewpoints-btn').addEventListener('click', (e) => {
+        state.showViewpoints = !state.showViewpoints;
+        e.currentTarget.classList.toggle('active', state.showViewpoints);
+        togglePOICollection('viewpoint', state.showViewpoints);
+      });
+
+      document.getElementById('toggle-ways-btn').addEventListener('click', (e) => {
+        state.showWays = !state.showWays;
+        e.currentTarget.classList.toggle('active', state.showWays);
+        if (state.showWays) {
+          tileLayers.cyclingOverlay.addTo(state.map);
+          state.activeOverlayLayers['cycling'] = tileLayers.cyclingOverlay;
+        } else {
+          if (state.map.hasLayer(tileLayers.cyclingOverlay)) {
+            state.map.removeLayer(tileLayers.cyclingOverlay);
+          }
+          delete state.activeOverlayLayers['cycling'];
+        }
+      });
+
+      // Map Style Dropdown Toggle
+      const styleBtn = document.getElementById('map-style-btn');
+      const styleDropdown = document.getElementById('map-style-dropdown');
+      styleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        styleDropdown.classList.toggle('hidden');
+      });
+
+      // Style items selection
+      document.querySelectorAll('.map-style-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const nextStyle = item.getAttribute('data-style');
+          if (nextStyle === state.mapStyle) return;
+
+          document.querySelectorAll('.map-style-item').forEach(el => el.classList.remove('active'));
+          item.classList.add('active');
+
+          state.map.removeLayer(tileLayers[state.mapStyle]);
+          tileLayers[nextStyle].addTo(state.map);
+          state.mapStyle = nextStyle;
+
+          if (state.showWays) {
+            tileLayers.cyclingOverlay.bringToFront();
+          }
+
+          styleDropdown.classList.add('hidden');
+          showToast(`Style de carte : ${item.querySelector('.map-style-name').innerText}`, 'info', 2000);
+        });
+      });
+
+      // Sidebar Tab Switching
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tabId = btn.getAttribute('data-tab');
+          
+          // Toggle tab button classes
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          // Toggle tab panel visibility
+          document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+          document.getElementById(`panel-${tabId}`).classList.remove('hidden');
+        });
+      });
+
+      // Weather simulation inputs change trigger METEO refresh
+      document.getElementById('sim-depart-time').addEventListener('change', () => {
+        if (state.activeRouteData) {
+          loadLiveWeather();
+        }
+      });
+      document.getElementById('sim-speed').addEventListener('input', () => {
+        if (state.activeRouteData) {
+          clearTimeout(state.simSpeedTimeout);
+          state.simSpeedTimeout = setTimeout(() => {
+            loadLiveWeather();
+          }, 400);
+        }
+      });
+
+      // Share modal click
+      document.getElementById('share-trek-btn').addEventListener('click', () => {
+        if (!state.activeRouteData) return;
+        openLocalModal('modal-share');
+        renderShareCanvas();
+      });
+
+      // Change share theme
+      document.getElementById('share-theme-select').addEventListener('change', () => {
+        renderShareCanvas();
+      });
+
+      // Download share PNG
+      document.getElementById('download-share-btn').addEventListener('click', () => {
+        const canvas = document.getElementById('share-canvas');
+        try {
+          const url = canvas.toDataURL('image/png');
+          const a = document.createElement('a');
+          const trekName = `CycloTrek_${state.activeProfile}_${Math.round(state.activeRouteData.distance/1000)}km`;
+          a.href = url;
+          a.download = `${trekName}_poster.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          showToast('Affiche de partage téléchargée !', 'success', 2500);
+        } catch (e) {
+          showToast('Impossible de télécharger l\'image.', 'error', 3000);
+        }
+      });
+
+      // Clear Route
+      document.getElementById('clear-route-btn').addEventListener('click', clearRoute);
+
+      // Save Route Cache LocalStorage
+      document.getElementById('save-route-btn').addEventListener('click', saveCurrentRoute);
+
+      // Import GPX Bindings
+      const gpxInput = document.getElementById('import-gpx-input');
+      const gpxTrigger = document.getElementById('import-gpx-trigger-btn');
+      gpxTrigger.addEventListener('click', () => gpxInput.click());
+      gpxInput.addEventListener('change', handleGPXImport);
+
+      // Garmin Sync Modal
+      document.getElementById('garmin-guide-btn').addEventListener('click', () => {
+        openLocalModal('modal-garmin');
+      });
+
+      // Export GPX
+      document.getElementById('export-gpx-btn').addEventListener('click', exportGPX);
+
+      // Info Modal
+      document.getElementById('info-btn').addEventListener('click', () => {
+        openLocalModal('modal-about');
+      });
+
+      // Close modals
+      document.querySelectorAll('.close-modal-btn, [data-modal]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const modalId = e.currentTarget.getAttribute('data-modal') || e.currentTarget.closest('.modal-overlay').id;
+          closeLocalModal(modalId);
+        });
+      });
+
+      // Setup Elevation Profile Interactive hover
+      const svg = document.getElementById('elevation-svg');
+      svg.addEventListener('mousemove', handleElevationHover);
+      svg.addEventListener('mouseleave', handleElevationLeave);
+      svg.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+          handleElevationHover(e.touches[0]);
+        }
+      }, { passive: true });
+      svg.addEventListener('touchend', handleElevationLeave);
+    }
+
+    // Toggle placeholders depending on route activity
+    function toggleSidebarTabPlaceholders() {
+      const hasRoute = state.activeRouteData !== null;
+
+      // Tab 2: Analysis
+      const placeholderAnalysis = document.getElementById('placeholder-analysis');
+      const contentAnalysis = document.getElementById('content-analysis');
+      if (placeholderAnalysis && contentAnalysis) {
+        if (hasRoute) {
+          placeholderAnalysis.classList.add('hidden');
+          contentAnalysis.classList.remove('hidden');
+        } else {
+          placeholderAnalysis.classList.remove('hidden');
+          contentAnalysis.classList.add('hidden');
+        }
+      }
+
+      // Tab 3: Weather
+      const placeholderWeather = document.getElementById('placeholder-weather');
+      const contentWeather = document.getElementById('content-weather');
+      if (placeholderWeather && contentWeather) {
+        if (hasRoute) {
+          placeholderWeather.classList.add('hidden');
+          contentWeather.classList.remove('hidden');
+        } else {
+          placeholderWeather.classList.remove('hidden');
+          contentWeather.classList.add('hidden');
+        }
+      }
+
+      // Tab 4: Export & Share
+      const placeholderExport = document.getElementById('placeholder-export');
+      const contentExport = document.getElementById('content-export');
+      if (placeholderExport && contentExport) {
+        if (hasRoute) {
+          placeholderExport.classList.add('hidden');
+          contentExport.classList.remove('hidden');
+        } else {
+          placeholderExport.classList.remove('hidden');
+          contentExport.classList.add('hidden');
+        }
+      }
+    }
+
+    /* ----------------------------------------------------
+       Waypoints & GPX / Cache Imports
+    ---------------------------------------------------- */
+
+    // Add waypoint at lat/lng with address lookup
+    async function addWaypointAtLatLng(latlng) {
+      const id = Date.now() + Math.random().toString(36).substring(2, 7);
+      const index = state.waypoints.length + 1;
+      
+      const isEnd = index > 1; 
+      const pinIcon = L.divIcon({
+        className: 'waypoint-pin',
+        html: `<div class="waypoint-pin-container ${isEnd ? 'end' : ''}"><span>${index}</span></div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 32]
+      });
+
+      const marker = L.marker([latlng.lat, latlng.lng], {
+        icon: pinIcon,
+        draggable: true
+      }).addTo(state.map);
+
+      const waypoint = {
+        id: id,
+        lat: latlng.lat,
+        lng: latlng.lng,
+        name: `Étape ${index} (Chargement...)`,
+        marker: marker
+      };
+
+      state.waypoints.push(waypoint);
+      updateWaypointsUI();
+      
+      marker.on('dragend', async () => {
+        const newLatLng = marker.getLatLng();
+        waypoint.lat = newLatLng.lat;
+        waypoint.lng = newLatLng.lng;
+        waypoint.name = `Étape réajustée (Chargement...)`;
+        updateWaypointsUI();
+        
+        waypoint.name = await reverseGeocode(newLatLng.lat, newLatLng.lng);
+        updateWaypointsUI();
+        calculateRoutes();
+      });
+
+      marker.on('click', () => {
+        state.map.panTo(marker.getLatLng());
+      });
+
+      waypoint.name = await reverseGeocode(latlng.lat, latlng.lng);
+      updateWaypointsUI();
+      
+      calculateRoutes();
+    }
+
+    // Special quick waypoint addition specifically optimized for GPX imports & saves
+    async function addWaypointAtLatLngImport(latlng, index) {
+      const id = Date.now() + Math.random().toString(36).substring(2, 7);
+      const pinIcon = L.divIcon({
+        className: 'waypoint-pin',
+        html: `<div class="waypoint-pin-container ${index > 1 ? 'end' : ''}"><span>${index}</span></div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 32]
+      });
+
+      const marker = L.marker([latlng.lat, latlng.lng], {
+        icon: pinIcon,
+        draggable: true
+      }).addTo(state.map);
+
+      const waypoint = {
+        id: id,
+        lat: latlng.lat,
+        lng: latlng.lng,
+        name: latlng.name || `Étape ${index}`,
+        marker: marker
+      };
+
+      state.waypoints.push(waypoint);
+
+      marker.on('dragend', async () => {
+        const newLatLng = marker.getLatLng();
+        waypoint.lat = newLatLng.lat;
+        waypoint.lng = newLatLng.lng;
+        waypoint.name = await reverseGeocode(newLatLng.lat, newLatLng.lng);
+        updateWaypointsUI();
+        calculateRoutes();
+      });
+
+      marker.on('click', () => {
+        state.map.panTo(marker.getLatLng());
+      });
+
+      // Retrieve name asynchronously if not already populated to avoid parallel loop lockups
+      if (!latlng.name) {
+        reverseGeocode(latlng.lat, latlng.lng).then(name => {
+          waypoint.name = name;
+          updateWaypointsUI();
+        });
+      }
+    }
+
+    // Reverse Geocode coordinates using Nominatim
+    async function reverseGeocode(lat, lng) {
+      try {
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=14`;
+        const res = await fetch(url, { headers: { 'User-Agent': 'CycloTrekFranceAgent' } });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        
+        const addr = data.address;
+        const placeName = addr.city || addr.town || addr.village || addr.municipality || addr.suburb || addr.hamlet || addr.road || 'Lieu inconnu';
+        const dept = addr.county ? ` (${addr.county.replace('département de ', '')})` : '';
+        return `${placeName}${dept}`;
+      } catch (err) {
+        return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+      }
+    }
+
+    // Search Address via Nominatim
+    async function searchAddress(query) {
+      const resultsDropdown = document.getElementById('search-results');
+      try {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=fr&limit=5`;
+        const res = await fetch(url, { headers: { 'User-Agent': 'CycloTrekFranceAgent' } });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        
+        resultsDropdown.innerHTML = '';
+        
+        if (data.length === 0) {
+          resultsDropdown.innerHTML = `<div class="search-result-item" style="cursor:default;color:var(--text-muted);background:rgba(255,255,255,0.95)">Aucun résultat trouvé en France</div>`;
+          resultsDropdown.classList.remove('hidden');
+          return;
+        }
+
+        data.forEach(item => {
+          const el = document.createElement('div');
+          el.className = 'search-result-item';
+          el.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+          el.innerHTML = `<i data-lucide="map-pin"></i> <span>${item.display_name}</span>`;
+          el.addEventListener('click', () => {
+            const lat = parseFloat(item.lat);
+            const lon = parseFloat(item.lon);
+            state.map.setView([lat, lon], 12);
+            resultsDropdown.classList.add('hidden');
+            document.getElementById('address-input').value = '';
+            document.getElementById('clear-search-btn').classList.add('hidden');
+            addWaypointAtLatLng({ lat, lng: lon });
+          });
+          resultsDropdown.appendChild(el);
+        });
+        
+        resultsDropdown.classList.remove('hidden');
+        lucide.createIcons();
+      } catch (err) {
+        resultsDropdown.innerHTML = `<div class="search-result-item" style="cursor:default;color:var(--danger);background:rgba(255,255,255,0.95)">Erreur lors de la recherche</div>`;
+        resultsDropdown.classList.remove('hidden');
+      }
+    }
+
+    // Delete waypoint by ID
+    function deleteWaypoint(id) {
+      const idx = state.waypoints.findIndex(w => w.id === id);
+      if (idx !== -1) {
+        state.map.removeLayer(state.waypoints[idx].marker);
+        state.waypoints.splice(idx, 1);
+        
+        state.waypoints.forEach((w, i) => {
+          const index = i + 1;
+          const isEnd = index > 1;
+          const newIcon = L.divIcon({
+            className: 'waypoint-pin',
+            html: `<div class="waypoint-pin-container ${isEnd ? 'end' : ''}"><span>${index}</span></div>`,
+            iconSize: [32, 32],
+            iconAnchor: [16, 32]
+          });
+          w.marker.setIcon(newIcon);
+          if (w.name.startsWith('Étape') || w.name.includes('Lieu inconnu')) {
+            w.name = w.name.replace(/Étape \d+/, `Étape ${index}`);
+          }
+        });
+
+        updateWaypointsUI();
+        calculateRoutes();
+      }
+    }
+
+    // Clear all routes & waypoints
+    function clearRoute() {
+      state.waypoints.forEach(w => state.map.removeLayer(w.marker));
+      state.waypoints = [];
+      
+      clearRenderedRoutes();
+      
+      state.routes = {};
+      state.activeRouteData = null;
+      
+      toggleSidebarTabPlaceholders();
+      
+      updateWaypointsUI();
+    }
+
+    // Update UI list for waypoints
+    function updateWaypointsUI() {
+      const container = document.getElementById('waypoints-list');
+      const tip = document.getElementById('add-waypoint-tip');
+      const clearBtn = document.getElementById('clear-route-btn');
+      const saveBtn = document.getElementById('save-route-btn');
+      
+      container.innerHTML = '';
+      
+      if (state.waypoints.length === 0) {
+        tip.classList.remove('hidden');
+        clearBtn.classList.add('hidden');
+        saveBtn.classList.add('hidden');
+        return;
+      }
+      
+      tip.classList.add('hidden');
+      clearBtn.classList.remove('hidden');
+      saveBtn.classList.remove('hidden');
+      
+      state.waypoints.forEach((w, i) => {
+        const item = document.createElement('div');
+        item.className = 'waypoint-item';
+        item.innerHTML = `
+          <div class="waypoint-badge">${i + 1}</div>
+          <div class="waypoint-info">
+            <div class="waypoint-name" title="${w.name}">${w.name}</div>
+          </div>
+          <button class="btn-icon delete-wp-btn" data-id="${w.id}" title="Retirer ce point">
+            <i data-lucide="trash"></i>
+          </button>
+        `;
+        
+        item.querySelector('.delete-wp-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          deleteWaypoint(w.id);
+        });
+        
+        item.addEventListener('click', () => {
+          state.map.panTo([w.lat, w.lng]);
+        });
+        
+        container.appendChild(item);
+      });
+      
+      lucide.createIcons();
+    }
+
+    /* ----------------------------------------------------
+       Save / Cache System (LocalStorage)
+    ---------------------------------------------------- */
+
+    function saveCurrentRoute() {
+      if (state.waypoints.length === 0) {
+        showToast('Aucun point tracé à sauvegarder.', 'warning', 3000);
+        return;
+      }
+
+      const start = state.waypoints[0].name.split(' (')[0];
+      const end = state.waypoints[state.waypoints.length - 1].name.split(' (')[0];
+      const defaultName = `${start} ➔ ${end}`;
+      
+      const name = prompt('Nommer cette randonnée sauvegardée :', defaultName);
+      if (name === null) return; // cancel
+
+      const finalName = name.trim() || defaultName;
+
+      const saveObj = {
+        id: 'save_' + Date.now(),
+        name: finalName,
+        date: new Date().toLocaleDateString('fr-FR'),
+        waypoints: state.waypoints.map(w => ({ lat: w.lat, lng: w.lng, name: w.name }))
+      };
+
+      const saves = JSON.parse(localStorage.getItem('cyclotrek_saves') || '[]');
+      saves.unshift(saveObj);
+      localStorage.setItem('cyclotrek_saves', JSON.stringify(saves));
+
+      showToast(`Itinéraire "${finalName}" enregistré !`, 'success', 3000);
+      updateSavedRoutesListUI();
+    }
+
+    function updateSavedRoutesListUI() {
+      const listEl = document.getElementById('saved-routes-list');
+      const saves = JSON.parse(localStorage.getItem('cyclotrek_saves') || '[]');
+
+      if (saves.length === 0) {
+        listEl.innerHTML = `<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:12px;">Aucun itinéraire sauvegardé dans le cache local.</div>`;
+        return;
+      }
+
+      listEl.innerHTML = '';
+
+      saves.forEach(save => {
+        const item = document.createElement('div');
+        item.className = 'waypoint-item';
+        item.style.padding = '8px 10px';
+        item.innerHTML = `
+          <div style="flex:1;min-width:0;cursor:pointer;" class="load-save-btn">
+            <div style="font-size:12px;font-weight:600;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${save.name}</div>
+            <div style="font-size:10px;color:var(--text-muted);">${save.waypoints.length} points • ${save.date}</div>
+          </div>
+          <button class="btn-icon delete-save-btn" title="Supprimer la sauvegarde" style="padding:2px;">
+            <i data-lucide="trash" style="width:14px;height:14px;"></i>
+          </button>
+        `;
+
+        item.querySelector('.load-save-btn').addEventListener('click', () => {
+          loadSavedRoute(save);
+        });
+
+        item.querySelector('.delete-save-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          deleteSavedRoute(save.id);
+        });
+
+        listEl.appendChild(item);
+      });
+
+      lucide.createIcons();
+    }
+
+    async function loadSavedRoute(save) {
+      clearRoute();
+      showToast(`Chargement de "${save.name}"...`, 'info', 2000);
+
+      // Load waypoints sequentially
+      for (let i = 0; i < save.waypoints.length; i++) {
+        await addWaypointAtLatLngImport(save.waypoints[i], i + 1);
+      }
+
+      updateWaypointsUI();
+      showToast('Sauvegarde chargée avec succès !', 'success', 3000);
+      calculateRoutes();
+    }
+
+    function deleteSavedRoute(id) {
+      let saves = JSON.parse(localStorage.getItem('cyclotrek_saves') || '[]');
+      saves = saves.filter(s => s.id !== id);
+      localStorage.setItem('cyclotrek_saves', JSON.stringify(saves));
+      updateSavedRoutesListUI();
+      showToast('Sauvegarde supprimée.', 'info', 2000);
+    }
+
+    /* ----------------------------------------------------
+       GPX Route Importer
+    ---------------------------------------------------- */
+
+    function handleGPXImport(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        try {
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(event.target.result, 'text/xml');
+          const trackpts = xmlDoc.getElementsByTagName('trkpt');
+
+          if (trackpts.length === 0) {
+            showToast('Aucun point de tracé trouvé dans le fichier GPX.', 'error', 3000);
+            return;
+          }
+
+          const coords = [];
+          for (let i = 0; i < trackpts.length; i++) {
+            const lat = parseFloat(trackpts[i].getAttribute('lat'));
+            const lon = parseFloat(trackpts[i].getAttribute('lon'));
+            if (!isNaN(lat) && !isNaN(lon)) {
+              coords.push({ lat, lng: lon });
+            }
+          }
+
+          if (coords.length === 0) {
+            showToast('Aucune coordonnée valide dans le GPX.', 'error', 3000);
+            return;
+          }
+
+          // Sample coordinates down to an editable max of 8 points to feed BRouter
+          const sampledWaypoints = [];
+          if (coords.length <= 8) {
+            coords.forEach(c => sampledWaypoints.push(c));
+          } else {
+            sampledWaypoints.push(coords[0]); // Start
+            const step = (coords.length - 1) / 7;
+            for (let i = 1; i < 7; i++) {
+              const idx = Math.round(i * step);
+              sampledWaypoints.push(coords[idx]);
+            }
+            sampledWaypoints.push(coords[coords.length - 1]); // End
+          }
+
+          clearRoute();
+          showToast(`Importation de ${sampledWaypoints.length} points de passage...`, 'info', 2000);
+          
+          for (let i = 0; i < sampledWaypoints.length; i++) {
+            await addWaypointAtLatLngImport(sampledWaypoints[i], i + 1);
+          }
+
+          updateWaypointsUI();
+          showToast('Itinéraire GPX importé et prêt pour édition !', 'success', 3500);
+          calculateRoutes();
+
+        } catch (err) {
+          console.error(err);
+          showToast('Impossible d\'importer ou d\'analyser ce fichier GPX.', 'error', 3000);
+        }
+      };
+      reader.readAsText(file);
+      
+      // Clear file input value to allow re-importing same file
+      e.target.value = '';
+    }
+
+    /* ----------------------------------------------------
+       BRouter Cycling Routing Engine Integration
+    ---------------------------------------------------- */
+
+    // Clear routing graphics from Leaflet
+    function clearRenderedRoutes() {
+      Object.keys(state.routes).forEach(profile => {
+        if (state.routes[profile] && state.routes[profile].layer) {
+          state.map.removeLayer(state.routes[profile].layer);
+        }
+      });
+    }
+
+    // Calculate routes using BRouter parallel API requests
+    async function calculateRoutes() {
+      if (state.waypoints.length < 2) {
+        clearRenderedRoutes();
+        state.activeRouteData = null;
+        toggleSidebarTabPlaceholders();
+        return;
+      }
+
+      const lonlats = state.waypoints.map(w => `${w.lng.toFixed(6)},${w.lat.toFixed(6)}`).join('|');
+      
+      const profiles = [
+        { key: 'trekking', name: 'Chemins (VTC)', color: '#2ecc71' },
+        { key: 'fastbike', name: 'Route (Rapide)', color: '#3498db' },
+        { key: 'safety', name: 'Sécurisé (Pistes)', color: '#e67e22' }
+      ];
+
+      clearRenderedRoutes();
+      
+      const altSection = document.getElementById('section-alternatives');
+      const altList = document.getElementById('alternatives-list');
+      altSection.classList.remove('hidden');
+      altList.innerHTML = `
+        <div class="weather-loader">
+          <div class="spinner"></div>
+          <span>Calcul des tracés optimaux en cours...</span>
+        </div>
+      `;
+
+      const fetches = profiles.map(p => {
+        const url = `https://brouter.de/brouter?lonlats=${lonlats}&profile=${p.key}&alternativeidx=0&format=geojson`;
+        return fetch(url)
+          .then(res => {
+            if (!res.ok) throw new Error(`Failed to fetch routing for ${p.key}`);
+            return res.json();
+          })
+          .then(geojson => {
+            return { profile: p.key, name: p.name, color: p.color, geojson: geojson };
+          })
+          .catch(err => {
+            console.error(err);
+            return { profile: p.key, name: p.name, color: p.color, error: true };
+          });
+      });
+
+      const results = await Promise.all(fetches);
+      altList.innerHTML = '';
+      
+      let validRoutesCount = 0;
+      
+      results.forEach(res => {
+        if (res.error) {
+          showToast(`Impossible de calculer le trajet avec ${res.name}`, 'error', 3000);
+          return;
+        }
+        
+        validRoutesCount++;
+        
+        const feature = res.geojson.features[0];
+        const props = feature.properties;
+        
+        const distanceMeters = parseFloat(props['track-length'] || 0);
+        const durationSeconds = parseFloat(props['total-time'] || 0);
+        const ascent = Math.round(parseFloat(props['ascend'] || 0));
+        const descent = Math.round(parseFloat(props['descend'] || 0));
+        
+        state.routes[res.profile] = {
+          geojson: res.geojson,
+          distance: distanceMeters,
+          duration: durationSeconds,
+          ascent: ascent,
+          descent: descent,
+          color: res.color,
+          name: res.name
+        };
+        
+        renderRouteOnMap(res.profile);
+      });
+      
+      if (validRoutesCount === 0) {
+        altList.innerHTML = `<div class="add-waypoint-tip" style="border-color:var(--danger);color:var(--danger);"><i data-lucide="alert-triangle"></i> Aucun itinéraire n'a pu être calculé.</div>`;
+        lucide.createIcons();
+        return;
+      }
+
+      if (!state.routes[state.activeProfile]) {
+        state.activeProfile = Object.keys(state.routes)[0];
+      }
+      
+      setActiveRoute(state.activeProfile);
+    }
+
+    // Render specific route layer on Leaflet map
+    function renderRouteOnMap(profile) {
+      const route = state.routes[profile];
+      if (!route) return;
+
+      const isActive = profile === state.activeProfile;
+      
+      const style = {
+        color: route.color,
+        weight: isActive ? 6 : 4,
+        opacity: isActive ? 0.9 : 0.45,
+        dashArray: isActive ? null : '4, 8'
+      };
+
+      route.layer = L.geoJSON(route.geojson, {
+        style: style,
+        onEachFeature: (feature, layer) => {
+          layer.on('click', (e) => {
+            L.DomEvent.stopPropagation(e);
+            setActiveRoute(profile);
+          });
+          layer.on('mouseover', () => {
+            if (state.activeProfile !== profile) {
+              layer.setStyle({ opacity: 0.8, weight: 5 });
+            }
+          });
+          layer.on('mouseout', () => {
+            if (state.activeProfile !== profile) {
+              layer.setStyle({ opacity: 0.45, weight: 4 });
+            }
+          });
+        }
+      }).addTo(state.map);
+
+      if (isActive) {
+        route.layer.bringToFront();
+      }
+    }
+
+    // Set active route profile
+    function setActiveRoute(profile) {
+      if (!state.routes[profile]) return;
+
+      state.activeProfile = profile;
+      state.activeRouteData = state.routes[profile];
+      
+      toggleSidebarTabPlaceholders();
+
+      // Refresh styles on map
+      Object.keys(state.routes).forEach(p => {
+        const route = state.routes[p];
+        if (route && route.layer) {
+          const isActive = p === state.activeProfile;
+          route.layer.setStyle({
+            weight: isActive ? 6 : 4,
+            opacity: isActive ? 0.9 : 0.45,
+            dashArray: isActive ? null : '4, 8'
+          });
+          if (isActive) {
+            route.layer.bringToFront();
+          }
+        }
+      });
+
+      // Fit bounds on active layer
+      const activeLayer = state.routes[profile].layer;
+      if (activeLayer) {
+        state.map.fitBounds(activeLayer.getBounds(), { padding: [50, 50] });
+      }
+
+      // Update Sidebar widgets
+      updateAlternativesUI();
+      updateTrekSummaryUI();
+      drawElevationProfile();
+      loadLiveWeather();
+
+      // Trigger surface composition calculations
+      const lonlats = state.waypoints.map(w => `${w.lng.toFixed(6)},${w.lat.toFixed(6)}`).join('|');
+      fetchRouteSurfaceStats(lonlats, profile);
+    }
+
+    // Fetch and analyze pathway surface statistics (CSV format)
+    async function fetchRouteSurfaceStats(lonlats, profile) {
+      try {
+        const url = `https://brouter.de/brouter?lonlats=${lonlats}&profile=${profile}&alternativeidx=0&format=csv`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error();
+        const csvText = await res.text();
+
+        const lines = csvText.split('\n');
+        if (lines.length < 2) return;
+
+        const headers = lines[0].split('\t').map(h => h.trim().toLowerCase());
+        const surfaceIdx = headers.indexOf('surface');
+        const tracktypeIdx = headers.indexOf('tracktype');
+        const highwayIdx = headers.indexOf('highway');
+        const distanceIdx = headers.indexOf('distance');
+
+        if (distanceIdx === -1) return;
+
+        const stats = { route: 0, gravier: 0, chemin: 0, autre: 0 };
+        let prevDist = 0;
+
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (!line) continue;
+
+          const row = line.split('\t');
+          const dist = parseFloat(row[distanceIdx]) * 1000; // convert km to meters
+          if (isNaN(dist)) continue;
+
+          const segmentLen = dist - prevDist;
+          if (segmentLen <= 0) continue;
+          prevDist = dist;
+
+          const surface = surfaceIdx !== -1 ? (row[surfaceIdx] || '').toLowerCase().trim() : '';
+          const tracktype = tracktypeIdx !== -1 ? (row[tracktypeIdx] || '').toLowerCase().trim() : '';
+          const highway = highwayIdx !== -1 ? (row[highwayIdx] || '').toLowerCase().trim() : '';
+
+          // Classification logic based on OpenStreetMap tags
+          if (['asphalt', 'concrete', 'paved', 'paving_stones', 'sett'].includes(surface)) {
+            stats.route += segmentLen;
+          } else if (['gravel', 'fine_gravel', 'compacted', 'pebblestone'].includes(surface)) {
+            stats.gravier += segmentLen;
+          } else if (['ground', 'dirt', 'grass', 'earth', 'mud', 'sand', 'woodchip'].includes(surface)) {
+            stats.chemin += segmentLen;
+          } else if (surface === '') {
+            if (tracktype === 'grade1') {
+              stats.gravier += segmentLen;
+            } else if (['grade2', 'grade3', 'grade4', 'grade5'].includes(tracktype)) {
+              stats.chemin += segmentLen;
+            } else if (['track', 'path', 'footway', 'cycleway'].includes(highway)) {
+              stats.gravier += segmentLen; // default for VTC paths if tag is missing
+            } else {
+              stats.route += segmentLen; // default for standard roads
+            }
+          } else {
+            stats.autre += segmentLen;
+          }
+        }
+
+        updateSurfaceAnalysis(stats);
+
+      } catch (err) {
+        console.error('Error fetching route surface stats', err);
+        document.getElementById('section-surfaces').classList.add('hidden');
+      }
+    }
+
+    // Render donut chart with surface statistics
+    function updateSurfaceAnalysis(stats) {
+      const total = stats.route + stats.gravier + stats.chemin + stats.autre;
+      if (total === 0) {
+        document.getElementById('section-surfaces').classList.add('hidden');
+        return;
+      }
+
+      document.getElementById('section-surfaces').classList.remove('hidden');
+
+      const pRoute = (stats.route / total) * 100;
+      const pGravier = (stats.gravier / total) * 100;
+      const pChemin = (stats.chemin / total) * 100;
+      const pAutre = (stats.autre / total) * 100;
+
+      // Build conic gradient slices
+      let accum = 0;
+      const parts = [];
+
+      if (pRoute > 0) {
+        parts.push(`#3498db ${accum.toFixed(1)}% ${(accum + pRoute).toFixed(1)}%`);
+        accum += pRoute;
+      }
+      if (pGravier > 0) {
+        parts.push(`#e67e22 ${accum.toFixed(1)}% ${(accum + pGravier).toFixed(1)}%`);
+        accum += pGravier;
+      }
+      if (pChemin > 0) {
+        parts.push(`#2ecc71 ${accum.toFixed(1)}% ${(accum + pChemin).toFixed(1)}%`);
+        accum += pChemin;
+      }
+      if (pAutre > 0) {
+        parts.push(`#94a3b8 ${accum.toFixed(1)}% 100%`);
+      }
+
+      const chartEl = document.getElementById('donut-chart');
+      chartEl.style.background = `conic-gradient(${parts.join(', ')})`;
+
+      const legendEl = document.getElementById('donut-legend');
+      legendEl.innerHTML = `
+        <div class="legend-item">
+          <div class="legend-color" style="background-color:#3498db;"></div>
+          <span>Route (Asphalte) : <strong>${pRoute.toFixed(0)}%</strong></span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background-color:#e67e22;"></div>
+          <span>Gravier (Stabilisé) : <strong>${pGravier.toFixed(0)}%</strong></span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background-color:#2ecc71;"></div>
+          <span>Chemin (Terre/Boue) : <strong>${pChemin.toFixed(0)}%</strong></span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background-color:#94a3b8;"></div>
+          <span>Autre / Inconnu : <strong>${pAutre.toFixed(0)}%</strong></span>
+        </div>
+      `;
+    }
+
+    // Update the Alternatives comparison UI
+    function updateAlternativesUI() {
+      const altList = document.getElementById('alternatives-list');
+      altList.innerHTML = '';
+
+      Object.keys(state.routes).forEach(profile => {
+        const route = state.routes[profile];
+        const isActive = profile === state.activeProfile;
+        
+        const distKm = (route.distance / 1000).toFixed(1);
+        const timeHrMin = formatDuration(route.duration);
+        
+        const card = document.createElement('div');
+        card.className = `alternative-card ${isActive ? 'active' : ''}`;
+        card.setAttribute('data-profile', profile);
+        card.innerHTML = `
+          <div class="alt-header">
+            <span class="alt-name"><i data-lucide="bike" style="color:${route.color}"></i> ${route.name}</span>
+            ${isActive ? '<span class="alt-badge">Sélectionné</span>' : ''}
+          </div>
+          <div class="alt-details">
+            <span class="alt-primary-metric">${timeHrMin}</span>
+            <div class="alt-detail-item">
+              <i data-lucide="milestone"></i>
+              <span>${distKm} km</span>
+            </div>
+            <div class="alt-detail-item">
+              <i data-lucide="trending-up"></i>
+              <span style="color:var(--danger)">+${route.ascent}m</span>
+            </div>
+          </div>
+        `;
+
+        card.addEventListener('click', () => {
+          setActiveRoute(profile);
+        });
+
+        altList.appendChild(card);
+      });
+
+      lucide.createIcons();
+    }
+
+    // Update overall trek stats and steps summary
+    function updateTrekSummaryUI() {
+      const route = state.activeRouteData;
+      if (!route) return;
+
+      document.getElementById('section-actions').classList.remove('hidden');
+
+      document.getElementById('summary-distance').innerText = `${(route.distance / 1000).toFixed(1)} km`;
+      document.getElementById('summary-duration').innerText = formatDuration(route.duration);
+      document.getElementById('summary-elevation-gain').innerText = `+${route.ascent}m`;
+      document.getElementById('summary-elevation-loss').innerText = `-${route.descent}m`;
+
+      const timeline = document.getElementById('stages-timeline');
+      timeline.innerHTML = '';
+
+      const coords = route.geojson.features[0].geometry.coordinates;
+      
+      state.waypoints.forEach((w, i) => {
+        const isStart = i === 0;
+        const isEnd = i === state.waypoints.length - 1;
+        
+        let stageDistance = '';
+        if (i > 0) {
+          const distSoFar = getWaypointCumulativeDistance(w, coords);
+          stageDistance = `Cumul: ${distSoFar.toFixed(1)} km`;
+        }
+
+        const step = document.createElement('div');
+        step.className = `stage-step ${isEnd ? 'step-end' : ''}`;
+        step.innerHTML = `
+          <div class="stage-info">
+            <div class="stage-title">${isStart ? 'Départ : ' : isEnd ? 'Arrivée : ' : 'Étape : '}${w.name}</div>
+            ${stageDistance ? `<div class="stage-distance">${stageDistance}</div>` : ''}
+          </div>
+        `;
+        timeline.appendChild(step);
+      });
+    }
+
+    // Helper to find cumulative distance of waypoint along the routing path coordinates
+    function getWaypointCumulativeDistance(waypoint, pathCoords) {
+      let minDistance = Infinity;
+      let closestIndex = 0;
+      
+      for (let i = 0; i < pathCoords.length; i++) {
+        const d = getDirectDistance(waypoint.lat, waypoint.lng, pathCoords[i][1], pathCoords[i][0]);
+        if (d < minDistance) {
+          minDistance = d;
+          closestIndex = i;
+        }
+      }
+
+      let totalD = 0;
+      for (let i = 1; i <= closestIndex; i++) {
+        totalD += getDirectDistance(pathCoords[i-1][1], pathCoords[i-1][0], pathCoords[i][1], pathCoords[i][0]);
+      }
+      
+      return totalD;
+    }
+
+    /* ----------------------------------------------------
+       Elevation Profile SVG Rendering
+    ---------------------------------------------------- */
+
+    // Calculate details and draw elevation SVG
+    function drawElevationProfile() {
+      const route = state.activeRouteData;
+      if (!route) return;
+
+      document.getElementById('section-elevation').classList.remove('hidden');
+
+      const coords = route.geojson.features[0].geometry.coordinates;
+      if (coords.length < 2) return;
+
+      let cumulativeDist = 0;
+      const data = [{ dist: 0, ele: coords[0][2] || 0, lat: coords[0][1], lng: coords[0][0] }];
+      
+      for (let i = 1; i < coords.length; i++) {
+        const segmentD = getDirectDistance(coords[i-1][1], coords[i-1][0], coords[i][1], coords[i][0]);
+        cumulativeDist += segmentD;
+        data.push({
+          dist: cumulativeDist,
+          ele: coords[i][2] || 0,
+          lat: coords[i][1],
+          lng: coords[i][0]
+        });
+      }
+
+      state.activeRouteData.parsedCoords = data;
+
+      const totalDist = cumulativeDist;
+      const elevations = data.map(d => d.ele);
+      
+      let minEle = Infinity;
+      let maxEle = -Infinity;
+      elevations.forEach(e => {
+        if (e < minEle) minEle = e;
+        if (e > maxEle) maxEle = e;
+      });
+      
+      if (minEle === Infinity) minEle = 0;
+      if (maxEle === -Infinity) maxEle = 100;
+      if (minEle === maxEle) {
+        minEle -= 10;
+        maxEle += 10;
+      }
+
+      document.getElementById('elevation-lbl-start').innerText = '0 km';
+      document.getElementById('elevation-lbl-middle').innerText = `Alt: ${Math.round(minEle)}m - ${Math.round(maxEle)}m`;
+      document.getElementById('elevation-lbl-end').innerText = `${totalDist.toFixed(1)} km`;
+      document.getElementById('elevation-summary').innerText = `▲ +${route.ascent}m | ▼ -${route.descent}m`;
+
+      const svg = document.getElementById('elevation-svg');
+      const width = 300;
+      const height = 120;
+      const paddingBottom = 15;
+      const paddingTop = 10;
+      const chartHeight = height - paddingBottom - paddingTop;
+
+      const getX = (dist) => (dist / totalDist) * width;
+      const getY = (ele) => {
+        const range = (maxEle - minEle) || 1;
+        return height - paddingBottom - ((ele - minEle) / range) * chartHeight;
+      };
+
+      let pathStr = `M ${getX(data[0].dist)} ${getY(data[0].ele)}`;
+      let areaStr = `M ${getX(data[0].dist)} ${height - paddingBottom} L ${getX(data[0].dist)} ${getY(data[0].ele)}`;
+
+      for (let i = 1; i < data.length; i++) {
+        const x = getX(data[i].dist);
+        const y = getY(data[i].ele);
+        pathStr += ` L ${x} ${y}`;
+        areaStr += ` L ${x} ${y}`;
+      }
+
+      areaStr += ` L ${getX(data[data.length - 1].dist)} ${height - paddingBottom} Z`;
+
+      svg.innerHTML = `
+        <defs>
+          <linearGradient id="elevationGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.35" />
+            <stop offset="100%" stop-color="var(--primary)" stop-opacity="0.0" />
+          </linearGradient>
+        </defs>
+        <path d="${areaStr}" fill="url(#elevationGrad)" />
+        <path d="${pathStr}" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+        <line id="ele-guide-line" x1="0" y1="${paddingTop}" x2="0" y2="${height - paddingBottom}" stroke="var(--text-muted)" stroke-width="1.5" stroke-dasharray="3, 3" class="hidden" />
+        <circle id="ele-guide-circle" r="5" fill="var(--primary)" stroke="#ffffff" stroke-width="2" class="hidden" />
+      `;
+    }
+
+    // Elevation hover sync with map
+    function handleElevationHover(e) {
+      const route = state.activeRouteData;
+      if (!route || !route.parsedCoords) return;
+
+      const svg = document.getElementById('elevation-svg');
+      const rect = svg.getBoundingClientRect();
+      
+      const clientX = e.clientX - rect.left;
+      const svgX = (clientX / rect.width) * 300;
+
+      if (svgX < 0 || svgX > 300) {
+        handleElevationLeave();
+        return;
+      }
+
+      const data = route.parsedCoords;
+      const totalDist = data[data.length - 1].dist;
+      const targetDist = (svgX / 300) * totalDist;
+
+      let low = 0;
+      let high = data.length - 1;
+      let closestIdx = 0;
+
+      while (low <= high) {
+        const mid = Math.floor((low + high) / 2);
+        if (Math.abs(data[mid].dist - targetDist) < Math.abs(data[closestIdx].dist - targetDist)) {
+          closestIdx = mid;
+        }
+        if (data[mid].dist < targetDist) {
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+
+      const point = data[closestIdx];
+
+      const width = 300;
+      const height = 120;
+      const paddingBottom = 15;
+      const paddingTop = 10;
+      const chartHeight = height - paddingBottom - paddingTop;
+      
+      const elevations = data.map(d => d.ele);
+      let minEle = Infinity;
+      let maxEle = -Infinity;
+      elevations.forEach(el => {
+        if (el < minEle) minEle = el;
+        if (el > maxEle) maxEle = el;
+      });
+
+      const getX = (dist) => (dist / totalDist) * width;
+      const getY = (ele) => {
+        const range = (maxEle - minEle) || 1;
+        return height - paddingBottom - ((ele - minEle) / range) * chartHeight;
+      };
+
+      const xCoord = getX(point.dist);
+      const yCoord = getY(point.ele);
+
+      const guideLine = document.getElementById('ele-guide-line');
+      const guideCircle = document.getElementById('ele-guide-circle');
+      const tooltip = document.getElementById('elevation-chart-tooltip');
+
+      if (guideLine && guideCircle) {
+        guideLine.setAttribute('x1', xCoord);
+        guideLine.setAttribute('x2', xCoord);
+        guideLine.classList.remove('hidden');
+
+        guideCircle.setAttribute('cx', xCoord);
+        guideCircle.setAttribute('cy', yCoord);
+        guideCircle.classList.remove('hidden');
+      }
+
+      tooltip.innerText = `${point.dist.toFixed(1)} km • Alt: ${Math.round(point.ele)}m`;
+      tooltip.classList.remove('hidden');
+      
+      const leftPos = ((xCoord / 300) * rect.width);
+      tooltip.style.left = `${leftPos}px`;
+
+      if (state.hoverMapMarker) {
+        state.hoverMapMarker.setLatLng([point.lat, point.lng]);
+      } else {
+        const hoverIcon = L.divIcon({
+          className: 'hover-sync-marker',
+          html: `<div style="width:16px;height:16px;background:var(--primary);border:3px solid #fff;border-radius:50%;box-shadow:0 0 10px rgba(0,0,0,0.3);animation:pulse 1.2s infinite;"></div>`,
+          iconSize: [16, 16],
+          iconAnchor: [8, 8]
+        });
+        state.hoverMapMarker = L.marker([point.lat, point.lng], { icon: hoverIcon }).addTo(state.map);
+      }
+    }
+
+    function handleElevationLeave() {
+      const guideLine = document.getElementById('ele-guide-line');
+      const guideCircle = document.getElementById('ele-guide-circle');
+      const tooltip = document.getElementById('elevation-chart-tooltip');
+
+      if (guideLine) guideLine.classList.add('hidden');
+      if (guideCircle) guideCircle.classList.add('hidden');
+      if (tooltip) tooltip.classList.add('hidden');
+
+      if (state.hoverMapMarker) {
+        state.map.removeLayer(state.hoverMapMarker);
+        state.hoverMapMarker = null;
+      }
+    }
+
+    /* ----------------------------------------------------
+       Live Weather (Open-Meteo)
+    ---------------------------------------------------- */
+
+    async function loadLiveWeather() {
+      if (state.waypoints.length < 2 || !state.activeRouteData) return;
+
+      const weatherWidget = document.getElementById('weather-widget');
+      const alertsContainer = document.getElementById('weather-alerts-container');
+      
+      weatherWidget.innerHTML = `
+        <div class="weather-loader">
+          <div class="spinner"></div>
+          <span>Calcul de la simulation météo...</span>
+        </div>
+      `;
+      alertsContainer.innerHTML = '';
+      alertsContainer.classList.add('hidden');
+
+      const pathCoords = state.activeRouteData.geojson.features[0].geometry.coordinates;
+      const speed = parseFloat(document.getElementById('sim-speed').value) || 16;
+      const departOffsetHours = parseInt(document.getElementById('sim-depart-time').value) || 0;
+
+      const steps = [];
+
+      if (state.waypoints.length === 2) {
+        // Start
+        steps.push({
+          label: 'Départ',
+          name: state.waypoints[0].name,
+          lat: state.waypoints[0].lat,
+          lng: state.waypoints[0].lng,
+          distKm: 0,
+          offsetHours: 0
+        });
+        
+        // Mid-point calculation along the route coordinates
+        const midIdx = Math.floor(pathCoords.length / 2);
+        const midCoord = pathCoords[midIdx];
+        let midDist = 0;
+        for (let i = 1; i <= midIdx; i++) {
+          midDist += getDirectDistance(pathCoords[i-1][1], pathCoords[i-1][0], pathCoords[i][1], pathCoords[i][0]);
+        }
+        steps.push({
+          label: 'Mi-parcours',
+          name: 'Mi-parcours',
+          lat: midCoord[1],
+          lng: midCoord[0],
+          distKm: midDist,
+          offsetHours: midDist / speed
+        });
+
+        // End
+        const totalDist = state.activeRouteData.distance / 1000;
+        steps.push({
+          label: 'Arrivée',
+          name: state.waypoints[1].name,
+          lat: state.waypoints[1].lat,
+          lng: state.waypoints[1].lng,
+          distKm: totalDist,
+          offsetHours: totalDist / speed
+        });
+      } else {
+        // Loop through all waypoints to build steps
+        state.waypoints.forEach((w, i) => {
+          const label = i === 0 ? 'Départ' : i === state.waypoints.length - 1 ? 'Arrivée' : `Étape ${i + 1}`;
+          const distKm = getWaypointCumulativeDistance(w, pathCoords);
+          steps.push({
+            label: label,
+            name: w.name,
+            lat: w.lat,
+            lng: w.lng,
+            distKm: distKm,
+            offsetHours: distKm / speed
+          });
+        });
+      }
+
+      try {
+        const promises = steps.map(s => {
+          const url = `https://api.open-meteo.com/v1/forecast?latitude=${s.lat}&longitude=${s.lng}&hourly=temperature_2m,weather_code,wind_speed_10m,precipitation_probability&timezone=auto`;
+          return fetch(url)
+            .then(res => {
+              if (!res.ok) throw new Error();
+              return res.json();
+            })
+            .then(data => {
+              return { step: s, data: data };
+            })
+            .catch(err => {
+              return { step: s, error: true };
+            });
+        });
+
+        const results = await Promise.all(promises);
+        
+        weatherWidget.innerHTML = `<div class="weather-content" id="weather-content" style="display:flex; overflow-x:auto; gap:12px; padding:4px 0;"></div>`;
+        const container = document.getElementById('weather-content');
+        
+        const alerts = [];
+
+        results.forEach(res => {
+          if (res.error || !res.data || !res.data.hourly) return;
+
+          const s = res.step;
+          const data = res.data;
+
+          const departureOffsetMs = (departOffsetHours + s.offsetHours) * 3600 * 1000;
+          const targetTimeMs = Date.now() + departureOffsetMs;
+
+          // Find the hour index closest to estimated passage time
+          let closestIndex = 0;
+          let minDiff = Infinity;
+          for (let idx = 0; idx < data.hourly.time.length; idx++) {
+            const tMs = new Date(data.hourly.time[idx]).getTime();
+            const diff = Math.abs(tMs - targetTimeMs);
+            if (diff < minDiff) {
+              minDiff = diff;
+              closestIndex = idx;
+            }
+          }
+
+          const temp = data.hourly.temperature_2m[closestIndex];
+          const code = data.hourly.weather_code[closestIndex];
+          const wind = data.hourly.wind_speed_10m[closestIndex];
+          const precipProb = data.hourly.precipitation_probability[closestIndex];
+
+          const wDetails = weatherCodes[code] || { desc: 'Météo variable', icon: 'cloud-sun' };
+
+          // Build local ETA label
+          const targetDate = new Date(targetTimeMs);
+          const targetHourStr = `${targetDate.getHours()}h${targetDate.getMinutes().toString().padStart(2, '0')}`;
+          const today = new Date();
+          const dayDiff = targetDate.getDate() - today.getDate();
+          const timeLabel = dayDiff > 0 ? `J+${dayDiff} ${targetHourStr}` : targetHourStr;
+
+          // Build delay label
+          const totalOffsetMinutes = Math.round(s.offsetHours * 60);
+          const offsetHoursPart = Math.floor(totalOffsetMinutes / 60);
+          const offsetMinsPart = totalOffsetMinutes % 60;
+          const delayStr = s.offsetHours === 0 ? 'Départ' : (offsetHoursPart > 0 ? `+${offsetHoursPart}h${offsetMinsPart.toString().padStart(2, '0')}` : `+${offsetMinsPart} min`);
+
+          // Climate Alert Rules
+          const cleanName = s.name.split(' (')[0];
+          if (wind > 38) {
+            alerts.push({
+              type: 'warning',
+              title: 'Vent violent / Rafales latérales',
+              desc: `Vent soufflant à ${Math.round(wind)} km/h à "${cleanName}" (${timeLabel}).`
+            });
+          }
+          if (temp > 34) {
+            alerts.push({
+              type: 'danger',
+              title: 'Canicule / Chaleur extrême',
+              desc: `Température de ${Math.round(temp)}°C à "${cleanName}" (${timeLabel}). Hydratez-vous fréquemment.`
+            });
+          }
+          if (temp < 3) {
+            alerts.push({
+              type: 'danger',
+              title: 'Risque de gel & verglas',
+              desc: `Température de ${Math.round(temp)}°C à "${cleanName}" (${timeLabel}). Chaussée glissante.`
+            });
+          }
+          if ([95, 96, 99].includes(code)) {
+            alerts.push({
+              type: 'danger',
+              title: 'Alerte orage électrique',
+              desc: `Risque d'orages violents ou grêle à "${cleanName}" (${timeLabel}). Mettez-vous à l'abri.`
+            });
+          }
+          if (precipProb > 75 && [61, 63, 65, 80, 81, 82].includes(code)) {
+            alerts.push({
+              type: 'warning',
+              title: 'Pluie battante / Averses',
+              desc: `Pluie soutenue (${precipProb}%) à "${cleanName}" (${timeLabel}). Vêtements imperméables recommandés.`
+            });
+          }
+
+          const card = document.createElement('div');
+          card.className = 'weather-card';
+          card.style.flex = '0 0 120px';
+          card.innerHTML = `
+            <span class="weather-card-title" title="${s.name}" style="font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;">${s.label}</span>
+            <span style="font-size:10px; color:var(--text-muted); margin-bottom:4px; font-weight:500;">${delayStr}</span>
+            <i data-lucide="${wDetails.icon}" class="weather-icon" style="margin: 4px 0; width:22px; height:22px; color:var(--primary);"></i>
+            <span class="weather-temp" style="font-size:14px; font-weight:700;">${Math.round(temp)}°C</span>
+            <span class="weather-desc" style="font-size:9px; color:var(--text-muted); text-align:center; min-height:22px; display:flex; align-items:center; justify-content:center;">${wDetails.desc}</span>
+            <div style="display:flex; flex-direction:column; gap:2px; margin-top:6px; font-size:9px; color:var(--text-muted); width:100%; border-top: 1px dashed rgba(15,23,42,0.08); padding-top:6px;">
+              <span style="display:flex; align-items:center; gap:4px; justify-content:center;">
+                <i data-lucide="wind" style="width:10px; height:10px;"></i> ${Math.round(wind)} km/h
+              </span>
+              <span style="display:flex; align-items:center; gap:4px; justify-content:center;">
+                <i data-lucide="droplet" style="width:10px; height:10px;"></i> ${precipProb}%
+              </span>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+
+        // Render warnings
+        if (alerts.length > 0) {
+          alertsContainer.innerHTML = '';
+          alerts.forEach(al => {
+            const box = document.createElement('div');
+            const isDanger = al.type === 'danger';
+            box.style.cssText = `
+              background: ${isDanger ? 'rgba(239, 68, 68, 0.08)' : 'rgba(245, 158, 11, 0.08)'};
+              border-left: 4px solid ${isDanger ? '#ef4444' : '#f59e0b'};
+              padding: 10px 12px;
+              border-radius: var(--border-radius-sm);
+              display: flex;
+              gap: 8px;
+              align-items: flex-start;
+            `;
+            box.innerHTML = `
+              <i data-lucide="alert-triangle" style="color:${isDanger ? '#ef4444' : '#f59e0b'}; width:15px; height:15px; flex-shrink:0; margin-top:1px;"></i>
+              <div style="display:flex; flex-direction:column;">
+                <span style="font-size:11px; font-weight:700; color:var(--text-main);">${al.title}</span>
+                <span style="font-size:10px; color:var(--text-muted); margin-top:1px; line-height:1.4;">${al.desc}</span>
+              </div>
+            `;
+            alertsContainer.appendChild(box);
+          });
+          alertsContainer.classList.remove('hidden');
+        } else {
+          alertsContainer.innerHTML = `
+            <div style="background: rgba(16, 185, 129, 0.08); border-left: 4px solid #10b981; padding: 10px 12px; border-radius: var(--border-radius-sm); display: flex; gap: 8px; align-items: center;">
+              <i data-lucide="check-circle" style="color: #10b981; width:15px; height:15px; flex-shrink:0;"></i>
+              <span style="font-size:11px; font-weight:600; color:var(--text-main);">Aucun danger météo détecté. Conditions idéales !</span>
+            </div>
+          `;
+          alertsContainer.classList.remove('hidden');
+        }
+
+        lucide.createIcons();
+
+      } catch (err) {
+        weatherWidget.innerHTML = `<span style="font-size:12px;color:var(--danger);text-align:center;width:100%;">Échec du chargement de la météo.</span>`;
+      }
+    }
+
+    /* ----------------------------------------------------
+       Infrastructures & Viewpoints (Overpass API + Wikimedia)
+    ---------------------------------------------------- */
+
+    function debounceLoadPOIs() {
+      clearTimeout(state.overpassTimeout);
+      state.overpassTimeout = setTimeout(loadPOIsFromOverpass, 450);
+    }
+
+    function togglePOICollection(type, isVisible) {
+      if (isVisible) {
+        debounceLoadPOIs();
+      } else {
+        clearPOIMarkers(type);
+      }
+    }
+
+    function clearPOIMarkers(type) {
+      const remaining = [];
+      state.poiMarkers.forEach(m => {
+        if (type === 'all' || m.type === type) {
+          state.map.removeLayer(m.marker);
+        } else {
+          remaining.push(m);
+        }
+      });
+      if (type === 'all') {
+        state.poiMarkers = [];
+      } else {
+        state.poiMarkers = remaining;
+      }
+    }
+
+    // Consolidated single query to Overpass API to prevent 504 Timeout and 429 Rate limits
+    async function loadPOIsFromOverpass() {
+      const zoom = state.map.getZoom();
+      
+      if (zoom < 12) {
+        if (state.showCampings || state.showWater || state.showToilets || state.showViewpoints) {
+          showToast("Zoomez sur la carte pour afficher les infrastructures.", "warning", 3500);
+        }
+        return;
+      }
+
+      const bounds = state.map.getBounds();
+      const bbox = `${bounds.getSouth()},${bounds.getWest()},${bounds.getNorth()},${bounds.getEast()}`;
+      
+      if (state.lastOverpassBbox === bbox) return;
+      state.lastOverpassBbox = bbox;
+
+      let query = '[out:json][timeout:25];(';
+      let hasActive = false;
+
+      if (state.showCampings) {
+        query += `node["tourism"="camp_site"](${bbox});way["tourism"="camp_site"](${bbox});relation["tourism"="camp_site"](${bbox});`;
+        hasActive = true;
+      }
+      if (state.showWater) {
+        query += `node["amenity"="drinking_water"](${bbox});`;
+        hasActive = true;
+      }
+      if (state.showToilets) {
+        query += `node["amenity"="toilets"](${bbox});way["amenity"="toilets"](${bbox});`;
+        hasActive = true;
+      }
+      if (state.showViewpoints) {
+        query += `node["tourism"="viewpoint"](${bbox});way["tourism"="viewpoint"](${bbox});`;
+        hasActive = true;
+      }
+      
+      query += ');out center;';
+
+      if (!hasActive) {
+        clearPOIMarkers('all');
+        return;
+      }
+
+      const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        
+        clearPOIMarkers('all');
+
+        data.elements.forEach(el => {
+          const isCamp = el.tags && el.tags.tourism === 'camp_site';
+          const isWater = el.tags && el.tags.amenity === 'drinking_water';
+          const isToilet = el.tags && el.tags.amenity === 'toilets';
+          const isViewpoint = el.tags && el.tags.tourism === 'viewpoint';
+          
+          let type = '';
+          let pinMarkup = '';
+          
+          if (isCamp) {
+            type = 'camping';
+            pinMarkup = svgIcons.camp;
+          } else if (isWater) {
+            type = 'water';
+            pinMarkup = svgIcons.water;
+          } else if (isToilet) {
+            type = 'toilet';
+            pinMarkup = svgIcons.toilet;
+          } else if (isViewpoint) {
+            type = 'viewpoint';
+            pinMarkup = svgIcons.viewpoint;
+          } else {
+            return; // skip other types
+          }
+
+          const customIcon = L.divIcon({
+            className: 'custom-marker-poi',
+            html: pinMarkup,
+            iconSize: [36, 36],
+            iconAnchor: [18, 18]
+          });
+
+          const lat = el.lat || (el.center ? el.center.lat : null);
+          const lon = el.lon || (el.center ? el.center.lon : null);
+
+          if (lat === null || lon === null) return;
+
+          const marker = L.marker([lat, lon], { icon: customIcon }).addTo(state.map);
+
+          marker.on('click', (e) => {
+            L.DomEvent.stopPropagation(e);
+            openPOIDetailModal(el, type);
+          });
+
+          state.poiMarkers.push({
+            id: el.id,
+            type: type,
+            marker: marker,
+            data: el
+          });
+        });
+
+        lucide.createIcons();
+
+      } catch (err) {
+        console.error('Overpass error', err);
+        showToast("Le serveur OSM est temporairement surchargé. Réessai imminent.", 'warning', 3000);
+      }
+    }
+
+    // Geosearch query for Wikimedia Commons images
+    async function getWikimediaImageNear(lat, lon) {
+      try {
+        const radius = 4000; // 4 km
+        const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=geosearch&ggsnamespace=6&ggsradius=${radius}&ggscoord=${lat}|${lon}&prop=imageinfo&iiprop=url&iiurlwidth=400&format=json&origin=*&limit=3`;
+        const res = await fetch(url);
+        if (!res.ok) return null;
+        const data = await res.json();
+        if (data.query && data.query.pages) {
+          const pages = Object.values(data.query.pages);
+          if (pages.length > 0 && pages[0].imageinfo && pages[0].imageinfo.length > 0) {
+            return pages[0].imageinfo[0].thumburl || pages[0].imageinfo[0].url;
+          }
+        }
+      } catch (err) {
+        console.error('Wikimedia fetch error', err);
+      }
+      return null;
+    }
+
+    // Detail information local modal
+    async function openPOIDetailModal(element, type) {
+      const modal = document.getElementById('modal-poi');
+      const title = document.getElementById('poi-title');
+      const body = document.getElementById('poi-body');
+      const addBtn = document.getElementById('poi-add-waypoint-btn');
+
+      const tags = element.tags || {};
+      const isCamp = type === 'camping';
+      const isWater = type === 'water';
+      const isToilet = type === 'toilet';
+      const isViewpoint = type === 'viewpoint';
+
+      const lat = element.lat || (element.center ? element.center.lat : null);
+      const lon = element.lon || (element.center ? element.center.lon : null);
+
+      if (isCamp) {
+        title.innerHTML = `<i data-lucide="tent" class="color-primary"></i> ${tags.name || 'Camping'}`;
+      } else if (isWater) {
+        title.innerHTML = `<i data-lucide="droplet" style="color:var(--secondary)"></i> Point d'eau Potable`;
+      } else if (isToilet) {
+        title.innerHTML = `<i data-lucide="pocket" style="color:#9b59b6"></i> Toilettes Publiques`;
+      } else if (isViewpoint) {
+        title.innerHTML = `<i data-lucide="star" style="color:#f39c12"></i> Point de Vue Étoilé`;
+      }
+
+      let bodyHTML = '';
+
+      if (isCamp) {
+        bodyHTML = `
+          <span class="poi-tag">Camping</span>
+          <p><strong>Nom :</strong> ${tags.name || 'Non spécifié'}</p>
+          <div class="poi-meta">
+            <div class="poi-meta-row"><div class="poi-meta-label">Opérateur :</div><div class="poi-meta-value">${tags.operator || 'Inconnu'}</div></div>
+            <div class="poi-meta-row"><div class="poi-meta-label">Téléphone :</div><div class="poi-meta-value">${tags.phone || 'Non répertorié'}</div></div>
+            <div class="poi-meta-row"><div class="poi-meta-label">Site Web :</div><div class="poi-meta-value">${tags.website ? `<a href="${tags.website}" target="_blank">${tags.website}</a>` : 'Aucun site enregistré'}</div></div>
+            <div class="poi-meta-row"><div class="poi-meta-label">Description :</div><div class="poi-meta-value">${tags.description || 'Aucune description disponible'}</div></div>
+          </div>
+        `;
+      } else if (isWater) {
+        bodyHTML = `
+          <span class="poi-tag water">Eau Potable</span>
+          <p>Un point d'accès public et gratuit à de l'eau potable.</p>
+          <div class="poi-meta">
+            <div class="poi-meta-row"><div class="poi-meta-label">Emplacement :</div><div class="poi-meta-value">${tags.description || 'Sur la voie publique'}</div></div>
+            <div class="poi-meta-row"><div class="poi-meta-label">Potabilité :</div><div class="poi-meta-value">${tags.drinking_water === 'yes' ? 'Oui (Confirmé)' : 'Oui'}</div></div>
+          </div>
+        `;
+      } else if (isToilet) {
+        bodyHTML = `
+          <span class="poi-tag" style="background-color:rgba(155,89,182,0.1);color:#9b59b6;">Toilettes</span>
+          <p>Toilettes publiques installées à proximité des pistes et des villes.</p>
+          <div class="poi-meta">
+            <div class="poi-meta-row"><div class="poi-meta-label">Accès PMR :</div><div class="poi-meta-value">${tags.wheelchair === 'yes' ? 'Oui' : tags.wheelchair === 'no' ? 'Non' : 'Inconnu'}</div></div>
+            <div class="poi-meta-row"><div class="poi-meta-label">Gratuit :</div><div class="poi-meta-value">${tags.fee === 'no' ? 'Oui (Gratuit)' : tags.fee === 'yes' ? 'Payant' : 'Inconnu'}</div></div>
+            <div class="poi-meta-row"><div class="poi-meta-label">Type d'accès :</div><div class="poi-meta-value">${tags.access || 'Public'}</div></div>
+          </div>
+        `;
+      } else if (isViewpoint) {
+        bodyHTML = `
+          <span class="poi-tag" style="background-color:#fffbeb;color:#f39c12;border:1px solid rgba(241,196,15,0.2);">Point de Vue</span>
+          <p><strong>Nom :</strong> ${tags.name || 'Panorama remarquable'}</p>
+          <p><strong>Description :</strong> ${tags.description || 'Profitez d\'un superbe point de vue lors de votre itinéraire.'}</p>
+          ${tags.direction ? `<p><strong>Direction :</strong> face au ${tags.direction}°</p>` : ''}
+          <div class="poi-image-container" id="poi-image-loader">
+            <div class="weather-loader">
+              <div class="spinner"></div>
+              <span>Recherche d'une photo réelle...</span>
+            </div>
+          </div>
+        `;
+      }
+
+      body.innerHTML = bodyHTML;
+      
+      const newAddBtn = addBtn.cloneNode(true);
+      addBtn.replaceWith(newAddBtn);
+      
+      newAddBtn.addEventListener('click', () => {
+        closeLocalModal('modal-poi');
+        const pointName = isCamp ? (tags.name || 'Camping') : isWater ? 'Point d\'eau' : isToilet ? 'Toilettes' : (tags.name || 'Point de vue');
+        addWaypointAtLatLng({ lat: lat, lng: lon });
+        showToast(`${pointName} ajouté comme étape.`, 'success', 3000);
+      });
+
+      openLocalModal('modal-poi');
+      lucide.createIcons();
+
+      // Async photo geosearch for viewpoints
+      if (isViewpoint && lat && lon) {
+        getWikimediaImageNear(lat, lon).then(imgUrl => {
+          const loader = document.getElementById('poi-image-loader');
+          if (loader) {
+            if (imgUrl) {
+              loader.innerHTML = `<img src="${imgUrl}" class="poi-image" alt="Photo de la zone">`;
+            } else {
+              loader.innerHTML = `<div class="poi-image-error">Aucune photo libre de droits disponible sur Wikimedia Commons dans un rayon de 4 km.</div>`;
+            }
+          }
+        });
+      }
+    }
+
+    /* ----------------------------------------------------
+       Garmin GPX 1.1 Export Engine
+    ---------------------------------------------------- */
+
+    function exportGPX() {
+      const route = state.activeRouteData;
+      if (!route) {
+        showToast('Veuillez d\'abord tracer un itinéraire pour pouvoir l\'exporter.', 'warning', 3000);
+        return;
+      }
+
+      const coords = route.geojson.features[0].geometry.coordinates;
+      const trekName = `CycloTrek_${state.activeProfile}_${Math.round(route.distance/1000)}km`;
+      const timeString = new Date().toISOString();
+
+      let gpx = `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="CycloTrek France" 
+  xmlns="http://www.topografix.com/GPX/1/1" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <metadata>
+    <name>${trekName}</name>
+    <desc>Itinéraire vélo généré par CycloTrek France (${route.name})</desc>
+    <time>${timeString}</time>
+  </metadata>
+  <trk>
+    <name>${trekName}</name>
+    <desc>Type d'itinéraire : ${route.name}</desc>
+    <trkseg>`;
+
+      coords.forEach(pt => {
+        const lon = pt[0].toFixed(6);
+        const lat = pt[1].toFixed(6);
+        const ele = pt[2] ? `<ele>${pt[2].toFixed(1)}</ele>` : '';
+        gpx += `
+      <trkpt lat="${lat}" lon="${lon}">${ele}</trkpt>`;
+      });
+
+      gpx += `
+    </trkseg>
+  </trk>
+</gpx>`;
+
+      try {
+        const blob = new Blob([gpx], { type: 'application/gpx+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${trekName}.gpx`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showToast('Fichier GPX exporté !', 'success', 3500);
+        
+        setTimeout(() => {
+          openLocalModal('modal-garmin');
+        }, 1200);
+
+      } catch (err) {
+        showToast('Erreur lors de la génération du fichier GPX.', 'error', 3000);
+      }
+    }
+
+    /* ----------------------------------------------------
+       UI Modals & Toast Alerts System
+    ---------------------------------------------------- */
+
+    function openLocalModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('hidden');
+      }
+    }
+
+    // Modal system
+    function closeLocalModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function showToast(message, type = 'success', duration = 3500) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      
+      let iconName = 'check-circle';
+      if (type === 'error') iconName = 'alert-octagon';
+      if (type === 'warning') iconName = 'alert-triangle';
+      if (type === 'info') iconName = 'info';
+
+      toast.innerHTML = `
+        <i data-lucide="${iconName}" class="toast-icon"></i>
+        <div class="toast-message">${message}</div>
+      `;
+
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      requestAnimationFrame(() => {
+        toast.classList.add('show');
+      });
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+        toast.addEventListener('transitionend', () => {
+          toast.remove();
+        });
+      }, duration);
+    }
+
+    /* ----------------------------------------------------
+       Garmin-Style Route Sharing Poster Generator
+    ---------------------------------------------------- */
+    function renderShareCanvas() {
+      const canvas = document.getElementById('share-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      
+      const route = state.activeRouteData;
+      if (!route) return;
+      
+      const theme = document.getElementById('share-theme-select').value || 'dark';
+      
+      // Theme parameters
+      let colors = {
+        bg: '#090d16',
+        cardBg: 'rgba(255, 255, 255, 0.03)',
+        cardBorder: 'rgba(255, 255, 255, 0.06)',
+        textMain: '#ffffff',
+        textMuted: '#94a3b8',
+        accent: '#38bdf8'
+      };
+      
+      if (theme === 'forest') {
+        colors = {
+          bg: '#052e16',
+          cardBg: 'rgba(255, 255, 255, 0.04)',
+          cardBorder: 'rgba(255, 255, 255, 0.08)',
+          textMain: '#ffffff',
+          textMuted: '#a7f3d0',
+          accent: '#10b981'
+        };
+      } else if (theme === 'sunset') {
+        colors = {
+          bg: '#2d0606',
+          cardBg: 'rgba(255, 255, 255, 0.04)',
+          cardBorder: 'rgba(255, 255, 255, 0.08)',
+          textMain: '#ffffff',
+          textMuted: '#fecdd3',
+          accent: '#f97316'
+        };
+      } else if (theme === 'cosmic') {
+        colors = {
+          bg: '#120b2e',
+          cardBg: 'rgba(255, 255, 255, 0.04)',
+          cardBorder: 'rgba(255, 255, 255, 0.08)',
+          textMain: '#ffffff',
+          textMuted: '#c7d2fe',
+          accent: '#a855f7'
+        };
+      }
+      
+      // Draw Background
+      ctx.fillStyle = colors.bg;
+      ctx.fillRect(0, 0, 800, 800);
+      
+      // Draw subtle grid overlay
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.lineWidth = 1;
+      const gridSize = 40;
+      for (let x = 0; x < 800; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, 800);
+        ctx.stroke();
+      }
+      for (let y = 0; y < 800; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(800, y);
+        ctx.stroke();
+      }
+      
+      // Draw header logo & title
+      ctx.fillStyle = colors.accent;
+      ctx.font = 'bold 13px system-ui, -apple-system, sans-serif';
+      ctx.fillText('GARMIN CONNECTED • CYCLOTREK', 50, 65);
+      
+      // Draw profile badge
+      const badgeText = state.activeProfile.toUpperCase() === 'FASTBIKE' ? 'ROUTE RAPIDE' : state.activeProfile.toUpperCase() === 'SAFETY' ? 'SÉCURISÉ' : 'TREKKING';
+      ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+      const badgeWidth = ctx.measureText(badgeText).width + 16;
+      ctx.fillStyle = colors.accent;
+      
+      ctx.beginPath();
+      if (ctx.roundRect) {
+        ctx.roundRect(800 - 50 - badgeWidth, 50, badgeWidth, 22, 11);
+      } else {
+        ctx.rect(800 - 50 - badgeWidth, 50, badgeWidth, 22);
+      }
+      ctx.fill();
+      
+      ctx.fillStyle = colors.bg;
+      ctx.fillText(badgeText, 800 - 50 - badgeWidth + 8, 65);
+      
+      // Draw divider line below header
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(50, 90);
+      ctx.lineTo(750, 90);
+      ctx.stroke();
+      
+      // Route title
+      const startName = state.waypoints[0] ? state.waypoints[0].name.split(' (')[0] : 'Départ';
+      const endName = state.waypoints[state.waypoints.length - 1] ? state.waypoints[state.waypoints.length - 1].name.split(' (')[0] : 'Arrivée';
+      ctx.fillStyle = colors.textMain;
+      ctx.font = 'bold 26px system-ui, -apple-system, sans-serif';
+      ctx.fillText(`${startName} ➔ ${endName}`, 50, 135);
+      
+      // Subtitle
+      ctx.fillStyle = colors.textMuted;
+      ctx.font = '500 13px system-ui, -apple-system, sans-serif';
+      ctx.fillText(`Itinéraire planifié avec CycloTrek France`, 50, 158);
+      
+      // Visual map tracé
+      const coords = route.geojson.features[0].geometry.coordinates;
+      if (coords && coords.length > 1) {
+        let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+        coords.forEach(coord => {
+          const lng = coord[0];
+          const lat = coord[1];
+          if (lng < minX) minX = lng;
+          if (lng > maxX) maxX = lng;
+          if (lat < minY) minY = lat;
+          if (lat > maxY) maxY = lat;
+        });
+        
+        const widthLng = maxX - minX || 0.00001;
+        const heightLat = maxY - minY || 0.00001;
+        
+        const mapBox = { x: 80, y: 190, w: 640, h: 330 };
+        const scale = Math.min(mapBox.w / widthLng, mapBox.h / heightLat);
+        const offsetX = mapBox.x + (mapBox.w - widthLng * scale) / 2;
+        const offsetY = mapBox.y + (mapBox.h - heightLat * scale) / 2;
+        
+        const toCanvasX = (lng) => offsetX + (lng - minX) * scale;
+        const toCanvasY = (lat) => offsetY + (maxY - lat) * scale;
+        
+        // Draw path glow shadow
+        ctx.strokeStyle = colors.accent;
+        ctx.lineWidth = 8;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.shadowColor = colors.accent;
+        ctx.shadowBlur = 12;
+        ctx.beginPath();
+        coords.forEach((coord, idx) => {
+          const cx = toCanvasX(coord[0]);
+          const cy = toCanvasY(coord[1]);
+          if (idx === 0) ctx.moveTo(cx, cy);
+          else ctx.lineTo(cx, cy);
+        });
+        ctx.stroke();
+        ctx.shadowBlur = 0; // reset
+        
+        // Draw path clean overlay
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        
+        // Draw start waypoint circle
+        const sx = toCanvasX(coords[0][0]);
+        const sy = toCanvasY(coords[0][1]);
+        ctx.beginPath();
+        ctx.arc(sx, sy, 7, 0, Math.PI*2);
+        ctx.fillStyle = '#10b981'; // Green
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.fill();
+        ctx.stroke();
+        
+        // Draw end waypoint circle
+        const ex = toCanvasX(coords[coords.length-1][0]);
+        const ey = toCanvasY(coords[coords.length-1][1]);
+        ctx.beginPath();
+        ctx.arc(ex, ey, 7, 0, Math.PI*2);
+        ctx.fillStyle = '#ef4444'; // Red
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.fill();
+        ctx.stroke();
+      }
+      
+      // Stats Grid (4 cards)
+      const stats = [
+        { label: 'DISTANCE', value: `${(route.distance / 1000).toFixed(1)} km` },
+        { label: 'DÉNIVELÉ POSITIF', value: `+${route.ascent} m` },
+        { label: 'DURÉE SIMULÉE', value: formatDuration(route.duration) },
+        { label: 'VITESSE MOY.', value: '16 km/h' }
+      ];
+      
+      const startY = 570;
+      const cardW = 160;
+      const cardH = 90;
+      const gap = 20;
+      const totalW = (cardW * 4) + (gap * 3);
+      const startX = (800 - totalW) / 2;
+      
+      stats.forEach((st, idx) => {
+        const cx = startX + idx * (cardW + gap);
+        
+        // Card Background
+        ctx.fillStyle = colors.cardBg;
+        ctx.strokeStyle = colors.cardBorder;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(cx, startY, cardW, cardH, 8);
+        } else {
+          ctx.rect(cx, startY, cardW, cardH);
+        }
+        ctx.fill();
+        ctx.stroke();
+        
+        // Stat Label
+        ctx.fillStyle = colors.textMuted;
+        ctx.font = 'bold 9px system-ui, -apple-system, sans-serif';
+        ctx.fillText(st.label, cx + 15, startY + 28);
+        
+        // Stat Value
+        ctx.fillStyle = colors.textMain;
+        ctx.font = 'bold 22px system-ui, -apple-system, sans-serif';
+        ctx.fillText(st.value, cx + 15, startY + 62);
+      });
+      
+      // Footer line
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(50, 715);
+      ctx.lineTo(750, 715);
+      ctx.stroke();
+      
+      // Footer text
+      ctx.fillStyle = colors.textMuted;
+      ctx.font = '500 11px system-ui, -apple-system, sans-serif';
+      ctx.fillText(`CYCLOTREK FRANCE • CONÇU ET PARTAGÉ LE ${new Date().toLocaleDateString('fr-FR').toUpperCase()}`, 50, 748);
+      
+      // Barcode design on bottom right
+      const bX = 660;
+      const bY = 730;
+      ctx.fillStyle = colors.textMuted;
+      const bars = [1, 3, 1, 2, 4, 1, 2, 3, 1, 4, 1, 2, 1, 3, 2, 1, 4, 2, 1];
+      let currX = bX;
+      bars.forEach(width => {
+        ctx.fillRect(currX, bY, width, 22);
+        currX += width + 2;
+      });
+    }
+
+    /* ----------------------------------------------------
+       Mathematical Helpers
+    ---------------------------------------------------- */
+
+    function getDirectDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; 
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    function formatDuration(sec) {
+      const hr = Math.floor(sec / 3600);
+      const min = Math.floor((sec % 3600) / 60);
+      if (hr > 0) {
+        return `${hr}h${min.toString().padStart(2, '0')}`;
+      }
+      return `${min} min`;
+    }
+  </script>
+</body>
+</html>
