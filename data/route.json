@@ -1,12 +1,12 @@
 {
   "version": "2.0",
-  "updatedAt": "2026-10-21T15:41:49.698Z",
+  "updatedAt": "2026-10-21T15:42:07.720Z",
   "updatedBy": {
-    "id": "usr_1792596095925_d9mudt",
-    "name": "Nino Roux Soumy",
-    "firstName": "Nino",
-    "initials": "NR",
-    "gradient": "linear-gradient(135deg, #14b8a6, #0f766e)"
+    "id": "usr_1792597325714_kee0q0",
+    "name": "Youen Coudrais",
+    "firstName": "Youen",
+    "initials": "YC",
+    "gradient": "linear-gradient(135deg, #84cc16, #16a34a)"
   },
   "trip": {
     "name": "Randonnée CycloTrek France",
@@ -14,7 +14,24 @@
     "waypoints": [],
     "interpointNotes": [],
     "postits": [],
-    "auditLog": [],
+    "auditLog": [
+      {
+        "id": "act_1792597325714_q48vm",
+        "type": "profile_created",
+        "description": "Création et activation du profil Youen Coudrais",
+        "timestamp": "2026-10-21T15:42:05.714Z",
+        "author": {
+          "id": "usr_1792597325714_kee0q0",
+          "name": "Youen Coudrais",
+          "firstName": "Youen",
+          "initials": "YC",
+          "gradient": "linear-gradient(135deg, #84cc16, #16a34a)"
+        },
+        "details": {
+          "profileId": "usr_1792597325714_kee0q0"
+        }
+      }
+    ],
     "profiles": [
       {
         "id": "usr_1792596095925_d9mudt",
@@ -24,6 +41,15 @@
         "initials": "NR",
         "gradient": "linear-gradient(135deg, #14b8a6, #0f766e)",
         "createdAt": "2026-10-21T15:21:35.925Z"
+      },
+      {
+        "id": "usr_1792597325714_kee0q0",
+        "firstName": "Youen",
+        "lastName": "Coudrais",
+        "name": "Youen Coudrais",
+        "initials": "YC",
+        "gradient": "linear-gradient(135deg, #84cc16, #16a34a)",
+        "createdAt": "2026-10-21T15:42:05.714Z"
       }
     ]
   }
