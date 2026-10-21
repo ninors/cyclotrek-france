@@ -13,6 +13,7 @@
   <!-- Progressive Web App (PWA) Manifest & Mobile Meta -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#10b981">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="CycloTrek">
@@ -1733,6 +1734,7 @@
     /* ====================================================
        Mobile Application Mode Design System (max-width: 768px)
     ==================================================== */
+    .floating-3d-btn { display: none; }
     .mobile-only {
       display: none !important;
     }
@@ -1922,43 +1924,34 @@
         background: #f1f5f9;
       }
 
-      /* Floating 3D Action Button on Map (Bottom-Right) */
+            /* Floating 3D Action Button on Map (Petit Carré en bas à droite) */
       .floating-3d-btn {
+        display: flex !important;
         position: fixed;
-        right: 16px;
-        bottom: 145px; /* Above the pull-up bottom sheet peek */
+        right: 14px;
+        bottom: 142px; /* Positionné en bas à droite au-dessus du bandeau */
         z-index: 9980;
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #0ea5e9, #0284c7);
-        color: #ffffff;
-        border: 2px solid #ffffff;
-        box-shadow: 0 8px 24px rgba(2, 132, 199, 0.45);
-        display: flex;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px; /* Petit carré moderne */
+        background: #ffffff;
+        color: #0284c7;
+        border: 1.5px solid rgba(2, 132, 199, 0.28);
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(2, 132, 199, 0.15);
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         pointer-events: auto;
+      }
+      .floating-3d-btn i {
+        width: 22px !important;
+        height: 22px !important;
+        color: #0284c7;
       }
       .floating-3d-btn:active {
         transform: scale(0.92);
-      }
-      .fab-3d-inner {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1px;
-      }
-      .fab-3d-inner i {
-        width: 20px;
-        height: 20px;
-      }
-      .fab-3d-inner span {
-        font-size: 10px;
-        font-weight: 800;
-        letter-spacing: 0.5px;
+        background: #f0f9ff;
       }
 
       /* Mobile Pull-up Draggable Sheet (.sidebar) - LIGHT THEME */
@@ -2704,14 +2697,14 @@
     }
 
     /* ====================================================
-       Opening Splash Intro Animation
+       Opening Splash Intro Animation (Light Modern Theme)
     ==================================================== */
     .app-intro-splash {
       position: fixed;
       inset: 0;
       width: 100vw;
       height: 100vh;
-      background: radial-gradient(circle at 50% 38%, #064e3b 0%, #0b1326 65%, #050811 100%);
+      background: radial-gradient(circle at 50% 38%, #ecfdf5 0%, #f0fdf4 35%, #ffffff 85%);
       z-index: 99999999;
       display: flex;
       flex-direction: column;
@@ -2720,14 +2713,14 @@
       padding: 24px;
       cursor: pointer;
       user-select: none;
-      transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-                  filter 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .app-intro-splash.fade-out {
       opacity: 0;
-      transform: scale(1.08);
-      filter: blur(10px);
+      transform: scale(1.05);
+      filter: blur(8px);
       pointer-events: none;
     }
     .app-intro-splash.hidden {
@@ -2747,12 +2740,12 @@
     .intro-ring {
       position: absolute;
       border-radius: 50%;
-      border: 1px solid rgba(16, 185, 129, 0.15);
+      border: 1.5px solid rgba(16, 185, 129, 0.2);
       animation: introRingPulse 4s infinite ease-out;
     }
     .intro-ring:nth-child(1) { width: 280px; height: 280px; animation-delay: 0s; }
-    .intro-ring:nth-child(2) { width: 480px; height: 480px; animation-delay: 1.3s; border-color: rgba(16, 185, 129, 0.09); }
-    .intro-ring:nth-child(3) { width: 720px; height: 720px; animation-delay: 2.6s; border-color: rgba(16, 185, 129, 0.05); }
+    .intro-ring:nth-child(2) { width: 480px; height: 480px; animation-delay: 1.3s; border-color: rgba(16, 185, 129, 0.12); }
+    .intro-ring:nth-child(3) { width: 720px; height: 720px; animation-delay: 2.6s; border-color: rgba(16, 185, 129, 0.07); }
 
     @keyframes introRingPulse {
       0% { transform: scale(0.85); opacity: 0; }
@@ -2775,33 +2768,33 @@
     }
 
     .intro-emblem-box {
-      width: 104px;
-      height: 104px;
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.28), rgba(5, 150, 105, 0.18));
-      border: 1.5px solid rgba(52, 211, 153, 0.5);
-      box-shadow: 0 20px 50px rgba(16, 185, 129, 0.4), inset 0 0 25px rgba(52, 211, 153, 0.25);
+      width: 96px;
+      height: 96px;
+      border-radius: 26px;
+      background: #ffffff;
+      border: 1.5px solid rgba(16, 185, 129, 0.25);
+      box-shadow: 0 16px 36px rgba(16, 185, 129, 0.18), 0 4px 12px rgba(0, 0, 0, 0.04);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
       position: relative;
       animation: introEmblemFloat 3.2s infinite ease-in-out;
     }
     @keyframes introEmblemFloat {
-      0%, 100% { transform: translateY(0); box-shadow: 0 20px 50px rgba(16, 185, 129, 0.35); }
-      50% { transform: translateY(-7px); box-shadow: 0 30px 65px rgba(16, 185, 129, 0.6); }
+      0%, 100% { transform: translateY(0); box-shadow: 0 16px 36px rgba(16, 185, 129, 0.18); }
+      50% { transform: translateY(-6px); box-shadow: 0 24px 48px rgba(16, 185, 129, 0.28); }
     }
 
     .intro-bike-svg {
-      width: 60px;
-      height: 60px;
-      stroke: #ffffff;
+      width: 54px;
+      height: 54px;
+      stroke: #10b981;
       fill: none;
       stroke-width: 2.3;
       stroke-linecap: round;
       stroke-linejoin: round;
-      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
+      filter: drop-shadow(0 2px 6px rgba(16, 185, 129, 0.25));
     }
 
     .intro-title-group {
@@ -2811,10 +2804,11 @@
       margin-bottom: 6px;
     }
     .intro-title {
-      font-size: 40px;
+      font-size: 38px;
       font-weight: 800;
       letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #ffffff 40%, #a7f3d0 80%, #34d399 100%);
+      color: #0f172a;
+      background: linear-gradient(135deg, #0f172a 40%, #065f46 80%, #059669 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin: 0;
@@ -2825,24 +2819,24 @@
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 2px;
-      color: #34d399;
-      background: rgba(16, 185, 129, 0.16);
-      border: 1px solid rgba(52, 211, 153, 0.35);
+      color: #059669;
+      background: rgba(16, 185, 129, 0.14);
+      border: 1px solid rgba(16, 185, 129, 0.25);
       padding: 3px 8px;
       border-radius: 7px;
     }
 
     .intro-subtitle {
       font-size: 14px;
-      color: #94a3b8;
-      margin: 0 0 28px 0;
-      font-weight: 400;
-      letter-spacing: 0.3px;
+      color: #64748b;
+      margin: 0 0 24px 0;
+      font-weight: 500;
+      letter-spacing: 0.2px;
     }
 
     /* Sleek Loading Track & Bar */
     .intro-loading-box {
-      width: 230px;
+      width: 220px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -2851,7 +2845,7 @@
     .intro-progress-track {
       width: 100%;
       height: 4px;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(15, 23, 42, 0.08);
       border-radius: 999px;
       overflow: hidden;
       position: relative;
@@ -2859,10 +2853,10 @@
     .intro-progress-bar {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #10b981, #34d399, #6ee7b7);
+      background: linear-gradient(90deg, #10b981, #059669);
       border-radius: 999px;
-      box-shadow: 0 0 12px rgba(52, 211, 153, 0.85);
-      animation: introProgressAnim 1.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+      animation: introProgressAnim 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     @keyframes introProgressAnim {
       0% { width: 0%; }
@@ -2872,7 +2866,7 @@
 
     .intro-loading-label {
       font-size: 11px;
-      color: #64748b;
+      color: #94a3b8;
       letter-spacing: 0.5px;
       text-transform: uppercase;
       font-weight: 600;
@@ -3423,8 +3417,8 @@
 </head>
 <body>
 
-  <!-- Opening Splash Screen Intro Animation -->
-  <div id="app-intro-splash" class="app-intro-splash" title="Cliquer pour passer l'intro">
+  <!-- Opening Splash Screen Intro Animation (Light Modern, Tap to dismiss) -->
+  <div id="app-intro-splash" class="app-intro-splash" title="Cliquer pour passer l'intro" onclick="this.classList.add('fade-out'); var el = this; setTimeout(function() { el.classList.add('hidden'); el.style.display='none'; }, 400);">
     <div class="intro-ambient-rings">
       <div class="intro-ring"></div>
       <div class="intro-ring"></div>
@@ -3457,6 +3451,26 @@
       </div>
     </div>
   </div>
+  <script>
+    (function() {
+      function dismissIntro() {
+        var sp = document.getElementById('app-intro-splash');
+        if (sp && !sp.classList.contains('fade-out')) {
+          sp.classList.add('fade-out');
+          setTimeout(function() {
+            sp.classList.add('hidden');
+            sp.style.display = 'none';
+          }, 450);
+        }
+      }
+      var sp = document.getElementById('app-intro-splash');
+      if (sp) {
+        sp.addEventListener('click', dismissIntro);
+        sp.addEventListener('touchstart', dismissIntro, { passive: true });
+      }
+      setTimeout(dismissIntro, 950);
+    })();
+  </script>
 
   <!-- Fullscreen Map -->
   <div id="map"></div>
@@ -4165,12 +4179,9 @@
       </div>
     </div>
 
-    <!-- Floating 3D Action Button on Map (Bottom-Right) -->
+    <!-- Floating 3D Action Button on Map (Petit Carré Bas-Droite) -->
     <button id="floating-3d-btn" class="floating-3d-btn" title="Vue 3D Relief & Satellite">
-      <div class="fab-3d-inner">
-        <i data-lucide="box"></i>
-        <span>3D</span>
-      </div>
+      <i data-lucide="box"></i>
     </button>
 
     <!-- Mobile Bottom Navigation Bar (Phone Only - 4 TABS) -->
@@ -5659,6 +5670,16 @@
        Initialization
     ---------------------------------------------------- */
     document.addEventListener('DOMContentLoaded', () => {
+      // Immediate Splash Dismissal
+      const sp = document.getElementById('app-intro-splash');
+      if (sp) {
+        sp.classList.add('fade-out');
+        setTimeout(() => {
+          sp.classList.add('hidden');
+          sp.style.display = 'none';
+        }, 450);
+      }
+
       initMap();
       initUIEvents();
       initSimulationHours();
@@ -5673,13 +5694,6 @@
       initMobileApp();
       
       showToast('Bienvenue sur CycloTrek ! Connectez votre profil pour collaborer.', 'info', 4000);
-
-      // If no profile exists, open profile modal smoothly
-      if (!state.currentProfile && (!state.profiles || state.profiles.length === 0)) {
-        setTimeout(() => {
-          openLocalModal('modal-profile');
-        }, 600);
-      }
     });
 
     // Populate departure hour select with 24 hours of option offsets
