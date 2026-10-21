@@ -1,9 +1,12 @@
 {
   "version": "2.0",
-  "updatedAt": "2026-10-21T15:38:06.352Z",
+  "updatedAt": "2026-10-21T15:41:49.698Z",
   "updatedBy": {
-    "name": "Nino Roux--Soumy",
-    "initials": "NR"
+    "id": "usr_1792596095925_d9mudt",
+    "name": "Nino Roux Soumy",
+    "firstName": "Nino",
+    "initials": "NR",
+    "gradient": "linear-gradient(135deg, #14b8a6, #0f766e)"
   },
   "trip": {
     "name": "Randonnée CycloTrek France",
@@ -11,6 +14,17 @@
     "waypoints": [],
     "interpointNotes": [],
     "postits": [],
-    "auditLog": []
+    "auditLog": [],
+    "profiles": [
+      {
+        "id": "usr_1792596095925_d9mudt",
+        "firstName": "Nino",
+        "lastName": "Roux Soumy",
+        "name": "Nino Roux Soumy",
+        "initials": "NR",
+        "gradient": "linear-gradient(135deg, #14b8a6, #0f766e)",
+        "createdAt": "2026-10-21T15:21:35.925Z"
+      }
+    ]
   }
 }
