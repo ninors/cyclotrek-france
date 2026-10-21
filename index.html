@@ -34,6 +34,10 @@
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
+  <!-- Mapbox GL JS v3 for 3D Relief & Terrain View -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+
   <style>
     /* ----------------------------------------------------
        CycloTrek France - CSS Design System & Stylesheet
@@ -2781,6 +2785,267 @@
       text-transform: uppercase;
       font-weight: 600;
     }
+
+    /* ----------------------------------------------------
+       3D Relief & Terrain Modal Overlay (Mapbox GL JS v3)
+    ---------------------------------------------------- */
+    .view-3d-modal {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 100000;
+      background: #000000;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .view-3d-modal.hidden {
+      display: none !important;
+    }
+    .map-3d-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .hud-3d-top {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      pointer-events: none;
+    }
+    .hud-3d-brand {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 16px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+    }
+    .hud-3d-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #10b981, #0284c7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+    .hud-3d-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: #ffffff;
+      letter-spacing: -0.2px;
+    }
+    .hud-3d-highlight {
+      color: #38bdf8;
+      font-weight: 800;
+    }
+    .hud-3d-stats {
+      font-size: 11px;
+      font-weight: 500;
+      color: #94a3b8;
+      margin-top: 1px;
+    }
+    .hud-3d-actions {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .hud-3d-btn {
+      height: 40px;
+      padding: 0 14px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    }
+    .hud-3d-btn:hover {
+      background: rgba(30, 41, 59, 0.95);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+    .hud-3d-btn.active {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      border-color: #38bdf8;
+      box-shadow: 0 0 16px rgba(14, 165, 233, 0.45);
+    }
+    .hud-3d-btn-close {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+    .hud-3d-btn-close:hover {
+      background: rgba(239, 68, 68, 0.3);
+      border-color: rgba(239, 68, 68, 0.7);
+      color: #ffffff;
+    }
+    .hud-3d-flight-bar {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      width: min(90%, 460px);
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 16px;
+      padding: 12px 18px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      animation: slideUp 0.3s ease;
+    }
+    .hud-3d-flight-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+    .hud-3d-flight-track {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+    }
+    .hud-3d-flight-progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #10b981, #38bdf8);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .hud-3d-hint {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      z-index: 15;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 6px 12px;
+      color: #94a3b8;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none;
+    }
+    .marker-3d-point {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 0 3px rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .marker-3d-point:hover {
+      transform: scale(1.2);
+    }
+    .marker-3d-start {
+      background: linear-gradient(135deg, #10b981, #059669);
+    }
+    .marker-3d-finish {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+    }
+    .marker-3d-waypoint {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+    }
+    .mapboxgl-popup-content {
+      background: rgba(15, 23, 42, 0.94) !important;
+      color: #f8fafc !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      border-radius: 12px !important;
+      padding: 10px 14px !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+      font-family: 'Inter', sans-serif !important;
+      font-size: 12px !important;
+    }
+    .mapboxgl-popup-tip {
+      border-top-color: rgba(15, 23, 42, 0.94) !important;
+    }
+
+    @media (max-width: 768px) {
+      .hud-3d-top {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .hud-3d-brand {
+        padding: 8px 12px;
+      }
+      .hud-3d-title {
+        font-size: 13px;
+      }
+      .hud-3d-actions {
+        justify-content: flex-start;
+        gap: 6px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+      .hud-3d-btn {
+        height: 34px;
+        padding: 0 10px;
+        font-size: 11px;
+        white-space: nowrap;
+        border-radius: 10px;
+      }
+      .hud-3d-hint {
+        display: none;
+      }
+      .hud-3d-flight-bar {
+        bottom: 16px;
+        padding: 10px 14px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -2839,6 +3104,9 @@
         <div id="mobile-calc-dot" class="pulse-dot hidden" style="margin-left:4px;"></div>
       </div>
       <div class="mobile-top-actions">
+        <button id="mobile-top-3d-btn" class="mobile-action-btn" title="Vue 3D Relief" style="color:#38bdf8;">
+          <i data-lucide="box" style="width:16px; height:16px;"></i>
+        </button>
         <button id="mobile-search-toggle-btn" class="mobile-action-btn" title="Rechercher une ville">
           <i data-lucide="search" style="width:17px; height:17px;"></i>
         </button>
@@ -2909,6 +3177,11 @@
         <button id="toggle-ways-btn" class="toggle-btn active" title="Afficher le réseau cyclable (Voies vertes...)">
           <i data-lucide="map-pin"></i>
           <span>Voies Vertes</span>
+        </button>
+
+        <button id="toggle-3d-btn" class="toggle-btn" style="background:linear-gradient(135deg, rgba(14,165,233,0.15), rgba(2,132,199,0.25)); border-color:rgba(14,165,233,0.4); color:#38bdf8;" title="Vue 3D Relief & Satellite (Mapbox 3D)">
+          <i data-lucide="box"></i>
+          <span>Vue 3D</span>
         </button>
         
         <!-- Custom Map Style Dropdown Container -->
@@ -3333,6 +3606,9 @@
               </div>
 
               <div class="action-buttons-container" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+                <button id="btn-view-3d-sidebar" class="btn-primary" style="width:100%; background:linear-gradient(135deg, #0ea5e9, #0284c7); gap:8px;">
+                  <i data-lucide="box"></i> Visualiser le Parcours en 3D Relief
+                </button>
                 <button id="open-github-sync-btn" class="btn-primary" style="width:100%; background:linear-gradient(135deg, #24292e, #1f2328); gap:8px;">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block; vertical-align:middle;"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg> Enregistrer sur GitHub (Workflow)
                 </button>
@@ -3462,10 +3738,16 @@
           <div id="mobile-route-profile-tag" style="font-size:11px; color:#94a3b8;">Chemins (VTC)</div>
         </div>
       </div>
-      <button id="mobile-route-details-btn" class="btn-primary" style="height:30px; font-size:11px; padding:0 12px; border-radius:8px; gap:4px;">
-        <span>Étapes</span>
-        <i data-lucide="chevron-up" style="width:12px; height:12px;"></i>
-      </button>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <button id="mobile-3d-btn" class="btn-primary" style="height:30px; font-size:11px; padding:0 10px; border-radius:8px; gap:4px; background:linear-gradient(135deg, #0ea5e9, #0284c7);" title="Vue 3D Relief">
+          <i data-lucide="box" style="width:12px; height:12px;"></i>
+          <span>3D</span>
+        </button>
+        <button id="mobile-route-details-btn" class="btn-primary" style="height:30px; font-size:11px; padding:0 12px; border-radius:8px; gap:4px;">
+          <span>Étapes</span>
+          <i data-lucide="chevron-up" style="width:12px; height:12px;"></i>
+        </button>
+      </div>
     </div>
 
     <!-- Mobile Bottom Navigation Bar (Phone Only) -->
@@ -4224,6 +4506,64 @@
     </div>
   </div>
 
+  <!-- Fullscreen 3D Relief & Satellite Modal Overlay -->
+  <div id="view-3d-modal" class="view-3d-modal hidden" aria-modal="true" role="dialog">
+    <!-- Mapbox 3D WebGL Canvas -->
+    <div id="map-3d" class="map-3d-canvas"></div>
+
+    <!-- Floating Glassmorphic 3D HUD Top Bar -->
+    <header class="hud-3d-top">
+      <div class="hud-3d-brand">
+        <div class="hud-3d-icon">
+          <i data-lucide="box"></i>
+        </div>
+        <div>
+          <div class="hud-3d-title">CycloTrek <span class="hud-3d-highlight">3D Relief</span></div>
+          <div id="hud-3d-stats" class="hud-3d-stats">0.0 km • +0 m D+</div>
+        </div>
+      </div>
+
+      <div class="hud-3d-actions">
+        <button id="btn-3d-flyover" class="hud-3d-btn" title="Survol 3D animé du parcours">
+          <i data-lucide="play"></i>
+          <span id="btn-3d-flyover-text">Survol Animé</span>
+        </button>
+
+        <button id="btn-3d-relief" class="hud-3d-btn" title="Changer l'exagération du relief 3D">
+          <i data-lucide="mountain"></i>
+          <span id="btn-3d-relief-text">Relief 1.3x</span>
+        </button>
+
+        <button id="btn-3d-recenter" class="hud-3d-btn" title="Recentrer la caméra sur tout le parcours">
+          <i data-lucide="scan"></i>
+          <span>Recentrer</span>
+        </button>
+
+        <button id="btn-3d-close" class="hud-3d-btn hud-3d-btn-close" title="Quitter la vue 3D">
+          <i data-lucide="x"></i>
+          <span>Fermer</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Animated Flight Progress Bar -->
+    <div id="hud-3d-flight-bar" class="hud-3d-flight-bar hidden">
+      <div class="hud-3d-flight-info">
+        <span><i data-lucide="navigation"></i> Survol 3D en cours...</span>
+        <span id="hud-3d-flight-prog-txt">0%</span>
+      </div>
+      <div class="hud-3d-flight-track">
+        <div id="hud-3d-flight-progress" class="hud-3d-flight-progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- 3D Navigation Hint -->
+    <div class="hud-3d-hint">
+      <i data-lucide="compass"></i>
+      <span>Clic droit / glisser 2 doigts pour incliner & pivoter le relief 3D</span>
+    </div>
+  </div>
+
   <!-- Toast Notification Center -->
   <div class="toast-container" id="toast-container"></div>
 
@@ -4699,9 +5039,20 @@
         mobileAvatarBtn.addEventListener('click', () => window.openMobileTab('account'));
       }
 
-      // Floating route chip triggers Stages tab
+      // Floating route chip triggers Stages tab or 3D
       if (routeChip) {
-        routeChip.addEventListener('click', () => window.openMobileTab('plan'));
+        routeChip.addEventListener('click', (e) => {
+          if (e.target.closest('#mobile-3d-btn')) {
+            open3DView();
+            return;
+          }
+          window.openMobileTab('plan');
+        });
+      }
+
+      const mobileTop3dBtn = document.getElementById('mobile-top-3d-btn');
+      if (mobileTop3dBtn) {
+        mobileTop3dBtn.addEventListener('click', () => open3DView());
       }
 
       // Mobile search overlay
@@ -5226,6 +5577,13 @@
       document.getElementById('garmin-guide-btn').addEventListener('click', () => {
         openLocalModal('modal-garmin');
       });
+
+      // 3D View Triggers
+      const toggle3DBtn = document.getElementById('toggle-3d-btn');
+      if (toggle3DBtn) toggle3DBtn.addEventListener('click', open3DView);
+
+      const btnView3DSidebar = document.getElementById('btn-view-3d-sidebar');
+      if (btnView3DSidebar) btnView3DSidebar.addEventListener('click', open3DView);
 
       // Export GPX
       document.getElementById('export-gpx-btn').addEventListener('click', exportGPX);
@@ -9903,6 +10261,418 @@
         return `${hr}h${min.toString().padStart(2, '0')}`;
       }
       return `${min} min`;
+    }
+
+    /* ----------------------------------------------------
+       3D Relief & Satellite Terrain Engine (Mapbox GL JS v3)
+       - Token & Style extracted from reference model
+       - Pure 3D route rendering over satellite DEM relief
+    ---------------------------------------------------- */
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function calculateBearing(c1, c2) {
+      const lon1 = c1[0] * Math.PI / 180;
+      const lat1 = c1[1] * Math.PI / 180;
+      const lon2 = c2[0] * Math.PI / 180;
+      const lat2 = c2[1] * Math.PI / 180;
+      const y = Math.sin(lon2 - lon1) * Math.cos(lat2);
+      const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+      return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+    }
+
+    const state3D = {
+      map: null,
+      isInitialized: false,
+      isFlying: false,
+      flyoverIndex: 0,
+      samplePoints: [],
+      flyoverTimeout: null,
+      markers: [],
+      reliefLevels: [1.3, 1.8, 2.5, 0.9],
+      currentReliefIndex: 0,
+      bounds: null,
+      flyoverCoords: []
+    };
+
+    function init3DViewer() {
+      if (typeof mapboxgl === 'undefined') {
+        showToast("Erreur: Bibliothèque Mapbox 3D non chargée.", "error", 4000);
+        return;
+      }
+
+      // Mapbox token and style extracted from reference model
+      mapboxgl.accessToken = atob('cGsuZXlKMUlqb2liR2xrYjNkbFluTmxjblpwWTJWeklpd2lZU0k2SW1OcmJuTjBOWGxtTVRBM05HNHlkbTU0YkRFd2FITnVkblVpZlEudmxkVVctQkI1X0MxOWFyS1VGQk05UQ==');
+
+      state3D.map = new mapboxgl.Map({
+        container: 'map-3d',
+        style: 'mapbox://styles/mapbox/satellite-streets-v12',
+        center: [2.2137, 46.2276],
+        zoom: 6,
+        pitch: 68,
+        bearing: -15,
+        maxPitch: 85,
+        antialias: true
+      });
+
+      // Add navigation controls (compass + pitch + zoom)
+      state3D.map.addControl(new mapboxgl.NavigationControl({
+        visualizePitch: true,
+        showCompass: true,
+        showZoom: true
+      }), 'bottom-right');
+
+      state3D.map.on('load', () => {
+        state3D.isInitialized = true;
+
+        // 1. Setup DEM terrain
+        if (!state3D.map.getSource('mapbox-dem')) {
+          state3D.map.addSource('mapbox-dem', {
+            type: 'raster-dem',
+            url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
+            tileSize: 512,
+            maxzoom: 14
+          });
+        }
+        state3D.map.setTerrain({
+          source: 'mapbox-dem',
+          exaggeration: state3D.reliefLevels[state3D.currentReliefIndex]
+        });
+
+        // 2. Setup atmospheric fog
+        state3D.map.setFog({
+          range: [1.5, 12.0],
+          color: '#dbeafe',
+          'high-color': '#0284c7',
+          'space-color': '#020617',
+          'horizon-blend': 0.1
+        });
+
+        // 3. Render active route
+        renderRouteIn3D();
+      });
+
+      // Attach 3D Modal Controls
+      const closeBtn = document.getElementById('btn-3d-close');
+      if (closeBtn) closeBtn.addEventListener('click', close3DView);
+
+      const flyoverBtn = document.getElementById('btn-3d-flyover');
+      if (flyoverBtn) flyoverBtn.addEventListener('click', toggle3DFlyover);
+
+      const reliefBtn = document.getElementById('btn-3d-relief');
+      if (reliefBtn) reliefBtn.addEventListener('click', toggle3DRelief);
+
+      const recenterBtn = document.getElementById('btn-3d-recenter');
+      if (recenterBtn) recenterBtn.addEventListener('click', recenter3DView);
+
+      // Escape key to close
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          const modal3D = document.getElementById('view-3d-modal');
+          if (modal3D && !modal3D.classList.contains('hidden')) {
+            close3DView();
+          }
+        }
+      });
+    }
+
+    function renderRouteIn3D() {
+      if (!state3D.map || !state3D.isInitialized) return;
+      if (!state.activeRouteData || !state.activeRouteData.geojson) return;
+
+      // Clear existing markers
+      state3D.markers.forEach(m => m.remove());
+      state3D.markers = [];
+
+      // Extract all route coordinates
+      let allCoords = [];
+      const features = state.activeRouteData.geojson.features || [];
+      features.forEach(feat => {
+        if (feat.geometry && feat.geometry.coordinates) {
+          if (feat.geometry.type === 'LineString') {
+            allCoords = allCoords.concat(feat.geometry.coordinates);
+          } else if (feat.geometry.type === 'MultiLineString') {
+            feat.geometry.coordinates.forEach(line => {
+              allCoords = allCoords.concat(line);
+            });
+          }
+        }
+      });
+
+      // Fallback to waypoints
+      if (allCoords.length === 0 && state.waypoints.length >= 2) {
+        allCoords = state.waypoints.map(w => [w.lng, w.lat]);
+      }
+      if (allCoords.length === 0) return;
+
+      const cleanCoords = allCoords.map(c => [c[0], c[1]]);
+      state3D.flyoverCoords = cleanCoords;
+
+      const routeGeoJSON = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'LineString',
+              coordinates: cleanCoords
+            }
+          }
+        ]
+      };
+
+      // Add or update source
+      if (state3D.map.getSource('route-3d-source')) {
+        state3D.map.getSource('route-3d-source').setData(routeGeoJSON);
+      } else {
+        state3D.map.addSource('route-3d-source', {
+          type: 'geojson',
+          data: routeGeoJSON
+        });
+
+        // 3D Shadow Line (projected depth)
+        state3D.map.addLayer({
+          id: 'route-3d-shadow',
+          type: 'line',
+          source: 'route-3d-source',
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: {
+            'line-color': '#000000',
+            'line-width': ['interpolate', ['linear'], ['zoom'], 10, 6, 16, 14],
+            'line-opacity': 0.55,
+            'line-blur': 4,
+            'line-offset': 3
+          }
+        });
+
+        // High contrast casing
+        state3D.map.addLayer({
+          id: 'route-3d-casing',
+          type: 'line',
+          source: 'route-3d-source',
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: {
+            'line-color': '#022c22',
+            'line-width': ['interpolate', ['linear'], ['zoom'], 10, 6, 16, 11],
+            'line-opacity': 0.95
+          }
+        });
+
+        // Vibrant glowing Emerald Route
+        state3D.map.addLayer({
+          id: 'route-3d-line',
+          type: 'line',
+          source: 'route-3d-source',
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: {
+            'line-color': '#10b981',
+            'line-width': ['interpolate', ['linear'], ['zoom'], 10, 4, 16, 7],
+            'line-opacity': 1.0
+          }
+        });
+      }
+
+      // Add 3D Markers for Waypoints
+      state.waypoints.forEach((w, idx) => {
+        const isStart = idx === 0;
+        const isEnd = idx === state.waypoints.length - 1;
+        const el = document.createElement('div');
+        el.className = 'marker-3d-point ' + (isStart ? 'marker-3d-start' : isEnd ? 'marker-3d-finish' : 'marker-3d-waypoint');
+        el.innerHTML = isStart ? 'A' : isEnd ? 'B' : String.fromCharCode(65 + (idx % 26));
+
+        const popupHTML = `
+          <div style="font-weight:700; margin-bottom:2px; font-size:12px; color:#ffffff;">${isStart ? '🚩 Départ' : isEnd ? '🏁 Arrivée' : '📍 Étape ' + (idx + 1)}</div>
+          <div style="font-size:11px; color:#cbd5e1; line-height:1.3;">${escapeHtml(w.name || '')}</div>
+        `;
+
+        const marker = new mapboxgl.Marker({ element: el, anchor: 'center' })
+          .setLngLat([w.lng, w.lat])
+          .setPopup(new mapboxgl.Popup({ offset: 18, closeButton: false }).setHTML(popupHTML))
+          .addTo(state3D.map);
+
+        state3D.markers.push(marker);
+      });
+
+      // Fit bounds with dynamic 3D angle
+      const bounds = new mapboxgl.LngLatBounds();
+      cleanCoords.forEach(pt => bounds.extend(pt));
+      state3D.bounds = bounds;
+
+      state3D.map.fitBounds(bounds, {
+        padding: { top: 120, bottom: 80, left: 60, right: 60 },
+        pitch: 68,
+        bearing: -15,
+        duration: 2200,
+        essential: true
+      });
+    }
+
+    function open3DView() {
+      if (!state.activeRouteData || !state.activeRouteData.geojson || !state.activeRouteData.geojson.features || state.activeRouteData.geojson.features.length === 0) {
+        showToast("Veuillez d'abord tracer au moins 2 étapes pour afficher le parcours en 3D.", 'warning', 3500);
+        return;
+      }
+
+      const modal = document.getElementById('view-3d-modal');
+      if (!modal) return;
+
+      // Update 3D HUD stats
+      const distKm = (state.activeRouteData.distance / 1000).toFixed(1);
+      const durStr = formatDuration(state.activeRouteData.duration);
+      const ascent = state.activeRouteData.ascent || 0;
+      const statsEl = document.getElementById('hud-3d-stats');
+      if (statsEl) {
+        statsEl.textContent = `${distKm} km • ${durStr} • +${ascent} m D+`;
+      }
+
+      modal.classList.remove('hidden');
+
+      if (!state3D.map) {
+        init3DViewer();
+      } else {
+        setTimeout(() => {
+          if (state3D.map) {
+            state3D.map.resize();
+            renderRouteIn3D();
+          }
+        }, 90);
+      }
+      lucide.createIcons();
+    }
+
+    function close3DView() {
+      if (state3D.isFlying) {
+        stop3DFlyover();
+      }
+      const modal = document.getElementById('view-3d-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function toggle3DFlyover() {
+      if (state3D.isFlying) {
+        stop3DFlyover();
+      } else {
+        start3DFlyover();
+      }
+    }
+
+    function start3DFlyover() {
+      if (!state3D.map || !state3D.isInitialized) return;
+      if (!state3D.flyoverCoords || state3D.flyoverCoords.length < 2) {
+        showToast('Tracé insuffisant pour le survol 3D.', 'warning', 2500);
+        return;
+      }
+
+      state3D.isFlying = true;
+      const flyBtn = document.getElementById('btn-3d-flyover');
+      const flyBtnTxt = document.getElementById('btn-3d-flyover-text');
+      const flightBar = document.getElementById('hud-3d-flight-bar');
+
+      if (flyBtn) flyBtn.classList.add('active');
+      if (flyBtnTxt) flyBtnTxt.textContent = 'Pause';
+      if (flightBar) flightBar.classList.remove('hidden');
+
+      // Sample route coordinates for a smooth cinematic flight
+      const raw = state3D.flyoverCoords;
+      const stepInterval = Math.max(1, Math.floor(raw.length / 50));
+      const samples = [];
+      for (let i = 0; i < raw.length; i += stepInterval) {
+        samples.push(raw[i]);
+      }
+      if (samples[samples.length - 1] !== raw[raw.length - 1]) {
+        samples.push(raw[raw.length - 1]);
+      }
+
+      state3D.samplePoints = samples;
+      if (state3D.flyoverIndex >= samples.length - 1) {
+        state3D.flyoverIndex = 0;
+      }
+
+      function step() {
+        if (!state3D.isFlying) return;
+        if (state3D.flyoverIndex >= samples.length - 1) {
+          stop3DFlyover();
+          showToast('Survol 3D terminé avec succès !', 'success', 3000);
+          recenter3DView();
+          return;
+        }
+
+        const curr = samples[state3D.flyoverIndex];
+        const next = samples[state3D.flyoverIndex + 1];
+        const bearing = calculateBearing(curr, next);
+
+        const progressPercent = Math.round((state3D.flyoverIndex / (samples.length - 1)) * 100);
+        const progFill = document.getElementById('hud-3d-flight-progress');
+        const progTxt = document.getElementById('hud-3d-flight-prog-txt');
+        if (progFill) progFill.style.width = `${progressPercent}%`;
+        if (progTxt) progTxt.textContent = `${progressPercent}%`;
+
+        state3D.map.easeTo({
+          center: curr,
+          zoom: 15.2,
+          pitch: 75,
+          bearing: bearing,
+          duration: 1800,
+          easing: t => t
+        });
+
+        state3D.flyoverIndex++;
+        state3D.flyoverTimeout = setTimeout(step, 1850);
+      }
+
+      step();
+      lucide.createIcons();
+    }
+
+    function stop3DFlyover() {
+      state3D.isFlying = false;
+      if (state3D.flyoverTimeout) {
+        clearTimeout(state3D.flyoverTimeout);
+        state3D.flyoverTimeout = null;
+      }
+      const flyBtn = document.getElementById('btn-3d-flyover');
+      const flyBtnTxt = document.getElementById('btn-3d-flyover-text');
+      const flightBar = document.getElementById('hud-3d-flight-bar');
+
+      if (flyBtn) flyBtn.classList.remove('active');
+      if (flyBtnTxt) flyBtnTxt.textContent = 'Survol Animé';
+      if (flightBar) flightBar.classList.add('hidden');
+      lucide.createIcons();
+    }
+
+    function toggle3DRelief() {
+      if (!state3D.map || !state3D.isInitialized) return;
+      state3D.currentReliefIndex = (state3D.currentReliefIndex + 1) % state3D.reliefLevels.length;
+      const level = state3D.reliefLevels[state3D.currentReliefIndex];
+      state3D.map.setTerrain({ source: 'mapbox-dem', exaggeration: level });
+
+      const reliefBtnText = document.getElementById('btn-3d-relief-text');
+      if (reliefBtnText) {
+        reliefBtnText.textContent = `Relief ${level}x`;
+      }
+      showToast(`Exagération du relief 3D : ${level}x`, 'info', 2000);
+    }
+
+    function recenter3DView() {
+      if (!state3D.map || !state3D.isInitialized || !state3D.bounds) return;
+      if (state3D.isFlying) stop3DFlyover();
+      state3D.map.fitBounds(state3D.bounds, {
+        padding: { top: 120, bottom: 80, left: 60, right: 60 },
+        pitch: 68,
+        bearing: -15,
+        duration: 1800,
+        essential: true
+      });
     }
   </script>
 </body>
