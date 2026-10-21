@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGradMask" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Full Bleed Background for Maskable Icon -->
+  <rect width="512" height="512" fill="url(#bgGradMask)"/>
+
+  <!-- Centered Scaled Bicycle Graphic inside the safe zone (80% box) -->
+  <g transform="translate(51.2, 51.2) scale(0.8)" stroke="#ffffff" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <circle cx="140" cy="330" r="72"/>
+    <circle cx="372" cy="330" r="72"/>
+    <circle cx="140" cy="330" r="8" fill="#ffffff"/>
+    <circle cx="372" cy="330" r="8" fill="#ffffff"/>
+
+    <line x1="140" y1="330" x2="236" y2="330"/>
+    <line x1="140" y1="330" x2="204" y2="205"/>
+    <line x1="204" y1="205" x2="236" y2="330"/>
+    <line x1="204" y1="205" x2="332" y2="205"/>
+    <line x1="236" y1="330" x2="332" y2="205"/>
+    <line x1="332" y1="205" x2="372" y2="330"/>
+
+    <line x1="204" y1="205" x2="198" y2="175"/>
+    <path d="M176 175 C190 170, 220 170, 230 175" stroke-width="28"/>
+
+    <line x1="332" y1="205" x2="340" y2="165"/>
+    <path d="M320 165 C345 155, 365 160, 365 180" stroke-width="26"/>
+  </g>
+</svg>

@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Background with smooth rounded corners -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)"/>
+
+  <!-- Bicycle Graphic with Shadow -->
+  <g filter="url(#shadow)" stroke="#ffffff" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Back Wheel -->
+    <circle cx="140" cy="330" r="72"/>
+    <!-- Front Wheel -->
+    <circle cx="372" cy="330" r="72"/>
+
+    <!-- Hubs -->
+    <circle cx="140" cy="330" r="8" fill="#ffffff"/>
+    <circle cx="372" cy="330" r="8" fill="#ffffff"/>
+
+    <!-- Frame -->
+    <!-- Chainstay: Back wheel to Bottom Bracket -->
+    <line x1="140" y1="330" x2="236" y2="330"/>
+    <!-- Seatstay: Back wheel to Seat Lug -->
+    <line x1="140" y1="330" x2="204" y2="205"/>
+    <!-- Seat tube: Seat Lug to Bottom Bracket -->
+    <line x1="204" y1="205" x2="236" y2="330"/>
+    <!-- Top tube: Seat Lug to Head Tube -->
+    <line x1="204" y1="205" x2="332" y2="205"/>
+    <!-- Down tube: Bottom Bracket to Head Tube -->
+    <line x1="236" y1="330" x2="332" y2="205"/>
+    <!-- Fork: Head Tube to Front Wheel -->
+    <line x1="332" y1="205" x2="372" y2="330"/>
+
+    <!-- Seat post and Saddle -->
+    <line x1="204" y1="205" x2="198" y2="175"/>
+    <path d="M176 175 C190 170, 220 170, 230 175" stroke-width="28"/>
+
+    <!-- Stem and Handlebars -->
+    <line x1="332" y1="205" x2="340" y2="165"/>
+    <path d="M320 165 C345 155, 365 160, 365 180" stroke-width="26"/>
+  </g>
+</svg>

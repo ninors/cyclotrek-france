@@ -10,6 +10,16 @@
   <meta name="description" content="Planifiez votre randonnée à vélo en France. Tracez vos itinéraires point par point en privilégiant les voies vertes, consultez le dénivelé, la météo en direct, les campings et points d'eau, et exportez vers votre Garmin.">
   <meta name="keywords" content="vélo, trek, randonnée, voies vertes, vtc, garmin, gpx, météo, camping, point d'eau, france, cyclotourisme">
   
+  <!-- Progressive Web App (PWA) Manifest & Mobile Meta -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#10b981">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CycloTrek">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   
@@ -3208,6 +3218,15 @@
             </div>
           </section>
 
+          <!-- PWA Installation Button -->
+          <section class="sidebar-section" id="section-pwa-install">
+            <div class="glass-panel-inner" style="display:flex; flex-direction:column; gap:8px;">
+              <button id="account-pwa-install-btn" class="btn-primary" style="height:42px; width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg, #10b981, #059669); font-weight:700;">
+                <i data-lucide="smartphone"></i> Installer l'Application (PWA)
+              </button>
+            </div>
+          </section>
+
           <!-- Aide & Visite Guidée -->
           <section class="sidebar-section">
             <div class="glass-panel-inner" style="display:flex; flex-direction:column; gap:8px;">
@@ -4621,6 +4640,72 @@
     }
 
     /* ----------------------------------------------------
+       PWA (Progressive Web App) Service Worker & Install Engine
+    ---------------------------------------------------- */
+    let deferredInstallPrompt = null;
+
+    function initPWA() {
+      // 1. Register Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js')
+            .then(reg => {
+              console.log('✅ ServiceWorker CycloTrek actif (scope: ' + reg.scope + ')');
+            })
+            .catch(err => {
+              console.warn('⚠️ Échec enregistrement ServiceWorker:', err);
+            });
+        });
+      }
+
+      // 2. Handle beforeinstallprompt for native install button
+      const installBtn = document.getElementById('account-pwa-install-btn');
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      
+      if (isStandalone && installBtn) {
+        installBtn.innerHTML = '<i data-lucide="check-circle"></i> Application Installée';
+        installBtn.style.opacity = '0.75';
+        installBtn.disabled = true;
+      }
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+
+        if (installBtn && !isStandalone) {
+          installBtn.innerHTML = '<i data-lucide="download"></i> Installer l\'Application sur mon téléphone';
+          installBtn.disabled = false;
+        }
+      });
+
+      if (installBtn) {
+        installBtn.addEventListener('click', async () => {
+          if (deferredInstallPrompt) {
+            deferredInstallPrompt.prompt();
+            const { outcome } = await deferredInstallPrompt.userChoice;
+            if (outcome === 'accepted') {
+              showToast('Installation de CycloTrek en cours...', 'success', 3000);
+            }
+            deferredInstallPrompt = null;
+          } else if (!isStandalone) {
+            // Helper instructions for iOS Safari or browsers where prompt event isn't synthetic
+            showToast('Pour installer sur iPhone : bouton Partager 📤 puis "Sur l\'écran d\'accueil" 📲', 'info', 6000);
+          }
+        });
+      }
+
+      window.addEventListener('appinstalled', () => {
+        showToast('Application CycloTrek installée avec succès ! 🎉', 'success', 4000);
+        deferredInstallPrompt = null;
+        if (installBtn) {
+          installBtn.innerHTML = '<i data-lucide="check-circle"></i> Application Installée';
+          installBtn.style.opacity = '0.75';
+          installBtn.disabled = true;
+        }
+      });
+    }
+
+    /* ----------------------------------------------------
        Initialization
     ---------------------------------------------------- */
     document.addEventListener('DOMContentLoaded', () => {
@@ -4633,6 +4718,7 @@
       initInterpointNotes();
       initInteractiveTour();
       initMobileApp();
+      initPWA();
       updateSavedRoutesListUI(); // Load saved items from localStorage cache
       
       showToast('Bienvenue sur CycloTrek ! Connectez votre profil pour collaborer.', 'info', 4000);
