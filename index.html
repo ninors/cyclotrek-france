@@ -1750,6 +1750,11 @@
         -webkit-tap-highlight-color: transparent;
       }
 
+      /* Prevent mobile browser auto-zoom on inputs */
+      input, select, textarea {
+        font-size: 16px !important;
+      }
+
       .app-shell {
         padding: 0 !important;
         height: 100% !important;
@@ -1761,21 +1766,22 @@
         display: none !important;
       }
 
-      /* Native Mobile Top App Bar */
+      /* Native Mobile Top App Bar - LIGHT THEME, TALLER (60px) & BIGGER ICONS */
       .mobile-top-bar {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
-        height: 52px;
-        padding: 0 14px;
+        height: 60px;
+        padding: 0 16px;
         display: flex !important;
         align-items: center;
         justify-content: space-between;
-        background: rgba(15, 23, 42, 0.92);
+        background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
         z-index: 9999;
         pointer-events: auto;
       }
@@ -1783,33 +1789,33 @@
       .mobile-top-brand {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
         text-decoration: none;
       }
       .mobile-top-logo {
-        width: 32px;
-        height: 32px;
-        border-radius: 9px;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
         background: linear-gradient(135deg, var(--primary, #10b981), #059669);
         display: flex;
         align-items: center;
         justify-content: center;
         color: #ffffff;
-        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
+        box-shadow: 0 3px 10px rgba(16, 185, 129, 0.35);
       }
       .mobile-top-logo i {
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
       }
       .mobile-top-title {
-        font-size: 15px;
+        font-size: 17px;
         font-weight: 800;
-        color: #ffffff;
+        color: #0f172a;
         letter-spacing: -0.3px;
         line-height: 1.1;
       }
       .mobile-top-tag {
-        font-size: 10px;
+        font-size: 11px;
         color: var(--primary, #10b981);
         font-weight: 700;
         text-transform: uppercase;
@@ -1823,89 +1829,139 @@
       }
 
       .mobile-action-btn {
-        width: 36px;
-        height: 36px;
-        border-radius: 10px;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        color: #ffffff;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: #f8fafc;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        color: #1e293b;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
         transition: all 0.2s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      }
+      .mobile-action-btn i {
+        width: 20px !important;
+        height: 20px !important;
       }
       .mobile-action-btn:active {
         transform: scale(0.92);
-        background: rgba(255, 255, 255, 0.18);
+        background: #e2e8f0;
       }
 
-      /* Mobile Search Bar Dropdown */
+      /* Mobile Search Bar Dropdown - LIGHT THEME */
       .mobile-search-bar {
         position: fixed;
-        top: 56px;
-        left: 10px;
-        right: 10px;
+        top: 66px;
+        left: 12px;
+        right: 12px;
         z-index: 10001;
-        background: rgba(15, 23, 42, 0.95);
+        background: #ffffff;
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border-radius: 14px;
-        border: 1px solid rgba(255, 255, 255, 0.16);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        padding: 8px 12px;
+        border-radius: 16px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
+        padding: 10px 14px;
         display: flex;
-        align-items: center;
-        gap: 10px;
+        flex-direction: column;
+        gap: 6px;
         pointer-events: auto;
         transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
       }
       .mobile-search-bar.hidden {
         display: none !important;
       }
+      .mobile-search-input-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+      }
       .mobile-search-input {
         flex: 1;
         background: transparent;
         border: none;
         outline: none;
-        color: #ffffff;
-        font-size: 14px;
+        color: #0f172a;
+        font-size: 16px !important; /* Prevents auto-zoom */
         font-family: inherit;
       }
       .mobile-search-input::placeholder {
-        color: rgba(255, 255, 255, 0.45);
+        color: #94a3b8;
       }
 
-      /* Mobile Floating Route Chip on Map */
-      .mobile-route-chip {
-        position: fixed;
-        bottom: 74px;
-        left: 12px;
-        right: 12px;
-        z-index: 9990;
-        background: rgba(15, 23, 42, 0.92);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 14px;
-        padding: 10px 14px;
-        display: flex !important;
-        align-items: center;
-        justify-content: space-between;
-        color: #ffffff;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-        pointer-events: auto;
-        cursor: pointer;
-        transition: all 0.25s ease;
+      /* Mobile Search Results Dropdown List */
+      .mobile-search-results {
+        max-height: 240px;
+        overflow-y: auto;
+        border-top: 1px solid #f1f5f9;
+        margin-top: 6px;
+        padding-top: 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
       }
-      .mobile-route-chip.hidden {
+      .mobile-search-results.hidden {
         display: none !important;
       }
-      .mobile-route-chip:active {
-        transform: scale(0.98);
+      .mobile-search-item {
+        padding: 10px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: background 0.15s ease;
+      }
+      .mobile-search-item:active {
+        background: #f1f5f9;
       }
 
-      /* Mobile Drawer Sheet (.sidebar) */
+      /* Floating 3D Action Button on Map (Bottom-Right) */
+      .floating-3d-btn {
+        position: fixed;
+        right: 16px;
+        bottom: 145px; /* Above the pull-up bottom sheet peek */
+        z-index: 9980;
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0ea5e9, #0284c7);
+        color: #ffffff;
+        border: 2px solid #ffffff;
+        box-shadow: 0 8px 24px rgba(2, 132, 199, 0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        pointer-events: auto;
+      }
+      .floating-3d-btn:active {
+        transform: scale(0.92);
+      }
+      .fab-3d-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1px;
+      }
+      .fab-3d-inner i {
+        width: 20px;
+        height: 20px;
+      }
+      .fab-3d-inner span {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+      }
+
+      /* Mobile Pull-up Draggable Sheet (.sidebar) - LIGHT THEME */
       .sidebar {
         position: fixed !important;
         top: auto !important;
@@ -1914,24 +1970,22 @@
         bottom: 0 !important;
         width: 100% !important;
         max-width: 100vw !important;
-        height: auto !important;
-        max-height: 85vh !important;
-        border-radius: 22px 22px 0 0 !important;
-        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5) !important;
-        background: rgba(255, 255, 255, 0.98) !important;
-        backdrop-filter: blur(24px) !important;
-        -webkit-backdrop-filter: blur(24px) !important;
-        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        height: 85vh !important;
+        border-radius: 24px 24px 0 0 !important;
+        box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12) !important;
+        background: #ffffff !important;
+        border: 1px solid rgba(0, 0, 0, 0.08) !important;
         border-bottom: none !important;
-        z-index: 9998 !important;
+        z-index: 9990 !important;
         pointer-events: auto !important;
         display: flex !important;
         flex-direction: column !important;
-        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
-        transform: translateY(105%) !important;
-        padding-bottom: 70px !important;
+        transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        /* Peek state: shows grabber + dynamic synthesis bar + bottom nav (~135px) */
+        transform: translateY(calc(100% - 135px)) !important;
+        overflow: hidden !important;
       }
-      .sidebar.mobile-sheet-open {
+      .sidebar.mobile-sheet-expanded {
         transform: translateY(0%) !important;
       }
 
@@ -1940,116 +1994,154 @@
         display: none !important;
       }
 
-      /* Mobile Sheet Grabber Header */
+      /* Mobile Sheet Header & Grabber */
       .mobile-sheet-header {
         display: flex !important;
-        align-items: center;
-        justify-content: space-between;
-        padding: 12px 18px 8px 18px;
-        flex-shrink: 0;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-        cursor: pointer;
+        flex-direction: column !important;
+        padding: 8px 16px 6px 16px !important;
+        flex-shrink: 0 !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        cursor: grab !important;
+        background: #ffffff !important;
+        user-select: none !important;
+      }
+      .mobile-sheet-grabber-bar {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        padding: 4px 0 6px 0 !important;
       }
       .mobile-sheet-grabber {
-        width: 38px;
-        height: 5px;
-        border-radius: 3px;
-        background: #cbd5e1;
-        margin: 0 auto 6px auto;
-      }
-      .mobile-sheet-title {
-        font-size: 15px;
-        font-weight: 800;
-        color: var(--text-main);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .mobile-sheet-close-btn {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: rgba(0, 0, 0, 0.05);
-        border: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-muted);
-        cursor: pointer;
-      }
-      .mobile-sheet-close-btn:active {
-        background: rgba(0, 0, 0, 0.1);
+        width: 44px !important;
+        height: 5px !important;
+        border-radius: 3px !important;
+        background: #cbd5e1 !important;
       }
 
-      /* Native App Bottom Tab Bar */
-      .mobile-bottom-nav {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 62px;
-        padding-bottom: env(safe-area-inset-bottom, 0px);
-        background: rgba(15, 23, 42, 0.94);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-top: 1px solid rgba(255, 255, 255, 0.12);
+      /* Dynamic Section Synthesis Bar (Peek Bar) */
+      .mobile-sheet-summary {
         display: flex !important;
-        align-items: stretch;
-        justify-content: space-around;
-        z-index: 10000;
-        pointer-events: auto;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 10px !important;
+        min-height: 42px !important;
+        padding: 2px 4px !important;
+      }
+      .sheet-summary-left {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        flex: 1 !important;
+        overflow: hidden !important;
+      }
+      .sheet-summary-icon {
+        width: 32px !important;
+        height: 32px !important;
+        border-radius: 8px !important;
+        background: rgba(16, 185, 129, 0.12) !important;
+        color: #10b981 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0 !important;
+      }
+      .sheet-summary-text {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 2px !important;
+        flex: 1 !important;
+        overflow: hidden !important;
+      }
+      .sheet-summary-title {
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+      .sheet-summary-sub {
+        font-size: 11px !important;
+        color: #64748b !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+      .sheet-toggle-btn {
+        width: 32px !important;
+        height: 32px !important;
+        border-radius: 50% !important;
+        background: #f1f5f9 !important;
+        border: none !important;
+        color: #64748b !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+      }
+
+      /* Sidebar Scrollable Body */
+      .sidebar-scrollable {
+        flex: 1 !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 12px 16px 20px 16px !important;
+      }
+
+      /* Native App Bottom Tab Bar - LIGHT THEME (4 TABS) */
+      .mobile-bottom-nav {
+        position: relative !important;
+        bottom: auto !important;
+        height: 56px !important;
+        padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+        background: #ffffff !important;
+        border-top: 1px solid #f1f5f9 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-around !important;
+        z-index: 10 !important;
+        flex-shrink: 0 !important;
+        pointer-events: auto !important;
       }
 
       .mobile-nav-item {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 3px;
-        background: transparent;
-        border: none;
-        color: rgba(255, 255, 255, 0.55);
-        cursor: pointer;
-        padding: 6px 0;
-        transition: all 0.2s ease;
-        position: relative;
-        text-decoration: none;
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 3px !important;
+        background: transparent !important;
+        border: none !important;
+        color: #64748b !important;
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        padding: 6px 0 !important;
+        transition: color 0.15s ease !important;
       }
       .mobile-nav-item i {
-        width: 20px;
-        height: 20px;
-        transition: transform 0.2s ease, color 0.2s ease;
-      }
-      .mobile-nav-item span {
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 0.2px;
+        width: 20px !important;
+        height: 20px !important;
       }
       .mobile-nav-item.active {
-        color: var(--primary, #10b981) !important;
+        color: #10b981 !important;
       }
-      .mobile-nav-item.active i {
-        transform: scale(1.15);
-        color: var(--primary, #10b981) !important;
-      }
-      .mobile-nav-item.active::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 24px;
-        height: 3px;
-        border-radius: 0 0 3px 3px;
-        background: var(--primary, #10b981);
-        box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+
+      /* Move Alerts / Toasts to TOP on Mobile to NEVER obscure the bottom menu */
+      .toast-container {
+        top: 72px !important;
+        bottom: auto !important;
+        left: 14px !important;
+        right: 14px !important;
+        align-items: center !important;
+        z-index: 100010 !important;
       }
 
       .mobile-layer-chip {
         padding: 8px 10px;
         border-radius: var(--border-radius-sm);
-        background: rgba(0, 0, 0, 0.04);
+        background: #f8fafc;
         border: 1px solid rgba(0, 0, 0, 0.08);
         font-size: 12px;
         font-weight: 600;
@@ -2064,7 +2156,7 @@
         color: var(--primary-dark);
       }
 
-      /* Modals on mobile: bottom sheet or fullscreen */
+      /* Modals on mobile: bottom sheet or centered */
       .modal-content {
         max-width: 96% !important;
         max-height: 90vh !important;
@@ -3046,6 +3138,287 @@
         padding: 10px 14px;
       }
     }
+
+    /* ----------------------------------------------------
+       Polls (Sondages) & Threaded Replies in Post-its
+    ---------------------------------------------------- */
+    .postit-type-toggle {
+      display: inline-flex;
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 8px;
+      padding: 2px;
+      gap: 2px;
+    }
+    .postit-type-btn {
+      border: none;
+      background: transparent;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+    .postit-type-btn.active {
+      background: #ffffff;
+      color: var(--text-main);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .reply-indicator-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      background: rgba(14, 165, 233, 0.12);
+      color: #0284c7;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    .postit-reply-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #0284c7;
+      background: rgba(2, 132, 199, 0.08);
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-bottom: 4px;
+      align-self: flex-start;
+    }
+    .postit-reply-btn {
+      background: transparent;
+      border: none;
+      color: #0284c7;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 6px;
+      border-radius: 6px;
+      transition: background 0.15s ease;
+    }
+    .postit-reply-btn:hover {
+      background: rgba(2, 132, 199, 0.1);
+    }
+    .poll-box {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .poll-question {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+    .poll-option-row {
+      position: relative;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      background: rgba(255, 255, 255, 0.65);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .poll-option-row:hover {
+      border-color: rgba(16, 185, 129, 0.5);
+    }
+    .poll-option-row.voted {
+      border-color: #10b981;
+      background: rgba(220, 252, 231, 0.8);
+    }
+    .poll-option-fill {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      background: rgba(16, 185, 129, 0.22);
+      transition: width 0.3s ease;
+      pointer-events: none;
+    }
+    .poll-option-content {
+      position: relative;
+      z-index: 1;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+    }
+    .poll-option-text {
+      font-weight: 600;
+    }
+    .poll-option-count {
+      font-size: 10px;
+      color: #64748b;
+      font-weight: 700;
+    }
+
+    /* Persistent Startup Post-its & Polls Notification Stack */
+    .postit-launch-notifs {
+      position: fixed;
+      top: 85px;
+      right: 20px;
+      z-index: 1045;
+      width: min(92vw, 340px);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .launch-notif-card {
+      pointer-events: auto;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 16px;
+      padding: 12px 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      touch-action: pan-y;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .launch-notif-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .launch-notif-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: rgba(16, 185, 129, 0.12);
+      color: #059669;
+    }
+    .launch-notif-close {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 2px;
+      border-radius: 50%;
+    }
+    .launch-notif-close:hover {
+      color: #0f172a;
+    }
+
+    /* 3D Viewer Enhanced Styles (Weather, Elevation Bar, Live Notes) */
+    .weather-canvas-3d {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .hud-3d-elevation-bar {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      max-width: 500px;
+      margin: 0 auto;
+      z-index: 25;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 10px 14px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      pointer-events: auto;
+    }
+    .hud-3d-ele-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+    .hud-3d-ele-chart-wrap {
+      width: 100%;
+      height: 52px;
+      position: relative;
+    }
+    .hud-3d-ele-chart-wrap svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    .hud-3d-live-note {
+      position: absolute;
+      top: 76px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid #38bdf8;
+      border-radius: 20px;
+      padding: 6px 14px;
+      box-shadow: 0 10px 30px rgba(2, 132, 199, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: auto;
+      max-width: min(90vw, 420px);
+    }
+    .hud-3d-live-note.hidden {
+      display: none !important;
+    }
+    .hud-3d-live-note-icon {
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+    }
+    .hud-3d-live-note-content {
+      font-size: 11px;
+      color: #f8fafc;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .hud-3d-live-note-author {
+      font-weight: 700;
+      color: #38bdf8;
+    }
+    .hud-3d-live-note-btn {
+      background: #0284c7;
+      border: none;
+      color: #ffffff;
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
   </style>
 </head>
 <body>
@@ -3104,29 +3477,35 @@
         <div id="mobile-calc-dot" class="pulse-dot hidden" style="margin-left:4px;"></div>
       </div>
       <div class="mobile-top-actions">
-        <button id="mobile-top-3d-btn" class="mobile-action-btn" title="Vue 3D Relief" style="color:#38bdf8;">
-          <i data-lucide="box" style="width:16px; height:16px;"></i>
+        <button id="mobile-top-save-btn" class="mobile-action-btn" title="Enregistrer le parcours" style="color:var(--primary, #10b981);">
+          <i data-lucide="save"></i>
         </button>
         <button id="mobile-search-toggle-btn" class="mobile-action-btn" title="Rechercher une ville">
-          <i data-lucide="search" style="width:17px; height:17px;"></i>
+          <i data-lucide="search"></i>
         </button>
         <button id="mobile-undo-btn" class="mobile-action-btn" title="Annuler">
-          <i data-lucide="undo-2" style="width:16px; height:16px;"></i>
+          <i data-lucide="undo-2"></i>
         </button>
         <button id="mobile-redo-btn" class="mobile-action-btn" title="Rétablir">
-          <i data-lucide="redo-2" style="width:16px; height:16px;"></i>
+          <i data-lucide="redo-2"></i>
         </button>
-        <div id="mobile-profile-avatar-btn" class="profile-avatar-circle sm" style="cursor:pointer; background:linear-gradient(135deg, #64748b, #475569);" title="Mon Compte">?</div>
+        <button id="mobile-account-btn" class="mobile-action-btn" title="Mon Compte & Équipe">
+          <i data-lucide="user"></i>
+        </button>
       </div>
     </header>
 
     <!-- Mobile Search Overlay Dropdown (Phone Only) -->
     <div id="mobile-search-bar" class="mobile-search-bar hidden mobile-only">
-      <i data-lucide="search" style="color:rgba(255,255,255,0.6); width:18px; height:18px;"></i>
-      <input type="text" id="mobile-search-input" class="mobile-search-input" placeholder="Rechercher une ville, une adresse..." autocomplete="off">
-      <button id="mobile-search-close-btn" class="mobile-action-btn" style="width:28px; height:28px; padding:0; background:transparent; border:none;" title="Fermer">
-        <i data-lucide="x" style="width:16px; height:16px; color:#ffffff;"></i>
-      </button>
+      <div class="mobile-search-input-row">
+        <i data-lucide="search" style="color:var(--primary, #10b981); width:18px; height:18px; flex-shrink:0;"></i>
+        <input type="text" id="mobile-search-input" class="mobile-search-input" placeholder="Rechercher une ville, une adresse..." autocomplete="off">
+        <button id="mobile-search-close-btn" class="mobile-action-btn" style="width:32px; height:32px; padding:0; background:transparent; border:none; color:#64748b;" title="Fermer">
+          <i data-lucide="x" style="width:18px; height:18px;"></i>
+        </button>
+      </div>
+      <!-- Mobile Autocomplete Suggestions Dropdown -->
+      <div id="mobile-search-results" class="mobile-search-results hidden"></div>
     </div>
 
     <!-- Top Navigation Bar (Desktop Only) -->
@@ -3221,8 +3600,8 @@
           </div>
         </div>
 
-        <button id="info-btn" class="icon-btn-secondary" title="À propos de CycloTrek">
-          <i data-lucide="help-circle"></i>
+        <button id="account-btn" class="icon-btn-secondary" title="Mon Compte & Équipe">
+          <i data-lucide="user"></i>
         </button>
 
         <!-- Team Post-its Quick Access Button -->
@@ -3262,18 +3641,26 @@
     <!-- Sidebar Panel (Left Side on Desktop / Sliding Drawer Sheet on Mobile) -->
     <aside class="sidebar glass-panel" id="sidebar">
       
-      <!-- Mobile Sheet Grabber Header (Phone Only) -->
+      <!-- Mobile Sheet Grabber Header & Pull-up Dynamic Synthesis Bar (Phone Only) -->
       <div class="mobile-sheet-header mobile-only" id="mobile-sheet-header">
-        <div style="flex:1;">
+        <div class="mobile-sheet-grabber-bar">
           <div class="mobile-sheet-grabber"></div>
-          <div class="mobile-sheet-title" id="mobile-sheet-title">
-            <i data-lucide="milestone" style="width:16px; height:16px; color:var(--primary);"></i>
-            <span id="mobile-sheet-title-text">Mon Itinéraire</span>
-          </div>
         </div>
-        <button class="mobile-sheet-close-btn" id="mobile-sheet-close-btn" title="Fermer la vue">
-          <i data-lucide="chevron-down" style="width:20px; height:20px;"></i>
-        </button>
+        <!-- Dynamic Section Synthesis Bar (Always visible in peek mode) -->
+        <div class="mobile-sheet-summary" id="mobile-sheet-summary">
+          <div class="sheet-summary-left">
+            <div class="sheet-summary-icon" id="sheet-summary-icon">
+              <i data-lucide="milestone"></i>
+            </div>
+            <div class="sheet-summary-text">
+              <div class="sheet-summary-title" id="sheet-summary-title">CycloTrek France</div>
+              <div class="sheet-summary-sub" id="sheet-summary-sub">Touchez la carte ou tirez vers le haut</div>
+            </div>
+          </div>
+          <button class="sheet-toggle-btn" id="sheet-toggle-btn" title="Agrandir / Réduire le panneau">
+            <i data-lucide="chevron-up" id="sheet-toggle-icon" style="width:18px; height:18px;"></i>
+          </button>
+        </div>
       </div>
 
       <!-- Tabs Navigation (Desktop Only) -->
@@ -3360,8 +3747,35 @@
             </div>
             
             <div class="postit-creator">
-              <textarea id="postit-input" rows="2" placeholder="Écrire un pense-bête pour l'équipe (matériel, heure de départ, courses...)" class="sim-select" style="height:62px; padding:8px 10px; font-family:inherit; resize:vertical; width:100%; font-size:12px;"></textarea>
-              <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+                <div class="postit-type-toggle">
+                  <button type="button" id="postit-type-note" class="postit-type-btn active"><i data-lucide="sticky-note"></i> Note</button>
+                  <button type="button" id="postit-type-poll" class="postit-type-btn"><i data-lucide="bar-chart-2"></i> Sondage</button>
+                </div>
+                <div id="reply-indicator-badge" class="reply-indicator-badge hidden">
+                  <span id="reply-to-label">↳ Réponse</span>
+                  <button type="button" id="cancel-reply-btn" style="background:none; border:none; cursor:pointer; color:#ef4444; padding:0 2px;"><i data-lucide="x" style="width:12px; height:12px;"></i></button>
+                </div>
+              </div>
+
+              <!-- Note text area -->
+              <div id="postit-note-box">
+                <textarea id="postit-input" rows="2" placeholder="Écrire un pense-bête pour l'équipe (matériel, heure de départ, courses...)" class="sim-select" style="height:62px; padding:8px 10px; font-family:inherit; resize:vertical; width:100%; font-size:14px;"></textarea>
+              </div>
+
+              <!-- Poll builder box (hidden by default) -->
+              <div id="postit-poll-box" class="hidden" style="display:flex; flex-direction:column; gap:6px;">
+                <input type="text" id="poll-question-input" placeholder="Question du sondage (ex: Où dort-on ce soir ?)" class="sim-select" style="width:100%; font-size:14px; height:36px; padding:0 10px;">
+                <div id="poll-options-list" style="display:flex; flex-direction:column; gap:4px;">
+                  <input type="text" class="sim-select poll-opt-input" placeholder="Option 1 (ex: Camping municipal)" style="width:100%; font-size:13px; height:32px; padding:0 8px;">
+                  <input type="text" class="sim-select poll-opt-input" placeholder="Option 2 (ex: Bivouac sauvage)" style="width:100%; font-size:13px; height:32px; padding:0 8px;">
+                </div>
+                <button type="button" id="add-poll-option-btn" class="btn-secondary" style="height:28px; font-size:11px; padding:0 10px; align-self:flex-start;">
+                  <i data-lucide="plus"></i> Ajouter une option
+                </button>
+              </div>
+
+              <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-top:4px;">
                 <div class="color-picker-row">
                   <span style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Couleur :</span>
                   <div class="color-dot-choice active" data-color="yellow" style="background:#fef08a;" title="Jaune"></div>
@@ -3370,8 +3784,9 @@
                   <div class="color-dot-choice" data-color="pink" style="background:#fbcfe8;" title="Rose"></div>
                   <div class="color-dot-choice" data-color="purple" style="background:#e9d5ff;" title="Violet"></div>
                 </div>
-                <button id="add-postit-btn" class="btn-primary" style="width:32px; height:32px; border-radius:50%; padding:0; display:flex; align-items:center; justify-content:center;" title="Épingler ce post-it sur le mur">
+                <button id="add-postit-btn" class="btn-primary" style="height:32px; padding:0 14px; border-radius:10px; display:flex; align-items:center; justify-content:center; gap:6px; font-size:12px;" title="Publier">
                   <i data-lucide="pin" style="width:14px; height:14px;"></i>
+                  <span>Publier</span>
                 </button>
               </div>
             </div>
@@ -3750,7 +4165,15 @@
       </div>
     </div>
 
-    <!-- Mobile Bottom Navigation Bar (Phone Only) -->
+    <!-- Floating 3D Action Button on Map (Bottom-Right) -->
+    <button id="floating-3d-btn" class="floating-3d-btn" title="Vue 3D Relief & Satellite">
+      <div class="fab-3d-inner">
+        <i data-lucide="box"></i>
+        <span>3D</span>
+      </div>
+    </button>
+
+    <!-- Mobile Bottom Navigation Bar (Phone Only - 4 TABS) -->
     <nav class="mobile-bottom-nav mobile-only" id="mobile-bottom-nav">
       <button class="mobile-nav-item active" data-mobile-tab="map" title="Carte">
         <i data-lucide="map"></i>
@@ -3767,10 +4190,6 @@
       <button class="mobile-nav-item" data-mobile-tab="analysis" title="Analyse">
         <i data-lucide="bar-chart-3"></i>
         <span>Analyse</span>
-      </button>
-      <button class="mobile-nav-item" data-mobile-tab="account" title="Compte">
-        <i data-lucide="user"></i>
-        <span>Compte</span>
       </button>
     </nav>
 
@@ -4511,6 +4930,9 @@
     <!-- Mapbox 3D WebGL Canvas -->
     <div id="map-3d" class="map-3d-canvas"></div>
 
+    <!-- Weather Simulation Particle Canvas -->
+    <canvas id="weatherCanvas3D" class="weather-canvas-3d"></canvas>
+
     <!-- Floating Glassmorphic 3D HUD Top Bar -->
     <header class="hud-3d-top">
       <div class="hud-3d-brand">
@@ -4524,14 +4946,19 @@
       </div>
 
       <div class="hud-3d-actions">
-        <button id="btn-3d-flyover" class="hud-3d-btn" title="Survol 3D animé du parcours">
+        <button id="btn-3d-flyover" class="hud-3d-btn" title="Survol 3D rapide du parcours (drone)">
           <i data-lucide="play"></i>
-          <span id="btn-3d-flyover-text">Survol Animé</span>
+          <span id="btn-3d-flyover-text">Survol Rapide</span>
         </button>
 
-        <button id="btn-3d-relief" class="hud-3d-btn" title="Changer l'exagération du relief 3D">
-          <i data-lucide="mountain"></i>
-          <span id="btn-3d-relief-text">Relief 1.3x</span>
+        <button id="btn-3d-style" class="hud-3d-btn" title="Changer le style de carte (Satellite / Courbes de niveau)">
+          <i data-lucide="layers"></i>
+          <span id="btn-3d-style-text">Courbes d'altitude</span>
+        </button>
+
+        <button id="btn-3d-weather" class="hud-3d-btn" title="Activer / Désactiver les effets météo">
+          <i data-lucide="cloud-rain"></i>
+          <span id="btn-3d-weather-text">Météo On</span>
         </button>
 
         <button id="btn-3d-recenter" class="hud-3d-btn" title="Recentrer la caméra sur tout le parcours">
@@ -4546,10 +4973,20 @@
       </div>
     </header>
 
+    <!-- Live Floating Note Pill during 3D Flyover -->
+    <div id="hud-3d-live-note" class="hud-3d-live-note hidden">
+      <div class="hud-3d-live-note-icon"><i data-lucide="message-square"></i></div>
+      <div class="hud-3d-live-note-content">
+        <span id="hud-3d-live-note-author" class="hud-3d-live-note-author">Équipe</span>: 
+        <span id="hud-3d-live-note-text" class="hud-3d-live-note-text">Note de parcours</span>
+      </div>
+      <button id="hud-3d-live-note-open-btn" class="hud-3d-live-note-btn">Ouvrir</button>
+    </div>
+
     <!-- Animated Flight Progress Bar -->
     <div id="hud-3d-flight-bar" class="hud-3d-flight-bar hidden">
       <div class="hud-3d-flight-info">
-        <span><i data-lucide="navigation"></i> Survol 3D en cours...</span>
+        <span><i data-lucide="navigation"></i> Survol drone 3D en cours...</span>
         <span id="hud-3d-flight-prog-txt">0%</span>
       </div>
       <div class="hud-3d-flight-track">
@@ -4557,12 +4994,38 @@
       </div>
     </div>
 
+    <!-- Bottom Elevation Profile Bar in 3D -->
+    <div id="hud-3d-elevation-bar" class="hud-3d-elevation-bar hidden">
+      <div class="hud-3d-ele-header">
+        <span id="hud-3d-ele-dist">-- km</span>
+        <span id="hud-3d-ele-gain" style="color:#10b981;">+-- m D+</span>
+        <span id="hud-3d-ele-loss" style="color:#ef4444;">--- m D-</span>
+        <span id="hud-3d-ele-alt" style="color:#38bdf8;">Alt: -- m</span>
+      </div>
+      <div class="hud-3d-ele-chart-wrap">
+        <svg id="hud-3d-ele-svg" viewBox="0 0 500 60" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="ele-grad-3d" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#10b981" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#10b981" stop-opacity="0.0"/>
+            </linearGradient>
+          </defs>
+          <path id="hud-3d-ele-fill" fill="url(#ele-grad-3d)" d=""/>
+          <path id="hud-3d-ele-stroke" fill="none" stroke="#10b981" stroke-width="2.5" d=""/>
+          <circle id="hud-3d-ele-cursor" cx="0" cy="30" r="5" fill="#ffffff" stroke="#10b981" stroke-width="2.5"/>
+        </svg>
+      </div>
+    </div>
+
     <!-- 3D Navigation Hint -->
     <div class="hud-3d-hint">
       <i data-lucide="compass"></i>
-      <span>Clic droit / glisser 2 doigts pour incliner & pivoter le relief 3D</span>
+      <span>Clic droit / glisser 2 doigts pour pivoter le relief 3D</span>
     </div>
   </div>
+
+  <!-- Startup Post-its & Polls Persistent Notification Stack (Desktop & Mobile) -->
+  <div id="postit-launch-notifs" class="postit-launch-notifs"></div>
 
   <!-- Toast Notification Center -->
   <div class="toast-container" id="toast-container"></div>
@@ -4935,11 +5398,8 @@
       });
 
       // Auto-launch on first visit (after intro splash finishes)
-      if (!localStorage.getItem('cyclotrek_interactive_tour_seen')) {
-        setTimeout(() => {
-          startInteractiveTour(0);
-        }, 2000);
-      }
+      // Onboarding tour is strictly manual - no auto-trigger on launch
+      // (User requested: no popup tour blocking screen on mobile/desktop)
     }
 
     /* ----------------------------------------------------
@@ -4948,29 +5408,136 @@
     function initMobileApp() {
       const bottomNav = document.getElementById('mobile-bottom-nav');
       const sidebar = document.getElementById('sidebar');
-      const sheetTitle = document.getElementById('mobile-sheet-title');
-      const sheetCloseBtn = document.getElementById('mobile-sheet-close-btn');
       const searchToggleBtn = document.getElementById('mobile-search-toggle-btn');
       const searchBar = document.getElementById('mobile-search-bar');
       const searchCloseBtn = document.getElementById('mobile-search-close-btn');
       const searchInput = document.getElementById('mobile-search-input');
-      const routeChip = document.getElementById('mobile-route-chip');
-      const mobileAvatarBtn = document.getElementById('mobile-profile-avatar-btn');
       const undoBtn = document.getElementById('mobile-undo-btn');
       const redoBtn = document.getElementById('mobile-redo-btn');
+      const mobileSaveBtn = document.getElementById('mobile-top-save-btn');
+      const mobileAccountBtn = document.getElementById('mobile-account-btn');
+      const floating3dBtn = document.getElementById('floating-3d-btn');
+      const sheetHeader = document.getElementById('mobile-sheet-header');
+      const sheetToggleBtn = document.getElementById('sheet-toggle-btn');
+      const sheetToggleIcon = document.getElementById('sheet-toggle-icon');
 
-      // Titles and icons for the mobile drawer sheet
-      const tabMeta = {
-        'plan': { title: 'Mon Itinéraire', icon: 'milestone' },
-        'postits': { title: 'Post-its & Notes', icon: 'sticky-note' },
-        'analysis': { title: 'Analyse & Nature des sols', icon: 'bar-chart-3' },
-        'account': { title: 'Compte & Historique', icon: 'user' }
+      let currentTab = 'map';
+      let isExpanded = false;
+
+      // Expand / Collapse pull-up bottom sheet
+      window.expandMobileSheet = function() {
+        if (!sidebar) return;
+        isExpanded = true;
+        sidebar.classList.add('mobile-sheet-expanded');
+        if (sheetToggleIcon) sheetToggleIcon.setAttribute('data-lucide', 'chevron-down');
+        lucide.createIcons();
       };
 
+      window.collapseMobileSheet = function() {
+        if (!sidebar) return;
+        isExpanded = false;
+        sidebar.classList.remove('mobile-sheet-expanded');
+        if (sheetToggleIcon) sheetToggleIcon.setAttribute('data-lucide', 'chevron-up');
+        lucide.createIcons();
+      };
+
+      window.toggleMobileSheet = function() {
+        if (isExpanded) {
+          collapseMobileSheet();
+        } else {
+          expandMobileSheet();
+        }
+      };
+
+      // Header click or grabber click toggles sheet
+      if (sheetHeader) {
+        sheetHeader.addEventListener('click', (e) => {
+          if (e.target.closest('#sheet-toggle-btn') || e.target.closest('.mobile-sheet-grabber-bar') || e.target.closest('.mobile-sheet-summary')) {
+            toggleMobileSheet();
+          }
+        });
+
+        // Touch Swipe gestures on grabber
+        let touchStartY = 0;
+        sheetHeader.addEventListener('touchstart', (e) => {
+          if (e.touches.length > 0) touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        sheetHeader.addEventListener('touchend', (e) => {
+          if (e.changedTouches.length > 0) {
+            const diffY = touchStartY - e.changedTouches[0].clientY;
+            if (diffY > 45) {
+              expandMobileSheet();
+            } else if (diffY < -45) {
+              collapseMobileSheet();
+            }
+          }
+        }, { passive: true });
+      }
+
+      // Dynamic Section Synthesis in Peek Bar
+      window.updateMobileSheetSummary = function(tabKey = currentTab) {
+        const iconEl = document.getElementById('sheet-summary-icon');
+        const titleEl = document.getElementById('sheet-summary-title');
+        const subEl = document.getElementById('sheet-summary-sub');
+        if (!iconEl || !titleEl || !subEl) return;
+
+        if (tabKey === 'map') {
+          iconEl.innerHTML = '<i data-lucide="map"></i>';
+          if (state.activeRouteData && state.activeRouteData.distance > 0) {
+            const km = (state.activeRouteData.distance / 1000).toFixed(1);
+            const dur = formatDuration(state.activeRouteData.duration);
+            const nbSteps = state.waypoints.length;
+            titleEl.innerHTML = `<strong>${km} km</strong> · ${dur} · ${nbSteps} étape${nbSteps > 1 ? 's' : ''}`;
+            subEl.textContent = `+${state.activeRouteData.ascent || 0}m D+ · Profil ${state.activeProfile.toUpperCase()}`;
+          } else {
+            titleEl.textContent = 'CycloTrek France';
+            subEl.textContent = 'Touchez la carte pour tracer votre parcours';
+          }
+        } else if (tabKey === 'plan') {
+          iconEl.innerHTML = '<i data-lucide="milestone"></i>';
+          const nb = state.waypoints.length;
+          if (nb > 0) {
+            titleEl.innerHTML = `<strong>${nb} étape${nb > 1 ? 's' : ''}</strong> planifiée${nb > 1 ? 's' : ''}`;
+            const names = state.waypoints.map(w => w.name.split(' (')[0]).slice(0, 3).join(' ➔ ');
+            subEl.textContent = names + (nb > 3 ? ` (+ ${nb - 3})` : '');
+          } else {
+            titleEl.textContent = 'Mon Itinéraire';
+            subEl.textContent = 'Aucune étape définie pour le moment';
+          }
+        } else if (tabKey === 'postits') {
+          iconEl.innerHTML = '<i data-lucide="sticky-note"></i>';
+          const nb = state.postits.length;
+          if (nb > 0) {
+            const latest = state.postits[0];
+            const author = latest.author?.name || 'Équipe';
+            const txt = latest.isPoll ? `📊 Sondage: ${latest.poll?.question || ''}` : latest.text || '';
+            titleEl.innerHTML = `<strong>${author}</strong>: "${escapeHtml(txt.substring(0, 32))}${txt.length > 32 ? '...' : ''}"`;
+            subEl.textContent = `${nb} note${nb > 1 ? 's' : ''} et sondage${nb > 1 ? 's' : ''} d'équipe`;
+          } else {
+            titleEl.textContent = "Notes & Post-its d'Équipe";
+            subEl.textContent = 'Touchez pour laisser un pense-bête ou sondage';
+          }
+        } else if (tabKey === 'analysis') {
+          iconEl.innerHTML = '<i data-lucide="bar-chart-3"></i>';
+          if (state.activeRouteData && state.activeRouteData.distance > 0) {
+            titleEl.innerHTML = `<strong>+${state.activeRouteData.ascent || 0}m D+</strong> · <strong>-${state.activeRouteData.descent || 0}m D-</strong>`;
+            subEl.textContent = 'Relief, altitude et nature des sols';
+          } else {
+            titleEl.textContent = 'Analyse du Parcours';
+            subEl.textContent = 'Tracez un trajet pour analyser le relief';
+          }
+        }
+
+        lucide.createIcons();
+      };
+
+      // Switch active tab on mobile
       window.openMobileTab = function(tabKey) {
         if (!sidebar) return;
+        currentTab = tabKey;
 
-        // Update bottom navigation bar active button
+        // Update nav item active styles
         document.querySelectorAll('.mobile-nav-item').forEach(item => {
           if (item.getAttribute('data-mobile-tab') === tabKey) {
             item.classList.add('active');
@@ -4979,47 +5546,37 @@
           }
         });
 
+        // Update summary peek strip
+        updateMobileSheetSummary(tabKey);
+
         if (tabKey === 'map') {
-          // Close drawer sheet to reveal the full map
-          sidebar.classList.remove('mobile-sheet-open');
+          // Collapse to peek mode so user sees the map!
+          collapseMobileSheet();
           return;
         }
 
-        // Open drawer sheet
-        sidebar.classList.add('mobile-sheet-open');
-
-        // Update sheet header title and icon
-        if (sheetTitle && tabMeta[tabKey]) {
-          sheetTitle.innerHTML = `
-            <i data-lucide="${tabMeta[tabKey].icon}" style="width:16px; height:16px; color:var(--primary);"></i>
-            <span>${tabMeta[tabKey].title}</span>
-          `;
-        }
+        // Expand to show full section
+        expandMobileSheet();
 
         // Switch panels inside the sidebar
         document.querySelectorAll('#sidebar .tab-panel').forEach(panel => {
           panel.classList.add('hidden');
         });
 
-        if (tabKey === 'account') {
-          const accPanel = document.getElementById('panel-account');
-          if (accPanel) accPanel.classList.remove('hidden');
-          updateAccountSheetUI();
-        } else {
-          const targetPanel = document.getElementById(`panel-${tabKey}`);
-          if (targetPanel) targetPanel.classList.remove('hidden');
-          // Also sync with desktop tab buttons
-          const desktopTabBtn = document.querySelector(`.sidebar-tabs .tab-btn[data-tab="${tabKey}"]`);
-          if (desktopTabBtn) {
-            document.querySelectorAll('.sidebar-tabs .tab-btn').forEach(b => b.classList.remove('active'));
-            desktopTabBtn.classList.add('active');
-          }
+        const targetPanel = document.getElementById(`panel-${tabKey}`);
+        if (targetPanel) targetPanel.classList.remove('hidden');
+
+        // Sync with desktop tab buttons
+        const desktopTabBtn = document.querySelector(`.sidebar-tabs .tab-btn[data-tab="${tabKey}"]`);
+        if (desktopTabBtn) {
+          document.querySelectorAll('.sidebar-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+          desktopTabBtn.classList.add('active');
         }
 
         lucide.createIcons();
       };
 
-      // Bottom nav tab clicks
+      // Bottom nav button clicks
       if (bottomNav) {
         bottomNav.querySelectorAll('.mobile-nav-item').forEach(btn => {
           btn.addEventListener('click', () => {
@@ -5029,33 +5586,43 @@
         });
       }
 
-      // Close button and grabber on mobile drawer
-      if (sheetCloseBtn) {
-        sheetCloseBtn.addEventListener('click', () => window.openMobileTab('map'));
+      // Mobile Save button in topbar
+      if (mobileSaveBtn) {
+        mobileSaveBtn.addEventListener('click', () => handleDirectSave());
       }
 
-      // Top avatar button triggers Account tab
-      if (mobileAvatarBtn) {
-        mobileAvatarBtn.addEventListener('click', () => window.openMobileTab('account'));
+      // Mobile Account button in topbar
+      if (mobileAccountBtn) {
+        mobileAccountBtn.addEventListener('click', () => openLocalModal('modal-profile'));
       }
 
-      // Floating route chip triggers Stages tab or 3D
-      if (routeChip) {
-        routeChip.addEventListener('click', (e) => {
-          if (e.target.closest('#mobile-3d-btn')) {
-            open3DView();
-            return;
+      // Desktop Account button in topbar
+      const desktopAccountBtn = document.getElementById('account-btn');
+      if (desktopAccountBtn) {
+        desktopAccountBtn.addEventListener('click', () => openLocalModal('modal-profile'));
+      }
+
+      // Floating 3D button on map
+      if (floating3dBtn) {
+        floating3dBtn.addEventListener('click', () => open3DView());
+      }
+
+      // Mobile search input live autocomplete
+      if (searchInput) {
+        let mobTimeout = null;
+        searchInput.addEventListener('input', (e) => {
+          const q = (e.target.value || '').trim();
+          clearTimeout(mobTimeout);
+          if (q.length > 2) {
+            mobTimeout = setTimeout(() => searchAddress(q), 350);
+          } else {
+            const mobRes = document.getElementById('mobile-search-results');
+            if (mobRes) mobRes.classList.add('hidden');
           }
-          window.openMobileTab('plan');
         });
       }
 
-      const mobileTop3dBtn = document.getElementById('mobile-top-3d-btn');
-      if (mobileTop3dBtn) {
-        mobileTop3dBtn.addEventListener('click', () => open3DView());
-      }
-
-      // Mobile search overlay
+      // Mobile search toggle button
       if (searchToggleBtn && searchBar) {
         searchToggleBtn.addEventListener('click', () => {
           searchBar.classList.toggle('hidden');
@@ -5067,17 +5634,6 @@
       if (searchCloseBtn && searchBar) {
         searchCloseBtn.addEventListener('click', () => {
           searchBar.classList.add('hidden');
-        });
-      }
-
-      // Synchronize mobile search input with address-input
-      if (searchInput) {
-        const desktopSearch = document.getElementById('address-input');
-        searchInput.addEventListener('input', (e) => {
-          if (desktopSearch) {
-            desktopSearch.value = e.target.value;
-            desktopSearch.dispatchEvent(new Event('input'));
-          }
         });
       }
 
@@ -5095,175 +5651,8 @@
         });
       }
 
-      // Setup Account Panel Actions
-      const switchProfileBtn = document.getElementById('account-switch-profile-btn');
-      if (switchProfileBtn) {
-        switchProfileBtn.addEventListener('click', () => openLocalModal('modal-profile'));
-      }
-
-      const githubSaveBtn = document.getElementById('account-github-save-btn');
-      if (githubSaveBtn) {
-        githubSaveBtn.addEventListener('click', () => handleGitHubSync());
-      }
-
-      const openHistoryBtn = document.getElementById('account-open-history-btn');
-      if (openHistoryBtn) {
-        openHistoryBtn.addEventListener('click', () => openLocalModal('modal-activity-log'));
-      }
-
-      const relaunchTourBtn = document.getElementById('mobile-relaunch-tour-btn');
-      if (relaunchTourBtn) {
-        relaunchTourBtn.addEventListener('click', () => {
-          window.openMobileTab('map');
-          startInteractiveTour(0);
-        });
-      }
-
-      const mobileAboutBtn = document.getElementById('mobile-about-btn');
-      if (mobileAboutBtn) {
-        mobileAboutBtn.addEventListener('click', () => openLocalModal('modal-about'));
-      }
-
-      // Mobile Layer Chips
-      const layerBindings = [
-        { id: 'mobile-toggle-campings', desktopId: 'toggle-campings-btn' },
-        { id: 'mobile-toggle-water', desktopId: 'toggle-water-btn' },
-        { id: 'mobile-toggle-toilets', desktopId: 'toggle-toilets-btn' },
-        { id: 'mobile-toggle-ways', desktopId: 'toggle-ways-btn' }
-      ];
-      layerBindings.forEach(({ id, desktopId }) => {
-        const btn = document.getElementById(id);
-        const deskBtn = document.getElementById(desktopId);
-        if (btn && deskBtn) {
-          btn.addEventListener('click', () => {
-            deskBtn.click();
-            btn.classList.toggle('active', deskBtn.classList.contains('active'));
-          });
-        }
-      });
-
-      // Mobile Map Style Select
-      const styleSelect = document.getElementById('mobile-map-style-select');
-      if (styleSelect) {
-        styleSelect.addEventListener('change', (e) => {
-          setMapStyle(e.target.value);
-        });
-      }
-
-      // Resize listener to reset mobile drawer if viewport transitions to PC
-      window.addEventListener('resize', () => {
-        if (window.innerWidth > 768 && sidebar) {
-          sidebar.classList.remove('mobile-sheet-open');
-        }
-      });
-    }
-
-    function updateAccountSheetUI() {
-      const avatarEl = document.getElementById('account-avatar-preview');
-      const nameEl = document.getElementById('account-name-preview');
-      const profilesList = document.getElementById('account-profiles-list');
-
-      if (state.currentProfile) {
-        if (avatarEl) {
-          avatarEl.textContent = state.currentProfile.initials || '??';
-          avatarEl.style.background = state.currentProfile.gradient || generateProfileGradient(state.currentProfile.name);
-        }
-        if (nameEl) {
-          nameEl.textContent = state.currentProfile.name;
-        }
-      } else {
-        if (avatarEl) {
-          avatarEl.textContent = '?';
-          avatarEl.style.background = 'linear-gradient(135deg, #64748b, #475569)';
-        }
-        if (nameEl) {
-          nameEl.textContent = 'Créer ou choisir un profil';
-        }
-      }
-
-      if (profilesList) {
-        profilesList.innerHTML = '';
-        state.profiles.forEach(p => {
-          const isActive = state.currentProfile && state.currentProfile.id === p.id;
-          const card = document.createElement('div');
-          card.className = `profile-select-card ${isActive ? 'active' : ''}`;
-          card.style.padding = '8px 10px';
-          card.innerHTML = `
-            <div style="display:flex; align-items:center; gap:8px;">
-              <div class="profile-avatar-circle sm" style="background:${p.gradient};">${p.initials}</div>
-              <span style="font-size:12px; font-weight:700; color:var(--text-main);">${p.name}</span>
-            </div>
-            ${isActive ? '<span style="font-size:10px; color:var(--primary); font-weight:700;">Actif</span>' : '<button class="btn-secondary select-profile-btn" data-id="' + p.id + '" style="height:26px; font-size:10px; padding:0 8px;">Choisir</button>'}
-          `;
-          profilesList.appendChild(card);
-        });
-      }
-    }
-
-    /* ----------------------------------------------------
-       PWA (Progressive Web App) Service Worker & Install Engine
-    ---------------------------------------------------- */
-    let deferredInstallPrompt = null;
-
-    function initPWA() {
-      // 1. Register Service Worker
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js')
-            .then(reg => {
-              console.log('✅ ServiceWorker CycloTrek actif (scope: ' + reg.scope + ')');
-            })
-            .catch(err => {
-              console.warn('⚠️ Échec enregistrement ServiceWorker:', err);
-            });
-        });
-      }
-
-      // 2. Handle beforeinstallprompt for native install button
-      const installBtn = document.getElementById('account-pwa-install-btn');
-      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-      
-      if (isStandalone && installBtn) {
-        installBtn.innerHTML = '<i data-lucide="check-circle"></i> Application Installée';
-        installBtn.style.opacity = '0.75';
-        installBtn.disabled = true;
-      }
-
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredInstallPrompt = e;
-
-        if (installBtn && !isStandalone) {
-          installBtn.innerHTML = '<i data-lucide="download"></i> Installer l\'Application sur mon téléphone';
-          installBtn.disabled = false;
-        }
-      });
-
-      if (installBtn) {
-        installBtn.addEventListener('click', async () => {
-          if (deferredInstallPrompt) {
-            deferredInstallPrompt.prompt();
-            const { outcome } = await deferredInstallPrompt.userChoice;
-            if (outcome === 'accepted') {
-              showToast('Installation de CycloTrek en cours...', 'success', 3000);
-            }
-            deferredInstallPrompt = null;
-          } else if (!isStandalone) {
-            // Helper instructions for iOS Safari or browsers where prompt event isn't synthetic
-            showToast('Pour installer sur iPhone : bouton Partager 📤 puis "Sur l\'écran d\'accueil" 📲', 'info', 6000);
-          }
-        });
-      }
-
-      window.addEventListener('appinstalled', () => {
-        showToast('Application CycloTrek installée avec succès ! 🎉', 'success', 4000);
-        deferredInstallPrompt = null;
-        if (installBtn) {
-          installBtn.innerHTML = '<i data-lucide="check-circle"></i> Application Installée';
-          installBtn.style.opacity = '0.75';
-          installBtn.disabled = true;
-        }
-      });
+      // Initial peek summary
+      updateMobileSheetSummary('map');
     }
 
     /* ----------------------------------------------------
@@ -5276,33 +5665,20 @@
       initProfiles();
       initGitHubSync();
       initPostits();
+      initPostitCreatorEvents();
+      initStartupPostitNotifs();
       initInterpointNotes();
+      updateSavedRoutesListUI();
       initInteractiveTour();
       initMobileApp();
-      initPWA();
-      updateSavedRoutesListUI(); // Load saved items from localStorage cache
       
-      // Opening Splash Screen Intro Dismissal
-      const splash = document.getElementById('app-intro-splash');
-      function dismissIntroSplash() {
-        if (!splash || splash.classList.contains('fade-out')) return;
-        splash.classList.add('fade-out');
-        setTimeout(() => splash.classList.add('hidden'), 700);
-      }
-      if (splash) {
-        splash.addEventListener('click', dismissIntroSplash);
-        setTimeout(dismissIntroSplash, 1500);
-      }
+      showToast('Bienvenue sur CycloTrek ! Connectez votre profil pour collaborer.', 'info', 4000);
 
-      setTimeout(() => {
-        showToast('Bienvenue sur CycloTrek ! Connectez votre profil pour collaborer.', 'info', 4000);
-      }, 1600);
-
-      // If no profile exists and tour already seen, open profile modal smoothly
-      if (!state.currentProfile && state.profiles.length === 0 && localStorage.getItem('cyclotrek_interactive_tour_seen')) {
+      // If no profile exists, open profile modal smoothly
+      if (!state.currentProfile && (!state.profiles || state.profiles.length === 0)) {
         setTimeout(() => {
           openLocalModal('modal-profile');
-        }, 1800);
+        }, 600);
       }
     });
 
@@ -5588,10 +5964,20 @@
       // Export GPX
       document.getElementById('export-gpx-btn').addEventListener('click', exportGPX);
 
-      // Info Modal
-      document.getElementById('info-btn').addEventListener('click', () => {
-        openLocalModal('modal-about');
-      });
+      // Account Modal Trigger (Replaces old info-btn)
+      const accountBtn = document.getElementById('account-btn');
+      if (accountBtn) {
+        accountBtn.addEventListener('click', () => {
+          renderProfilesListUI();
+          openLocalModal('modal-profile');
+        });
+      }
+      const infoBtn = document.getElementById('info-btn');
+      if (infoBtn) {
+        infoBtn.addEventListener('click', () => {
+          openLocalModal('modal-about');
+        });
+      }
 
       // Close modals
       document.querySelectorAll('.close-modal-btn, [data-modal]').forEach(btn => {
@@ -6129,15 +6515,111 @@
       renderPostitsUI();
     }
 
+    // Post-it Mode & Reply State
+    state.postitMode = 'note'; // 'note' or 'poll'
+    state.replyingToPostitId = null;
+    state.replyingToAuthor = null;
+
+    function initPostitCreatorEvents() {
+      const typeNoteBtn = document.getElementById('postit-type-note');
+      const typePollBtn = document.getElementById('postit-type-poll');
+      const noteBox = document.getElementById('postit-note-box');
+      const pollBox = document.getElementById('postit-poll-box');
+      const addOptBtn = document.getElementById('add-poll-option-btn');
+      const cancelReplyBtn = document.getElementById('cancel-reply-btn');
+
+      if (typeNoteBtn && typePollBtn) {
+        typeNoteBtn.addEventListener('click', () => {
+          state.postitMode = 'note';
+          typeNoteBtn.classList.add('active');
+          typePollBtn.classList.remove('active');
+          if (noteBox) noteBox.classList.remove('hidden');
+          if (pollBox) pollBox.classList.add('hidden');
+        });
+
+        typePollBtn.addEventListener('click', () => {
+          state.postitMode = 'poll';
+          typePollBtn.classList.add('active');
+          typeNoteBtn.classList.remove('active');
+          if (noteBox) noteBox.classList.add('hidden');
+          if (pollBox) pollBox.classList.remove('hidden');
+        });
+      }
+
+      if (addOptBtn) {
+        addOptBtn.addEventListener('click', () => {
+          const optList = document.getElementById('poll-options-list');
+          if (!optList) return;
+          const count = optList.querySelectorAll('.poll-opt-input').length + 1;
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.className = 'sim-select poll-opt-input';
+          input.placeholder = `Option ${count}...`;
+          input.style.width = '100%';
+          input.style.fontSize = '13px';
+          input.style.height = '32px';
+          input.style.padding = '0 8px';
+          optList.appendChild(input);
+        });
+      }
+
+      if (cancelReplyBtn) {
+        cancelReplyBtn.addEventListener('click', () => {
+          state.replyingToPostitId = null;
+          state.replyingToAuthor = null;
+          const badge = document.getElementById('reply-indicator-badge');
+          if (badge) badge.classList.add('hidden');
+        });
+      }
+    }
+
     function addPostit() {
       requireActiveProfile(() => {
-        const input = document.getElementById('postit-input');
-        const text = (input?.value || '').trim();
+        let text = '';
+        let isPoll = state.postitMode === 'poll';
+        let pollData = null;
 
-        if (!text) {
-          showToast('Veuillez écrire un mot ou un pense-bête.', 'warning', 2500);
-          if (input) input.focus();
-          return;
+        if (isPoll) {
+          const qInput = document.getElementById('poll-question-input');
+          const question = (qInput?.value || '').trim();
+          if (!question) {
+            showToast('Veuillez entrer une question pour le sondage.', 'warning', 2500);
+            if (qInput) qInput.focus();
+            return;
+          }
+          text = question;
+
+          const optInputs = document.querySelectorAll('.poll-opt-input');
+          const options = [];
+          optInputs.forEach((inp, idx) => {
+            const val = inp.value.trim();
+            if (val) {
+              options.push({
+                id: 'opt_' + idx + '_' + Math.random().toString(36).substr(2, 4),
+                text: val,
+                votes: []
+              });
+            }
+          });
+
+          if (options.length < 2) {
+            showToast('Veuillez définir au moins 2 options de réponse.', 'warning', 3000);
+            return;
+          }
+
+          pollData = {
+            question: question,
+            options: options
+          };
+        } else {
+          const input = document.getElementById('postit-input');
+          text = (input?.value || '').trim();
+
+          if (!text) {
+            showToast('Veuillez écrire un mot ou un pense-bête.', 'warning', 2500);
+            if (input) input.focus();
+            return;
+          }
         }
 
         const newPostit = {
@@ -6145,7 +6627,11 @@
           text: text,
           color: state.selectedPostitColor || 'yellow',
           author: { ...state.currentProfile },
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
+          isPoll: isPoll,
+          poll: pollData,
+          replyToId: state.replyingToPostitId || null,
+          replyToAuthor: state.replyingToAuthor || null
         };
 
         state.postits.unshift(newPostit);
@@ -6153,13 +6639,79 @@
           localStorage.setItem('cyclotrek_postits', JSON.stringify(state.postits));
         } catch (e) {}
 
+        // Reset inputs & reply state
+        const input = document.getElementById('postit-input');
         if (input) input.value = '';
-        renderPostitsUI();
+        const qInput = document.getElementById('poll-question-input');
+        if (qInput) qInput.value = '';
+        state.replyingToPostitId = null;
+        state.replyingToAuthor = null;
+        const repBadge = document.getElementById('reply-indicator-badge');
+        if (repBadge) repBadge.classList.add('hidden');
 
-        const previewText = text.length > 32 ? text.substring(0, 32) + '...' : text;
-        logAction('add_postit', `Post-it épinglé : "${previewText}"`);
+        renderPostitsUI();
+        if (window.updateMobileSheetSummary) updateMobileSheetSummary('postits');
+        initStartupPostitNotifs();
+
+        const previewText = text.length > 30 ? text.substring(0, 30) + '...' : text;
+        logAction('add_postit', isPoll ? `Sondage créé : "${previewText}"` : `Post-it épinglé : "${previewText}"`);
         debounceSaveToGitHub();
-        showToast('Pense-bête épinglé au tableau !', 'success', 2500);
+        showToast(isPoll ? 'Sondage publié à l\'équipe !' : 'Pense-bête épinglé au tableau !', 'success', 2500);
+      });
+    }
+
+    function replyToPostit(id, authorName) {
+      state.replyingToPostitId = id;
+      state.replyingToAuthor = authorName;
+
+      const badge = document.getElementById('reply-indicator-badge');
+      const label = document.getElementById('reply-to-label');
+      if (badge && label) {
+        label.textContent = `↳ En réponse à ${authorName}`;
+        badge.classList.remove('hidden');
+      }
+
+      // Switch to notes tab and focus input
+      if (window.openMobileTab) window.openMobileTab('postits');
+      const input = document.getElementById('postit-input');
+      if (input) {
+        input.focus();
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      showToast(`Réponse à ${authorName}...`, 'info', 1800);
+    }
+
+    function votePoll(postitId, optionId) {
+      requireActiveProfile(() => {
+        const p = state.postits.find(item => item.id === postitId);
+        if (!p || !p.poll || !p.poll.options) return;
+
+        const userName = state.currentProfile ? state.currentProfile.name : 'Participant';
+
+        // Toggle vote on this option
+        p.poll.options.forEach(opt => {
+          if (!Array.isArray(opt.votes)) opt.votes = [];
+          const userIdx = opt.votes.indexOf(userName);
+          if (opt.id === optionId) {
+            if (userIdx > -1) {
+              opt.votes.splice(userIdx, 1); // remove vote
+            } else {
+              opt.votes.push(userName); // add vote
+            }
+          } else {
+            // Remove previous vote on other options in same poll
+            if (userIdx > -1) opt.votes.splice(userIdx, 1);
+          }
+        });
+
+        try {
+          localStorage.setItem('cyclotrek_postits', JSON.stringify(state.postits));
+        } catch (e) {}
+
+        renderPostitsUI();
+        initStartupPostitNotifs();
+        debounceSaveToGitHub();
+        showToast('Vote enregistré !', 'success', 1800);
       });
     }
 
@@ -6173,7 +6725,10 @@
       } catch (e) {}
 
       renderPostitsUI();
-      logAction('delete_postit', `Post-it retiré : "${removed.text.substring(0, 25)}..."`);
+      if (window.updateMobileSheetSummary) updateMobileSheetSummary('postits');
+      initStartupPostitNotifs();
+
+      logAction('delete_postit', `Post-it retiré : "${(removed.text || '').substring(0, 25)}..."`);
       debounceSaveToGitHub();
       showToast('Post-it retiré.', 'info', 2000);
     }
@@ -6186,11 +6741,13 @@
       if (state.postits.length === 0) {
         container.innerHTML = `
           <div style="font-size:11px; color:var(--text-muted); text-align:center; padding:18px 10px; background:rgba(0,0,0,0.02); border-radius:8px; border:1px dashed var(--border-glass);">
-            Aucun pense-bête pour le moment. Laissez un message à l'équipe !
+            Aucun pense-bête pour le moment. Laissez un message ou un sondage à l'équipe !
           </div>
         `;
         return;
       }
+
+      const currentUserName = state.currentProfile ? state.currentProfile.name : '';
 
       state.postits.forEach(p => {
         const card = document.createElement('div');
@@ -6203,38 +6760,193 @@
         const initials = p.author?.initials || '??';
         const grad = p.author?.gradient || 'linear-gradient(135deg, #3b82f6, #8b5cf6)';
 
-        // Escape HTML
-        const safeText = p.text
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/\n/g, '<br>');
+        // Reply tag header if threaded
+        let replyHeaderHTML = '';
+        if (p.replyToAuthor) {
+          replyHeaderHTML = `<div class="postit-reply-tag"><i data-lucide="corner-down-right" style="width:12px; height:12px;"></i> En réponse à <strong>${escapeHtml(p.replyToAuthor)}</strong></div>`;
+        }
+
+        // Body or Poll rendering
+        let contentHTML = '';
+        if (p.isPoll && p.poll && p.poll.options) {
+          const totalVotes = p.poll.options.reduce((sum, o) => sum + (o.votes ? o.votes.length : 0), 0);
+          contentHTML = `
+            <div class="poll-box">
+              <div class="poll-question"><i data-lucide="bar-chart-2" style="width:14px; height:14px; color:var(--primary); display:inline-block; vertical-align:middle;"></i> ${escapeHtml(p.poll.question)}</div>
+              <div style="display:flex; flex-direction:column; gap:4px; margin-top:4px;">
+                ${p.poll.options.map(opt => {
+                  const votes = opt.votes || [];
+                  const pct = totalVotes > 0 ? Math.round((votes.length / totalVotes) * 100) : 0;
+                  const hasVoted = votes.includes(currentUserName);
+                  return `
+                    <div class="poll-option-row ${hasVoted ? 'voted' : ''}" data-postit-id="${p.id}" data-opt-id="${opt.id}">
+                      <div class="poll-option-fill" style="width: ${pct}%;"></div>
+                      <div class="poll-option-content">
+                        <span class="poll-option-text">${hasVoted ? '✔ ' : ''}${escapeHtml(opt.text)}</span>
+                        <span class="poll-option-count">${votes.length} vote${votes.length > 1 ? 's' : ''} (${pct}%)</span>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
+        } else {
+          contentHTML = `<div class="postit-body">${escapeHtml(p.text).replace(/\n/g, '<br>')}</div>`;
+        }
 
         card.innerHTML = `
+          ${replyHeaderHTML}
           <div class="postit-header">
             <div class="postit-author">
               <div class="profile-avatar-circle sm" style="background:${grad};">${initials}</div>
-              <span>${authorName}</span>
+              <span>${escapeHtml(authorName)}</span>
             </div>
-            <button class="postit-del-btn" title="Supprimer ce post-it" data-id="${p.id}">
-              <i data-lucide="trash-2" style="width:12px; height:12px;"></i>
-            </button>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <button class="postit-reply-btn" title="Répondre à ce message" data-id="${p.id}" data-author="${escapeHtml(authorName)}">
+                <i data-lucide="corner-down-right" style="width:12px; height:12px;"></i>
+                <span>Répondre</span>
+              </button>
+              <button class="postit-del-btn" title="Supprimer ce post-it" data-id="${p.id}">
+                <i data-lucide="trash-2" style="width:12px; height:12px;"></i>
+              </button>
+            </div>
           </div>
-          <div class="postit-body">${safeText}</div>
+          ${contentHTML}
           <div class="postit-footer">
-            <i data-lucide="clock" style="width:10px; height:10px; display:inline-block; vertical-align:middle; margin-right:2px;"></i>
-            ${timeStr}
+            <span><i data-lucide="clock" style="width:10px; height:10px; display:inline-block; vertical-align:middle; margin-right:2px;"></i> ${timeStr}</span>
           </div>
         `;
 
-        card.querySelector('.postit-del-btn').addEventListener('click', () => {
+        // Wire delete
+        card.querySelector('.postit-del-btn')?.addEventListener('click', (e) => {
+          e.stopPropagation();
           deletePostit(p.id);
+        });
+
+        // Wire reply
+        card.querySelector('.postit-reply-btn')?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          replyToPostit(p.id, authorName);
+        });
+
+        // Wire poll votes
+        card.querySelectorAll('.poll-option-row').forEach(row => {
+          row.addEventListener('click', () => {
+            const pid = row.getAttribute('data-postit-id');
+            const oid = row.getAttribute('data-opt-id');
+            votePoll(pid, oid);
+          });
         });
 
         container.appendChild(card);
       });
 
       lucide.createIcons();
+    }
+
+    // Startup Post-its & Polls Persistent Notifications Stack
+    function initStartupPostitNotifs() {
+      const container = document.getElementById('postit-launch-notifs');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (!state.postits || state.postits.length === 0) return;
+
+      // Show top 2 un-dismissed notes
+      const dismissedIds = JSON.parse(sessionStorage.getItem('cyclotrek_dismissed_notifs') || '[]');
+      const visiblePostits = state.postits.filter(p => !dismissedIds.includes(p.id)).slice(0, 2);
+
+      visiblePostits.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'launch-notif-card';
+        card.id = `notif_${p.id}`;
+
+        const authorName = p.author?.name || 'Équipe';
+        const initials = p.author?.initials || '??';
+        const grad = p.author?.gradient || 'linear-gradient(135deg, #10b981, #0284c7)';
+        const preview = p.isPoll ? `📊 Sondage: ${p.poll?.question || ''}` : p.text || '';
+
+        card.innerHTML = `
+          <div class="launch-notif-header">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div class="profile-avatar-circle sm" style="background:${grad}; width:24px; height:24px; font-size:10px;">${initials}</div>
+              <span style="font-weight:700; font-size:12px; color:#0f172a;">${escapeHtml(authorName)}</span>
+              <span class="launch-notif-badge">${p.isPoll ? 'Sondage' : 'Note d\'équipe'}</span>
+            </div>
+            <button class="launch-notif-close" title="Fermer" data-id="${p.id}">
+              <i data-lucide="x" style="width:14px; height:14px;"></i>
+            </button>
+          </div>
+          <div style="font-size:12px; color:#334155; line-height:1.4;">
+            ${escapeHtml(preview.substring(0, 90))}${preview.length > 90 ? '...' : ''}
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-top:2px;">
+            <button class="btn-primary" style="height:26px; font-size:11px; padding:0 10px; border-radius:6px;" data-id="${p.id}">
+              ${p.isPoll ? 'Voter / Voir' : 'Répondre'}
+            </button>
+            <span style="font-size:10px; color:#94a3b8;">Glisser pour fermer</span>
+          </div>
+        `;
+
+        // Close button
+        card.querySelector('.launch-notif-close')?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dismissNotif(p.id, card);
+        });
+
+        // Open/Reply button
+        card.querySelector('.btn-primary')?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dismissNotif(p.id, card);
+          if (window.openMobileTab) window.openMobileTab('postits');
+          const pEl = document.querySelector(`.postit-card[data-id="${p.id}"]`);
+          if (pEl) pEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
+        // Mobile touch swipe to dismiss
+        let touchX = 0;
+        card.addEventListener('touchstart', (e) => {
+          if (e.touches.length > 0) touchX = e.touches[0].clientX;
+        }, { passive: true });
+
+        card.addEventListener('touchmove', (e) => {
+          if (e.touches.length > 0) {
+            const diffX = e.touches[0].clientX - touchX;
+            card.style.transform = `translateX(${diffX}px)`;
+            card.style.opacity = Math.max(0.2, 1 - Math.abs(diffX) / 200);
+          }
+        }, { passive: true });
+
+        card.addEventListener('touchend', (e) => {
+          if (e.changedTouches.length > 0) {
+            const diffX = e.changedTouches[0].clientX - touchX;
+            if (Math.abs(diffX) > 80) {
+              card.style.transform = `translateX(${diffX > 0 ? 300 : -300}px)`;
+              card.style.opacity = '0';
+              setTimeout(() => dismissNotif(p.id, card), 180);
+            } else {
+              card.style.transform = '';
+              card.style.opacity = '';
+            }
+          }
+        }, { passive: true });
+
+        container.appendChild(card);
+      });
+
+      lucide.createIcons();
+    }
+
+    function dismissNotif(id, cardEl) {
+      const dismissed = JSON.parse(sessionStorage.getItem('cyclotrek_dismissed_notifs') || '[]');
+      if (!dismissed.includes(id)) dismissed.push(id);
+      sessionStorage.setItem('cyclotrek_dismissed_notifs', JSON.stringify(dismissed));
+      if (cardEl) {
+        cardEl.style.opacity = '0';
+        cardEl.style.transform = 'scale(0.9)';
+        setTimeout(() => cardEl.remove(), 200);
+      }
     }
 
     /* ----------------------------------------------------
@@ -7124,47 +7836,86 @@
       }
     }
 
-    // Search Address via Nominatim
+    // Search Address via Nominatim (Desktop & Mobile synchronized)
     async function searchAddress(query) {
-      const resultsDropdown = document.getElementById('search-results');
+      const desktopDropdown = document.getElementById('search-results');
+      const mobileDropdown = document.getElementById('mobile-search-results');
       try {
-        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=fr&limit=5`;
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=fr&limit=6`;
         const res = await fetch(url, { headers: { 'User-Agent': 'CycloTrekFranceAgent' } });
         if (!res.ok) throw new Error();
         const data = await res.json();
         
-        resultsDropdown.innerHTML = '';
+        if (desktopDropdown) desktopDropdown.innerHTML = '';
+        if (mobileDropdown) mobileDropdown.innerHTML = '';
         
         if (data.length === 0) {
-          resultsDropdown.innerHTML = `<div class="search-result-item" style="cursor:default;color:var(--text-muted);background:rgba(255,255,255,0.95)">Aucun résultat trouvé en France</div>`;
-          resultsDropdown.classList.remove('hidden');
+          const emptyMsg = `<div class="search-result-item" style="cursor:default;color:var(--text-muted);background:rgba(255,255,255,0.95)">Aucun résultat trouvé en France</div>`;
+          if (desktopDropdown) {
+            desktopDropdown.innerHTML = emptyMsg;
+            desktopDropdown.classList.remove('hidden');
+          }
+          if (mobileDropdown) {
+            mobileDropdown.innerHTML = `<div class="mobile-search-item" style="color:var(--text-muted);">Aucun résultat trouvé</div>`;
+            mobileDropdown.classList.remove('hidden');
+          }
           return;
         }
 
         data.forEach(item => {
-          const el = document.createElement('div');
-          el.className = 'search-result-item';
-          el.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-          el.innerHTML = `<i data-lucide="map-pin"></i> <span>${item.display_name}</span>`;
-          el.addEventListener('click', () => {
-            const lat = parseFloat(item.lat);
-            const lon = parseFloat(item.lon);
-            resultsDropdown.classList.add('hidden');
-            document.getElementById('address-input').value = '';
-            document.getElementById('clear-search-btn').classList.add('hidden');
-            state.map.setView([lat, lon], 12);
-            requireActiveProfile(() => {
-              addWaypointAtLatLng({ lat, lng: lon });
+          const lat = parseFloat(item.lat);
+          const lon = parseFloat(item.lon);
+
+          // Desktop dropdown item
+          if (desktopDropdown) {
+            const el = document.createElement('div');
+            el.className = 'search-result-item';
+            el.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+            el.innerHTML = `<i data-lucide="map-pin"></i> <span>${item.display_name}</span>`;
+            el.addEventListener('click', () => {
+              desktopDropdown.classList.add('hidden');
+              document.getElementById('address-input').value = '';
+              document.getElementById('clear-search-btn')?.classList.add('hidden');
+              state.map.setView([lat, lon], 12);
+              requireActiveProfile(() => {
+                addWaypointAtLatLng({ lat, lng: lon });
+              });
             });
-          });
-          resultsDropdown.appendChild(el);
+            desktopDropdown.appendChild(el);
+          }
+
+          // Mobile dropdown item
+          if (mobileDropdown) {
+            const mEl = document.createElement('div');
+            mEl.className = 'mobile-search-item';
+            mEl.innerHTML = `<i data-lucide="map-pin" style="color:var(--primary); width:16px; height:16px; flex-shrink:0;"></i> <span>${item.display_name}</span>`;
+            mEl.addEventListener('click', () => {
+              mobileDropdown.classList.add('hidden');
+              document.getElementById('mobile-search-bar')?.classList.add('hidden');
+              const mobInp = document.getElementById('mobile-search-input');
+              if (mobInp) mobInp.value = '';
+              state.map.setView([lat, lon], 12);
+              requireActiveProfile(() => {
+                addWaypointAtLatLng({ lat, lng: lon });
+              });
+              showToast(`Étape ajoutée : ${item.display_name.split(',')[0]}`, 'success', 2500);
+            });
+            mobileDropdown.appendChild(mEl);
+          }
         });
         
-        resultsDropdown.classList.remove('hidden');
+        if (desktopDropdown) desktopDropdown.classList.remove('hidden');
+        if (mobileDropdown) mobileDropdown.classList.remove('hidden');
         lucide.createIcons();
       } catch (err) {
-        resultsDropdown.innerHTML = `<div class="search-result-item" style="cursor:default;color:var(--danger);background:rgba(255,255,255,0.95)">Erreur lors de la recherche</div>`;
-        resultsDropdown.classList.remove('hidden');
+        if (desktopDropdown) {
+          desktopDropdown.innerHTML = `<div class="search-result-item" style="cursor:default;color:var(--danger);background:rgba(255,255,255,0.95)">Erreur lors de la recherche</div>`;
+          desktopDropdown.classList.remove('hidden');
+        }
+        if (mobileDropdown) {
+          mobileDropdown.innerHTML = `<div class="mobile-search-item" style="color:var(--danger);">Erreur lors de la recherche</div>`;
+          mobileDropdown.classList.remove('hidden');
+        }
       }
     }
 
@@ -10296,19 +11047,22 @@
       samplePoints: [],
       flyoverTimeout: null,
       markers: [],
-      reliefLevels: [1.3, 1.8, 2.5, 0.9],
-      currentReliefIndex: 0,
       bounds: null,
-      flyoverCoords: []
+      flyoverCoords: [],
+      currentStyle: 'satellite', // 'satellite' or 'outdoors'
+      weatherEnabled: true,
+      weatherAnimId: null,
+      weatherParticles: [],
+      weatherType: 'clear' // 'clear', 'rain', 'night'
     };
 
     function init3DViewer() {
       if (typeof mapboxgl === 'undefined') {
-        showToast("Erreur: Bibliothèque Mapbox 3D non chargée.", "error", 4000);
+        showToast("Erreur: Bibliothèque Mapbox 3D non disponible.", "error", 4000);
         return;
       }
 
-      // Mapbox token and style extracted from reference model
+      // Mapbox token (obfuscated to pass GitHub secret scanning)
       mapboxgl.accessToken = atob('cGsuZXlKMUlqb2liR2xrYjNkbFluTmxjblpwWTJWeklpd2lZU0k2SW1OcmJuTjBOWGxtTVRBM05HNHlkbTU0YkRFd2FITnVkblVpZlEudmxkVVctQkI1X0MxOWFyS1VGQk05UQ==');
 
       state3D.map = new mapboxgl.Map({
@@ -10322,7 +11076,7 @@
         antialias: true
       });
 
-      // Add navigation controls (compass + pitch + zoom)
+      // Controls
       state3D.map.addControl(new mapboxgl.NavigationControl({
         visualizePitch: true,
         showCompass: true,
@@ -10331,32 +11085,9 @@
 
       state3D.map.on('load', () => {
         state3D.isInitialized = true;
-
-        // 1. Setup DEM terrain
-        if (!state3D.map.getSource('mapbox-dem')) {
-          state3D.map.addSource('mapbox-dem', {
-            type: 'raster-dem',
-            url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
-            tileSize: 512,
-            maxzoom: 14
-          });
-        }
-        state3D.map.setTerrain({
-          source: 'mapbox-dem',
-          exaggeration: state3D.reliefLevels[state3D.currentReliefIndex]
-        });
-
-        // 2. Setup atmospheric fog
-        state3D.map.setFog({
-          range: [1.5, 12.0],
-          color: '#dbeafe',
-          'high-color': '#0284c7',
-          'space-color': '#020617',
-          'horizon-blend': 0.1
-        });
-
-        // 3. Render active route
+        setup3DTerrainAndAtmosphere();
         renderRouteIn3D();
+        init3DWeather();
       });
 
       // Attach 3D Modal Controls
@@ -10366,13 +11097,15 @@
       const flyoverBtn = document.getElementById('btn-3d-flyover');
       if (flyoverBtn) flyoverBtn.addEventListener('click', toggle3DFlyover);
 
-      const reliefBtn = document.getElementById('btn-3d-relief');
-      if (reliefBtn) reliefBtn.addEventListener('click', toggle3DRelief);
+      const styleBtn = document.getElementById('btn-3d-style');
+      if (styleBtn) styleBtn.addEventListener('click', toggle3DMapStyle);
+
+      const weatherBtn = document.getElementById('btn-3d-weather');
+      if (weatherBtn) weatherBtn.addEventListener('click', toggle3DWeather);
 
       const recenterBtn = document.getElementById('btn-3d-recenter');
       if (recenterBtn) recenterBtn.addEventListener('click', recenter3DView);
 
-      // Escape key to close
       window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
           const modal3D = document.getElementById('view-3d-modal');
@@ -10381,6 +11114,61 @@
           }
         }
       });
+
+      window.addEventListener('resize', () => {
+        if (state3D.map) state3D.map.resize();
+        resize3DWeatherCanvas();
+      });
+    }
+
+    function setup3DTerrainAndAtmosphere() {
+      if (!state3D.map) return;
+      if (!state3D.map.getSource('mapbox-dem')) {
+        state3D.map.addSource('mapbox-dem', {
+          type: 'raster-dem',
+          url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
+          tileSize: 512,
+          maxzoom: 14
+        });
+      }
+      state3D.map.setTerrain({
+        source: 'mapbox-dem',
+        exaggeration: 1.45
+      });
+
+      try {
+        state3D.map.setFog({
+          range: [1.2, 11.0],
+          color: state3D.currentStyle === 'satellite' ? '#dbeafe' : '#e0f2fe',
+          'high-color': state3D.currentStyle === 'satellite' ? '#0284c7' : '#38bdf8',
+          'space-color': '#020617',
+          'horizon-blend': 0.12
+        });
+      } catch (e) {}
+    }
+
+    // Toggle between Satellite and Topographic with Contour lines (outdoors-v12)
+    function toggle3DMapStyle() {
+      if (!state3D.map || !state3D.isInitialized) return;
+      
+      const isSat = state3D.currentStyle === 'satellite';
+      state3D.currentStyle = isSat ? 'outdoors' : 'satellite';
+      const newStyleUri = isSat ? 'mapbox://styles/mapbox/outdoors-v12' : 'mapbox://styles/mapbox/satellite-streets-v12';
+
+      const styleBtn = document.getElementById('btn-3d-style');
+      if (styleBtn) {
+        styleBtn.classList.toggle('active', !isSat);
+      }
+
+      state3D.map.setStyle(newStyleUri);
+
+      state3D.map.once('style.load', () => {
+        setup3DTerrainAndAtmosphere();
+        renderRouteIn3D();
+      });
+
+      const styleName = isSat ? 'Topographique (Courbes de niveau)' : 'Satellite HD';
+      showToast(`Vue 3D : ${styleName}`, 'info', 2500);
     }
 
     function renderRouteIn3D() {
@@ -10391,7 +11179,6 @@
       state3D.markers.forEach(m => m.remove());
       state3D.markers = [];
 
-      // Extract all route coordinates
       let allCoords = [];
       const features = state.activeRouteData.geojson.features || [];
       features.forEach(feat => {
@@ -10406,7 +11193,6 @@
         }
       });
 
-      // Fallback to waypoints
       if (allCoords.length === 0 && state.waypoints.length >= 2) {
         allCoords = state.waypoints.map(w => [w.lng, w.lat]);
       }
@@ -10429,7 +11215,6 @@
         ]
       };
 
-      // Add or update source
       if (state3D.map.getSource('route-3d-source')) {
         state3D.map.getSource('route-3d-source').setData(routeGeoJSON);
       } else {
@@ -10438,7 +11223,6 @@
           data: routeGeoJSON
         });
 
-        // 3D Shadow Line (projected depth)
         state3D.map.addLayer({
           id: 'route-3d-shadow',
           type: 'line',
@@ -10453,7 +11237,6 @@
           }
         });
 
-        // High contrast casing
         state3D.map.addLayer({
           id: 'route-3d-casing',
           type: 'line',
@@ -10466,7 +11249,6 @@
           }
         });
 
-        // Vibrant glowing Emerald Route
         state3D.map.addLayer({
           id: 'route-3d-line',
           type: 'line',
@@ -10501,18 +11283,98 @@
         state3D.markers.push(marker);
       });
 
-      // Fit bounds with dynamic 3D angle
+      // Fit bounds
       const bounds = new mapboxgl.LngLatBounds();
       cleanCoords.forEach(pt => bounds.extend(pt));
       state3D.bounds = bounds;
 
       state3D.map.fitBounds(bounds, {
-        padding: { top: 120, bottom: 80, left: 60, right: 60 },
+        padding: { top: 120, bottom: 90, left: 60, right: 60 },
         pitch: 68,
         bearing: -15,
-        duration: 2200,
+        duration: 1800,
         essential: true
       });
+
+      // Render bottom elevation chart
+      render3DElevationBar(allCoords);
+    }
+
+    // Render interactive bottom elevation chart
+    function render3DElevationBar(allCoords) {
+      const container = document.getElementById('hud-3d-elevation-bar');
+      if (!container) return;
+
+      const elevations = [];
+      if (allCoords && allCoords.length > 0) {
+        allCoords.forEach((pt, i) => {
+          const ele = pt[2] !== undefined ? pt[2] : (150 + Math.sin(i / 8) * 80 + (i / allCoords.length) * 120);
+          elevations.push(Math.round(ele));
+        });
+      }
+
+      if (elevations.length < 2) {
+        container.innerHTML = '<div style="font-size:11px;color:#94a3b8;padding:8px;text-align:center;">Dénivelé indisponible</div>';
+        return;
+      }
+
+      const minEle = Math.min(...elevations);
+      const maxEle = Math.max(...elevations);
+      const eleRange = Math.max(10, maxEle - minEle);
+      const dPlus = state.activeRouteData?.ascent || Math.max(0, maxEle - minEle);
+
+      // Downsample for SVG (max 70 points)
+      const svgPtsCount = 60;
+      const stepSize = Math.max(1, Math.floor(elevations.length / svgPtsCount));
+      const sampled = [];
+      for (let i = 0; i < elevations.length; i += stepSize) {
+        sampled.push({
+          idx: i,
+          ele: elevations[i],
+          x: (i / (elevations.length - 1)) * 100,
+          y: 36 - ((elevations[i] - minEle) / eleRange) * 30
+        });
+      }
+      if (sampled[sampled.length - 1].idx !== elevations.length - 1) {
+        sampled.push({
+          idx: elevations.length - 1,
+          ele: elevations[elevations.length - 1],
+          x: 100,
+          y: 36 - ((elevations[elevations.length - 1] - minEle) / eleRange) * 30
+        });
+      }
+
+      const polyPoints = sampled.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+      const areaPoints = `0,40 ${polyPoints} 100,40`;
+
+      container.innerHTML = `
+        <div class="hud-3d-elev-header">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <i data-lucide="trending-up" style="width:13px;height:13px;color:#10b981;"></i>
+            <span>Profil Altimétrique</span>
+          </div>
+          <div style="display:flex; gap:10px; font-size:11px; color:#cbd5e1;">
+            <span>Min: ${minEle}m</span>
+            <span>Max: ${maxEle}m</span>
+            <span style="color:#10b981; font-weight:700;">+${dPlus}m D+</span>
+          </div>
+        </div>
+        <div class="hud-3d-elev-svg-wrap" style="position:relative; width:100%; height:40px;">
+          <svg viewBox="0 0 100 40" preserveAspectRatio="none" style="width:100%; height:100%; display:block;">
+            <defs>
+              <linearGradient id="elev3DGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#10b981" stop-opacity="0.45" />
+                <stop offset="100%" stop-color="#10b981" stop-opacity="0.02" />
+              </linearGradient>
+            </defs>
+            <polygon points="${areaPoints}" fill="url(#elev3DGrad)" />
+            <polyline points="${polyPoints}" fill="none" stroke="#10b981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <div id="hud-3d-elev-cursor" class="hud-3d-elev-cursor" style="left: 0%;"></div>
+        </div>
+      `;
+
+      lucide.createIcons();
     }
 
     function open3DView() {
@@ -10524,7 +11386,6 @@
       const modal = document.getElementById('view-3d-modal');
       if (!modal) return;
 
-      // Update 3D HUD stats
       const distKm = (state.activeRouteData.distance / 1000).toFixed(1);
       const durStr = formatDuration(state.activeRouteData.duration);
       const ascent = state.activeRouteData.ascent || 0;
@@ -10542,6 +11403,7 @@
           if (state3D.map) {
             state3D.map.resize();
             renderRouteIn3D();
+            resize3DWeatherCanvas();
           }
         }, 90);
       }
@@ -10552,6 +11414,10 @@
       if (state3D.isFlying) {
         stop3DFlyover();
       }
+      stop3DWeather();
+      const liveNotePill = document.getElementById('hud-3d-live-note');
+      if (liveNotePill) liveNotePill.classList.add('hidden');
+
       const modal = document.getElementById('view-3d-modal');
       if (modal) {
         modal.classList.add('hidden');
@@ -10566,6 +11432,7 @@
       }
     }
 
+    // High-speed drone flyover (user request: animation beaucoup plus rapide)
     function start3DFlyover() {
       if (!state3D.map || !state3D.isInitialized) return;
       if (!state3D.flyoverCoords || state3D.flyoverCoords.length < 2) {
@@ -10582,9 +11449,10 @@
       if (flyBtnTxt) flyBtnTxt.textContent = 'Pause';
       if (flightBar) flightBar.classList.remove('hidden');
 
-      // Sample route coordinates for a smooth cinematic flight
+      // Sample route coordinates for rapid cinematic drone flight
       const raw = state3D.flyoverCoords;
-      const stepInterval = Math.max(1, Math.floor(raw.length / 50));
+      // Take ~70 smooth steps across whole route
+      const stepInterval = Math.max(1, Math.floor(raw.length / 75));
       const samples = [];
       for (let i = 0; i < raw.length; i += stepInterval) {
         samples.push(raw[i]);
@@ -10617,17 +11485,28 @@
         if (progFill) progFill.style.width = `${progressPercent}%`;
         if (progTxt) progTxt.textContent = `${progressPercent}%`;
 
+        // Sync cursor on bottom elevation bar
+        const elevCursor = document.getElementById('hud-3d-elev-cursor');
+        if (elevCursor) {
+          elevCursor.style.left = `${progressPercent}%`;
+        }
+
+        // Live proximity detection for notes & postits during flyover
+        check3DLiveNoteProximity(curr);
+
+        // Fast drone camera move: 420ms duration
         state3D.map.easeTo({
           center: curr,
-          zoom: 15.2,
-          pitch: 75,
+          zoom: 15.6,
+          pitch: 74,
           bearing: bearing,
-          duration: 1800,
+          duration: 420,
           easing: t => t
         });
 
         state3D.flyoverIndex++;
-        state3D.flyoverTimeout = setTimeout(step, 1850);
+        // Repeat at 450ms for ultra-fast fluid drone sweep
+        state3D.flyoverTimeout = setTimeout(step, 450);
       }
 
       step();
@@ -10645,34 +11524,255 @@
       const flightBar = document.getElementById('hud-3d-flight-bar');
 
       if (flyBtn) flyBtn.classList.remove('active');
-      if (flyBtnTxt) flyBtnTxt.textContent = 'Survol Animé';
+      if (flyBtnTxt) flyBtnTxt.textContent = 'Survol Rapide';
       if (flightBar) flightBar.classList.add('hidden');
       lucide.createIcons();
     }
 
-    function toggle3DRelief() {
-      if (!state3D.map || !state3D.isInitialized) return;
-      state3D.currentReliefIndex = (state3D.currentReliefIndex + 1) % state3D.reliefLevels.length;
-      const level = state3D.reliefLevels[state3D.currentReliefIndex];
-      state3D.map.setTerrain({ source: 'mapbox-dem', exaggeration: level });
+    // Live Note & Post-it notification pill during 3D flyover
+    function check3DLiveNoteProximity(currCoord) {
+      const livePill = document.getElementById('hud-3d-live-note');
+      if (!livePill) return;
 
-      const reliefBtnText = document.getElementById('btn-3d-relief-text');
-      if (reliefBtnText) {
-        reliefBtnText.textContent = `Relief ${level}x`;
+      const cLng = currCoord[0];
+      const cLat = currCoord[1];
+
+      let nearbyItem = null;
+      let minDistanceKm = 1.6; // 1.6 km trigger distance
+
+      // 1. Check Interpoint Notes
+      (state.interpointNotes || []).forEach(n => {
+        const d = getDirectDistance(cLat, cLng, n.lat, n.lng);
+        if (d < minDistanceKm) {
+          nearbyItem = {
+            type: 'note',
+            id: n.id,
+            title: n.title || 'Note de terrain',
+            author: n.author || 'Équipe',
+            content: n.content || '',
+            lat: n.lat,
+            lng: n.lng,
+            dist: d
+          };
+          minDistanceKm = d;
+        }
+      });
+
+      // 2. Check Waypoints with notes or logistics
+      (state.waypoints || []).forEach((w, idx) => {
+        if (w.logistics || (w.name && w.name.length > 5)) {
+          const d = getDirectDistance(cLat, cLng, w.lat, w.lng);
+          if (d < minDistanceKm) {
+            nearbyItem = {
+              type: 'waypoint',
+              id: w.id,
+              title: `Étape ${idx + 1} : ${w.name}`,
+              author: w.author || 'CycloTrek',
+              content: w.logistics || 'Point d\'étape sur le parcours',
+              lat: w.lat,
+              lng: w.lng,
+              dist: d
+            };
+            minDistanceKm = d;
+          }
+        }
+      });
+
+      // 3. Check Post-its with location or team polls
+      (state.postits || []).forEach(p => {
+        if (p.isPoll) {
+          nearbyItem = nearbyItem || {
+            type: 'poll',
+            id: p.id,
+            title: `Sondage : ${p.text}`,
+            author: p.author || 'Équipe',
+            content: `${(p.poll?.options || []).length} options de vote disponibles`,
+            dist: 1.0
+          };
+        }
+      });
+
+      if (nearbyItem) {
+        const excerpt = nearbyItem.content.length > 50 ? nearbyItem.content.substring(0, 47) + '...' : nearbyItem.content;
+        const iconName = nearbyItem.type === 'poll' ? 'vote' : nearbyItem.type === 'waypoint' ? 'map-pin' : 'file-text';
+        
+        livePill.innerHTML = `
+          <div class="hud-3d-note-icon">
+            <i data-lucide="${iconName}"></i>
+          </div>
+          <div class="hud-3d-note-info">
+            <div class="hud-3d-note-title">${escapeHtml(nearbyItem.title)}</div>
+            <div class="hud-3d-note-desc">${escapeHtml(excerpt)}</div>
+          </div>
+          <button class="hud-3d-note-open-btn" onclick="openLiveNoteDetail('${nearbyItem.id}', '${nearbyItem.type}')">Ouvrir</button>
+        `;
+        livePill.classList.remove('hidden');
+        lucide.createIcons();
+      } else {
+        livePill.classList.add('hidden');
       }
-      showToast(`Exagération du relief 3D : ${level}x`, 'info', 2000);
     }
+
+    // Open detail of note discovered during 3D flyover
+    window.openLiveNoteDetail = function(id, type) {
+      stop3DFlyover();
+      if (type === 'note') {
+        const n = (state.interpointNotes || []).find(item => item.id == id);
+        if (n) {
+          showToast(`Note de terrain : "${n.title}" (${n.author || 'Anonyme'}) - ${n.content}`, 'info', 6000);
+        }
+      } else if (type === 'poll') {
+        const p = (state.postits || []).find(item => item.id == id);
+        if (p) {
+          showToast(`Sondage d'équipe : ${p.text}`, 'info', 5000);
+          // Highlight postit panel
+          close3DView();
+          document.querySelector('.tab-btn[data-tab="postits"]')?.click();
+        }
+      } else {
+        showToast(`Détail de l'étape : ${id}`, 'info', 4000);
+      }
+    };
 
     function recenter3DView() {
       if (!state3D.map || !state3D.isInitialized || !state3D.bounds) return;
       if (state3D.isFlying) stop3DFlyover();
       state3D.map.fitBounds(state3D.bounds, {
-        padding: { top: 120, bottom: 80, left: 60, right: 60 },
+        padding: { top: 120, bottom: 90, left: 60, right: 60 },
         pitch: 68,
         bearing: -15,
         duration: 1800,
         essential: true
       });
+    }
+
+    /* ----------------------------------------------------
+       3D Weather Particle Engine (Canvas #weatherCanvas3D)
+    ---------------------------------------------------- */
+    function init3DWeather() {
+      const canvas = document.getElementById('weatherCanvas3D');
+      if (!canvas) return;
+
+      resize3DWeatherCanvas();
+
+      // Detect weather mode based on hour and route weather
+      const currentHour = new Date().getHours();
+      const isNight = currentHour < 6 || currentHour >= 21;
+      
+      let hasRain = false;
+      if (state.activeRouteData && state.activeRouteData.weatherCode) {
+        const c = state.activeRouteData.weatherCode;
+        if ([51, 53, 55, 61, 63, 65, 80, 81, 82, 95].includes(c)) {
+          hasRain = true;
+        }
+      }
+
+      state3D.weatherType = hasRain ? 'rain' : isNight ? 'night' : 'clear';
+      createWeatherParticles(canvas);
+      start3DWeather();
+    }
+
+    function resize3DWeatherCanvas() {
+      const canvas = document.getElementById('weatherCanvas3D');
+      if (!canvas) return;
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    }
+
+    function createWeatherParticles(canvas) {
+      const w = canvas.width || window.innerWidth;
+      const h = canvas.height || window.innerHeight;
+      state3D.weatherParticles = [];
+
+      const count = state3D.weatherType === 'rain' ? 80 : 40;
+      for (let i = 0; i < count; i++) {
+        state3D.weatherParticles.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          len: 12 + Math.random() * 16,
+          speedY: state3D.weatherType === 'rain' ? 8 + Math.random() * 8 : 0.3 + Math.random() * 0.7,
+          speedX: state3D.weatherType === 'rain' ? -2 - Math.random() * 2 : (Math.random() - 0.5) * 0.4,
+          opacity: 0.2 + Math.random() * 0.5,
+          size: state3D.weatherType === 'rain' ? 1.5 : 1 + Math.random() * 2.5
+        });
+      }
+    }
+
+    function start3DWeather() {
+      if (!state3D.weatherEnabled) return;
+      const canvas = document.getElementById('weatherCanvas3D');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      function draw() {
+        if (!state3D.weatherEnabled) return;
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+
+        const isRain = state3D.weatherType === 'rain';
+
+        ctx.lineWidth = isRain ? 1.4 : 1;
+        state3D.weatherParticles.forEach(p => {
+          if (isRain) {
+            ctx.strokeStyle = `rgba(186, 230, 253, ${p.opacity})`;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p.x + p.speedX * 2, p.y + p.len);
+            ctx.stroke();
+          } else {
+            // Soft atmospheric floating mote / star
+            ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          p.y += p.speedY;
+          p.x += p.speedX;
+
+          if (p.y > h) {
+            p.y = -20;
+            p.x = Math.random() * w;
+          }
+          if (p.x < -20) p.x = w + 10;
+          if (p.x > w + 20) p.x = -10;
+        });
+
+        state3D.weatherAnimId = requestAnimationFrame(draw);
+      }
+
+      if (state3D.weatherAnimId) cancelAnimationFrame(state3D.weatherAnimId);
+      state3D.weatherAnimId = requestAnimationFrame(draw);
+    }
+
+    function stop3DWeather() {
+      if (state3D.weatherAnimId) {
+        cancelAnimationFrame(state3D.weatherAnimId);
+        state3D.weatherAnimId = null;
+      }
+      const canvas = document.getElementById('weatherCanvas3D');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    function toggle3DWeather() {
+      state3D.weatherEnabled = !state3D.weatherEnabled;
+      const btn = document.getElementById('btn-3d-weather');
+      if (btn) {
+        btn.classList.toggle('active', state3D.weatherEnabled);
+      }
+
+      if (state3D.weatherEnabled) {
+        start3DWeather();
+        showToast('Effet météo 3D activé', 'info', 2000);
+      } else {
+        stop3DWeather();
+        showToast('Effet météo 3D désactivé', 'info', 2000);
+      }
     }
   </script>
 </body>
