@@ -1716,42 +1716,346 @@
       background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     }
 
-    /* Media Queries */
-    @media (max-width: 900px) {
+    /* ====================================================
+       Mobile Application Mode Design System (max-width: 768px)
+    ==================================================== */
+    .mobile-only {
+      display: none !important;
+    }
+
+    @media (max-width: 768px) {
+      .desktop-only {
+        display: none !important;
+      }
+      .mobile-only {
+        display: flex !important;
+      }
+
+      body {
+        overscroll-behavior-y: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
       .app-shell {
-        padding: 8px;
-        height: 100%;
-        overflow: hidden;
+        padding: 0 !important;
+        height: 100% !important;
+        pointer-events: none !important;
       }
-      
+
+      /* Hide full desktop topbar */
       .top-bar {
-        height: auto;
-        flex-direction: column;
-        padding: 12px;
-        gap: 12px;
-        margin-bottom: 8px;
+        display: none !important;
       }
-      
-      .search-container {
-        width: 100%;
-        flex: none;
+
+      /* Native Mobile Top App Bar */
+      .mobile-top-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 52px;
+        padding: 0 14px;
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(15, 23, 42, 0.92);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 9999;
+        pointer-events: auto;
       }
-      
-      .quick-toggles {
-        width: 100%;
-        justify-content: space-around;
-        overflow-x: auto;
-        padding-bottom: 4px;
+
+      .mobile-top-brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
       }
-      
-      .sidebar {
-        position: relative;
-        top: auto;
-        left: auto;
-        bottom: auto;
-        width: 100%;
+      .mobile-top-logo {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        background: linear-gradient(135deg, var(--primary, #10b981), #059669);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
+      }
+      .mobile-top-logo i {
+        width: 18px;
+        height: 18px;
+      }
+      .mobile-top-title {
+        font-size: 15px;
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: -0.3px;
+        line-height: 1.1;
+      }
+      .mobile-top-tag {
+        font-size: 10px;
+        color: var(--primary, #10b981);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .mobile-top-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .mobile-action-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .mobile-action-btn:active {
+        transform: scale(0.92);
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      /* Mobile Search Bar Dropdown */
+      .mobile-search-bar {
+        position: fixed;
+        top: 56px;
+        left: 10px;
+        right: 10px;
+        z-index: 10001;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        pointer-events: auto;
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+      }
+      .mobile-search-bar.hidden {
+        display: none !important;
+      }
+      .mobile-search-input {
         flex: 1;
-        max-height: 60vh;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: #ffffff;
+        font-size: 14px;
+        font-family: inherit;
+      }
+      .mobile-search-input::placeholder {
+        color: rgba(255, 255, 255, 0.45);
+      }
+
+      /* Mobile Floating Route Chip on Map */
+      .mobile-route-chip {
+        position: fixed;
+        bottom: 74px;
+        left: 12px;
+        right: 12px;
+        z-index: 9990;
+        background: rgba(15, 23, 42, 0.92);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 14px;
+        padding: 10px 14px;
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        color: #ffffff;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        pointer-events: auto;
+        cursor: pointer;
+        transition: all 0.25s ease;
+      }
+      .mobile-route-chip.hidden {
+        display: none !important;
+      }
+      .mobile-route-chip:active {
+        transform: scale(0.98);
+      }
+
+      /* Mobile Drawer Sheet (.sidebar) */
+      .sidebar {
+        position: fixed !important;
+        top: auto !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        height: auto !important;
+        max-height: 85vh !important;
+        border-radius: 22px 22px 0 0 !important;
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5) !important;
+        background: rgba(255, 255, 255, 0.98) !important;
+        backdrop-filter: blur(24px) !important;
+        -webkit-backdrop-filter: blur(24px) !important;
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        border-bottom: none !important;
+        z-index: 9998 !important;
+        pointer-events: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        transform: translateY(105%) !important;
+        padding-bottom: 70px !important;
+      }
+      .sidebar.mobile-sheet-open {
+        transform: translateY(0%) !important;
+      }
+
+      /* Hide Desktop Sidebar Tab Bar on Mobile */
+      .sidebar-tabs {
+        display: none !important;
+      }
+
+      /* Mobile Sheet Grabber Header */
+      .mobile-sheet-header {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 18px 8px 18px;
+        flex-shrink: 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        cursor: pointer;
+      }
+      .mobile-sheet-grabber {
+        width: 38px;
+        height: 5px;
+        border-radius: 3px;
+        background: #cbd5e1;
+        margin: 0 auto 6px auto;
+      }
+      .mobile-sheet-title {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .mobile-sheet-close-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.05);
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        cursor: pointer;
+      }
+      .mobile-sheet-close-btn:active {
+        background: rgba(0, 0, 0, 0.1);
+      }
+
+      /* Native App Bottom Tab Bar */
+      .mobile-bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 62px;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        background: rgba(15, 23, 42, 0.94);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        display: flex !important;
+        align-items: stretch;
+        justify-content: space-around;
+        z-index: 10000;
+        pointer-events: auto;
+      }
+
+      .mobile-nav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.55);
+        cursor: pointer;
+        padding: 6px 0;
+        transition: all 0.2s ease;
+        position: relative;
+        text-decoration: none;
+      }
+      .mobile-nav-item i {
+        width: 20px;
+        height: 20px;
+        transition: transform 0.2s ease, color 0.2s ease;
+      }
+      .mobile-nav-item span {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+      }
+      .mobile-nav-item.active {
+        color: var(--primary, #10b981) !important;
+      }
+      .mobile-nav-item.active i {
+        transform: scale(1.15);
+        color: var(--primary, #10b981) !important;
+      }
+      .mobile-nav-item.active::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 24px;
+        height: 3px;
+        border-radius: 0 0 3px 3px;
+        background: var(--primary, #10b981);
+        box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+      }
+
+      .mobile-layer-chip {
+        padding: 8px 10px;
+        border-radius: var(--border-radius-sm);
+        background: rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-main);
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.15s ease;
+      }
+      .mobile-layer-chip.active {
+        background: var(--primary-light);
+        border-color: var(--primary);
+        color: var(--primary-dark);
+      }
+
+      /* Modals on mobile: bottom sheet or fullscreen */
+      .modal-content {
+        max-width: 96% !important;
+        max-height: 90vh !important;
+        border-radius: 18px !important;
+        margin: auto !important;
       }
     }
 
@@ -2302,8 +2606,43 @@
   <!-- Main App Shell -->
   <div class="app-shell">
     
-    <!-- Top Navigation Bar -->
-    <header class="top-bar glass-panel" id="top-bar">
+    <!-- Mobile Native Top App Bar (Phone Only) -->
+    <header class="mobile-top-bar mobile-only" id="mobile-top-bar">
+      <div class="mobile-top-brand">
+        <div class="mobile-top-logo">
+          <i data-lucide="bike"></i>
+        </div>
+        <div>
+          <div class="mobile-top-title">CycloTrek</div>
+          <div class="mobile-top-tag">France</div>
+        </div>
+        <div id="mobile-calc-dot" class="pulse-dot hidden" style="margin-left:4px;"></div>
+      </div>
+      <div class="mobile-top-actions">
+        <button id="mobile-search-toggle-btn" class="mobile-action-btn" title="Rechercher une ville">
+          <i data-lucide="search" style="width:17px; height:17px;"></i>
+        </button>
+        <button id="mobile-undo-btn" class="mobile-action-btn" title="Annuler">
+          <i data-lucide="undo-2" style="width:16px; height:16px;"></i>
+        </button>
+        <button id="mobile-redo-btn" class="mobile-action-btn" title="Rétablir">
+          <i data-lucide="redo-2" style="width:16px; height:16px;"></i>
+        </button>
+        <div id="mobile-profile-avatar-btn" class="profile-avatar-circle sm" style="cursor:pointer; background:linear-gradient(135deg, #64748b, #475569);" title="Mon Compte">?</div>
+      </div>
+    </header>
+
+    <!-- Mobile Search Overlay Dropdown (Phone Only) -->
+    <div id="mobile-search-bar" class="mobile-search-bar hidden mobile-only">
+      <i data-lucide="search" style="color:rgba(255,255,255,0.6); width:18px; height:18px;"></i>
+      <input type="text" id="mobile-search-input" class="mobile-search-input" placeholder="Rechercher une ville, une adresse..." autocomplete="off">
+      <button id="mobile-search-close-btn" class="mobile-action-btn" style="width:28px; height:28px; padding:0; background:transparent; border:none;" title="Fermer">
+        <i data-lucide="x" style="width:16px; height:16px; color:#ffffff;"></i>
+      </button>
+    </div>
+
+    <!-- Top Navigation Bar (Desktop Only) -->
+    <header class="top-bar glass-panel desktop-only" id="top-bar">
       <div class="logo-area">
         <div class="logo-icon">
           <i data-lucide="bike"></i>
@@ -2427,11 +2766,25 @@
       </button>
     </div>
 
-    <!-- Sidebar Panel (Left Side) -->
+    <!-- Sidebar Panel (Left Side on Desktop / Sliding Drawer Sheet on Mobile) -->
     <aside class="sidebar glass-panel" id="sidebar">
       
-      <!-- Tabs Navigation -->
-      <div class="sidebar-tabs">
+      <!-- Mobile Sheet Grabber Header (Phone Only) -->
+      <div class="mobile-sheet-header mobile-only" id="mobile-sheet-header">
+        <div style="flex:1;">
+          <div class="mobile-sheet-grabber"></div>
+          <div class="mobile-sheet-title" id="mobile-sheet-title">
+            <i data-lucide="milestone" style="width:16px; height:16px; color:var(--primary);"></i>
+            <span id="mobile-sheet-title-text">Mon Itinéraire</span>
+          </div>
+        </div>
+        <button class="mobile-sheet-close-btn" id="mobile-sheet-close-btn" title="Fermer la vue">
+          <i data-lucide="chevron-down" style="width:20px; height:20px;"></i>
+        </button>
+      </div>
+
+      <!-- Tabs Navigation (Desktop Only) -->
+      <div class="sidebar-tabs desktop-only">
         <button class="tab-btn active" data-tab="plan" title="Planifier l'itinéraire">
           <i data-lucide="milestone"></i>
           <span>Planifier</span>
@@ -2777,8 +3130,138 @@
           </div>
         </div>
 
+        <!-- Tab 6: Compte, Historique & Paramètres (Mobile & Quick Access) -->
+        <div class="tab-panel hidden" id="panel-account">
+          <!-- Mon Profil Actif -->
+          <section class="sidebar-section">
+            <div class="section-header">
+              <h2 class="section-title"><i data-lucide="user"></i> Mon Profil & Équipe</h2>
+            </div>
+            <div class="glass-panel-inner" style="display:flex; flex-direction:column; gap:12px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div id="account-avatar-preview" class="profile-avatar-circle" style="width:42px; height:42px; font-size:16px; background:linear-gradient(135deg, #64748b, #475569);">?</div>
+                  <div>
+                    <div id="account-name-preview" style="font-weight:700; font-size:14px; color:var(--text-main);">Visiteur</div>
+                    <div style="font-size:11px; color:var(--text-muted);">Membre de l'équipe CycloTrek</div>
+                  </div>
+                </div>
+                <button id="account-switch-profile-btn" class="btn-secondary" style="height:32px; font-size:11px; padding:0 12px;">Changer</button>
+              </div>
+              <div id="account-profiles-list" class="profile-cards-grid" style="margin-top:4px;">
+                <!-- Team members mini-cards populated dynamically -->
+              </div>
+            </div>
+          </section>
+
+          <!-- Synchronisation GitHub Instantanée -->
+          <section class="sidebar-section">
+            <div class="section-header">
+              <h2 class="section-title"><i data-lucide="cloud"></i> Sauvegarde Cloud GitHub</h2>
+            </div>
+            <div class="glass-panel-inner" style="display:flex; flex-direction:column; gap:10px;">
+              <p style="font-size:12px; color:var(--text-muted); margin:0;">
+                Enregistrez le parcours en 1 clic pour que toute l'équipe y accède instantanément :
+              </p>
+              <button id="account-github-save-btn" class="btn-primary" style="height:42px; width:100%; display:flex; align-items:center; justify-content:center; gap:8px;">
+                <i data-lucide="save"></i> Sauvegarder sur GitHub
+              </button>
+            </div>
+          </section>
+
+          <!-- Journal d'Activité / Historique de l'équipe -->
+          <section class="sidebar-section">
+            <div class="section-header">
+              <h2 class="section-title"><i data-lucide="history"></i> Historique de l'Équipe</h2>
+            </div>
+            <div class="glass-panel-inner" style="display:flex; flex-direction:column; gap:10px;">
+              <p style="font-size:12px; color:var(--text-muted); margin:0;">
+                Consultez qui a posé chaque étape, note ou correspondance SNCF :
+              </p>
+              <button id="account-open-history-btn" class="btn-secondary" style="height:38px; width:100%; display:flex; align-items:center; justify-content:center; gap:8px;">
+                <i data-lucide="file-text"></i> Ouvrir le Journal des Modifications
+              </button>
+            </div>
+          </section>
+
+          <!-- Préférences de Carte & Calques -->
+          <section class="sidebar-section">
+            <div class="section-header">
+              <h2 class="section-title"><i data-lucide="layers"></i> Calques & Style de Carte</h2>
+            </div>
+            <div class="glass-panel-inner" style="display:flex; flex-direction:column; gap:10px;">
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <button class="mobile-layer-chip" id="mobile-toggle-campings">⛺ Campings</button>
+                <button class="mobile-layer-chip" id="mobile-toggle-water">💧 Points d'eau</button>
+                <button class="mobile-layer-chip" id="mobile-toggle-toilets">🚻 Toilettes</button>
+                <button class="mobile-layer-chip active" id="mobile-toggle-ways">🚲 Voies Vertes</button>
+              </div>
+              <div style="margin-top:6px;">
+                <label style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Fond de carte :</label>
+                <select id="mobile-map-style-select" class="sim-select" style="width:100%; margin-top:4px; height:36px;">
+                  <option value="sobre">Sobre (OSM France)</option>
+                  <option value="relief">Relief (OpenTopoMap)</option>
+                  <option value="cyclosm">Cyclable (CyclOSM)</option>
+                  <option value="satellite">Satellite HD (Esri)</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <!-- Aide & Visite Guidée -->
+          <section class="sidebar-section">
+            <div class="glass-panel-inner" style="display:flex; flex-direction:column; gap:8px;">
+              <button id="mobile-relaunch-tour-btn" class="btn-secondary" style="height:38px; width:100%; display:flex; align-items:center; justify-content:center; gap:8px;">
+                <i data-lucide="compass"></i> Revoir le Guide Interactif
+              </button>
+              <button id="mobile-about-btn" class="btn-secondary" style="height:38px; width:100%; display:flex; align-items:center; justify-content:center; gap:8px;">
+                <i data-lucide="info"></i> À propos de CycloTrek
+              </button>
+            </div>
+          </section>
+        </div>
+
       </div>
     </aside>
+
+    <!-- Mobile Floating Route Chip on Map (Phone Only) -->
+    <div id="mobile-route-chip" class="mobile-route-chip hidden mobile-only">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:18px;">🚴</span>
+        <div>
+          <div id="mobile-route-stats" style="font-weight:700; font-size:13px; line-height:1.2;">0 km · 0h00</div>
+          <div id="mobile-route-profile-tag" style="font-size:11px; color:#94a3b8;">Chemins (VTC)</div>
+        </div>
+      </div>
+      <button id="mobile-route-details-btn" class="btn-primary" style="height:30px; font-size:11px; padding:0 12px; border-radius:8px; gap:4px;">
+        <span>Étapes</span>
+        <i data-lucide="chevron-up" style="width:12px; height:12px;"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar (Phone Only) -->
+    <nav class="mobile-bottom-nav mobile-only" id="mobile-bottom-nav">
+      <button class="mobile-nav-item active" data-mobile-tab="map" title="Carte">
+        <i data-lucide="map"></i>
+        <span>Carte</span>
+      </button>
+      <button class="mobile-nav-item" data-mobile-tab="plan" title="Étapes">
+        <i data-lucide="milestone"></i>
+        <span>Étapes</span>
+      </button>
+      <button class="mobile-nav-item" data-mobile-tab="postits" title="Notes">
+        <i data-lucide="sticky-note"></i>
+        <span>Notes</span>
+      </button>
+      <button class="mobile-nav-item" data-mobile-tab="analysis" title="Analyse">
+        <i data-lucide="bar-chart-3"></i>
+        <span>Analyse</span>
+      </button>
+      <button class="mobile-nav-item" data-mobile-tab="account" title="Compte">
+        <i data-lucide="user"></i>
+        <span>Compte</span>
+      </button>
+    </nav>
 
   </div>
 
@@ -3891,6 +4374,253 @@
     }
 
     /* ----------------------------------------------------
+       Mobile Application Mode Engine
+    ---------------------------------------------------- */
+    function initMobileApp() {
+      const bottomNav = document.getElementById('mobile-bottom-nav');
+      const sidebar = document.getElementById('sidebar');
+      const sheetTitle = document.getElementById('mobile-sheet-title');
+      const sheetCloseBtn = document.getElementById('mobile-sheet-close-btn');
+      const searchToggleBtn = document.getElementById('mobile-search-toggle-btn');
+      const searchBar = document.getElementById('mobile-search-bar');
+      const searchCloseBtn = document.getElementById('mobile-search-close-btn');
+      const searchInput = document.getElementById('mobile-search-input');
+      const routeChip = document.getElementById('mobile-route-chip');
+      const mobileAvatarBtn = document.getElementById('mobile-profile-avatar-btn');
+      const undoBtn = document.getElementById('mobile-undo-btn');
+      const redoBtn = document.getElementById('mobile-redo-btn');
+
+      // Titles and icons for the mobile drawer sheet
+      const tabMeta = {
+        'plan': { title: 'Mon Itinéraire', icon: 'milestone' },
+        'postits': { title: 'Post-its & Notes', icon: 'sticky-note' },
+        'analysis': { title: 'Analyse & Nature des sols', icon: 'bar-chart-3' },
+        'account': { title: 'Compte & Historique', icon: 'user' }
+      };
+
+      window.openMobileTab = function(tabKey) {
+        if (!sidebar) return;
+
+        // Update bottom navigation bar active button
+        document.querySelectorAll('.mobile-nav-item').forEach(item => {
+          if (item.getAttribute('data-mobile-tab') === tabKey) {
+            item.classList.add('active');
+          } else {
+            item.classList.remove('active');
+          }
+        });
+
+        if (tabKey === 'map') {
+          // Close drawer sheet to reveal the full map
+          sidebar.classList.remove('mobile-sheet-open');
+          return;
+        }
+
+        // Open drawer sheet
+        sidebar.classList.add('mobile-sheet-open');
+
+        // Update sheet header title and icon
+        if (sheetTitle && tabMeta[tabKey]) {
+          sheetTitle.innerHTML = `
+            <i data-lucide="${tabMeta[tabKey].icon}" style="width:16px; height:16px; color:var(--primary);"></i>
+            <span>${tabMeta[tabKey].title}</span>
+          `;
+        }
+
+        // Switch panels inside the sidebar
+        document.querySelectorAll('#sidebar .tab-panel').forEach(panel => {
+          panel.classList.add('hidden');
+        });
+
+        if (tabKey === 'account') {
+          const accPanel = document.getElementById('panel-account');
+          if (accPanel) accPanel.classList.remove('hidden');
+          updateAccountSheetUI();
+        } else {
+          const targetPanel = document.getElementById(`panel-${tabKey}`);
+          if (targetPanel) targetPanel.classList.remove('hidden');
+          // Also sync with desktop tab buttons
+          const desktopTabBtn = document.querySelector(`.sidebar-tabs .tab-btn[data-tab="${tabKey}"]`);
+          if (desktopTabBtn) {
+            document.querySelectorAll('.sidebar-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+            desktopTabBtn.classList.add('active');
+          }
+        }
+
+        lucide.createIcons();
+      };
+
+      // Bottom nav tab clicks
+      if (bottomNav) {
+        bottomNav.querySelectorAll('.mobile-nav-item').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const tabKey = btn.getAttribute('data-mobile-tab');
+            window.openMobileTab(tabKey);
+          });
+        });
+      }
+
+      // Close button and grabber on mobile drawer
+      if (sheetCloseBtn) {
+        sheetCloseBtn.addEventListener('click', () => window.openMobileTab('map'));
+      }
+
+      // Top avatar button triggers Account tab
+      if (mobileAvatarBtn) {
+        mobileAvatarBtn.addEventListener('click', () => window.openMobileTab('account'));
+      }
+
+      // Floating route chip triggers Stages tab
+      if (routeChip) {
+        routeChip.addEventListener('click', () => window.openMobileTab('plan'));
+      }
+
+      // Mobile search overlay
+      if (searchToggleBtn && searchBar) {
+        searchToggleBtn.addEventListener('click', () => {
+          searchBar.classList.toggle('hidden');
+          if (!searchBar.classList.contains('hidden') && searchInput) {
+            searchInput.focus();
+          }
+        });
+      }
+      if (searchCloseBtn && searchBar) {
+        searchCloseBtn.addEventListener('click', () => {
+          searchBar.classList.add('hidden');
+        });
+      }
+
+      // Synchronize mobile search input with address-input
+      if (searchInput) {
+        const desktopSearch = document.getElementById('address-input');
+        searchInput.addEventListener('input', (e) => {
+          if (desktopSearch) {
+            desktopSearch.value = e.target.value;
+            desktopSearch.dispatchEvent(new Event('input'));
+          }
+        });
+      }
+
+      // Undo / Redo in mobile topbar
+      if (undoBtn) {
+        undoBtn.addEventListener('click', () => {
+          const u = document.getElementById('undo-btn');
+          if (u) u.click();
+        });
+      }
+      if (redoBtn) {
+        redoBtn.addEventListener('click', () => {
+          const r = document.getElementById('redo-btn');
+          if (r) r.click();
+        });
+      }
+
+      // Setup Account Panel Actions
+      const switchProfileBtn = document.getElementById('account-switch-profile-btn');
+      if (switchProfileBtn) {
+        switchProfileBtn.addEventListener('click', () => openLocalModal('modal-profile'));
+      }
+
+      const githubSaveBtn = document.getElementById('account-github-save-btn');
+      if (githubSaveBtn) {
+        githubSaveBtn.addEventListener('click', () => handleGitHubSync());
+      }
+
+      const openHistoryBtn = document.getElementById('account-open-history-btn');
+      if (openHistoryBtn) {
+        openHistoryBtn.addEventListener('click', () => openLocalModal('modal-activity-log'));
+      }
+
+      const relaunchTourBtn = document.getElementById('mobile-relaunch-tour-btn');
+      if (relaunchTourBtn) {
+        relaunchTourBtn.addEventListener('click', () => {
+          window.openMobileTab('map');
+          startInteractiveTour(0);
+        });
+      }
+
+      const mobileAboutBtn = document.getElementById('mobile-about-btn');
+      if (mobileAboutBtn) {
+        mobileAboutBtn.addEventListener('click', () => openLocalModal('modal-about'));
+      }
+
+      // Mobile Layer Chips
+      const layerBindings = [
+        { id: 'mobile-toggle-campings', desktopId: 'toggle-campings-btn' },
+        { id: 'mobile-toggle-water', desktopId: 'toggle-water-btn' },
+        { id: 'mobile-toggle-toilets', desktopId: 'toggle-toilets-btn' },
+        { id: 'mobile-toggle-ways', desktopId: 'toggle-ways-btn' }
+      ];
+      layerBindings.forEach(({ id, desktopId }) => {
+        const btn = document.getElementById(id);
+        const deskBtn = document.getElementById(desktopId);
+        if (btn && deskBtn) {
+          btn.addEventListener('click', () => {
+            deskBtn.click();
+            btn.classList.toggle('active', deskBtn.classList.contains('active'));
+          });
+        }
+      });
+
+      // Mobile Map Style Select
+      const styleSelect = document.getElementById('mobile-map-style-select');
+      if (styleSelect) {
+        styleSelect.addEventListener('change', (e) => {
+          setMapStyle(e.target.value);
+        });
+      }
+
+      // Resize listener to reset mobile drawer if viewport transitions to PC
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && sidebar) {
+          sidebar.classList.remove('mobile-sheet-open');
+        }
+      });
+    }
+
+    function updateAccountSheetUI() {
+      const avatarEl = document.getElementById('account-avatar-preview');
+      const nameEl = document.getElementById('account-name-preview');
+      const profilesList = document.getElementById('account-profiles-list');
+
+      if (state.currentProfile) {
+        if (avatarEl) {
+          avatarEl.textContent = state.currentProfile.initials || '??';
+          avatarEl.style.background = state.currentProfile.gradient || generateProfileGradient(state.currentProfile.name);
+        }
+        if (nameEl) {
+          nameEl.textContent = state.currentProfile.name;
+        }
+      } else {
+        if (avatarEl) {
+          avatarEl.textContent = '?';
+          avatarEl.style.background = 'linear-gradient(135deg, #64748b, #475569)';
+        }
+        if (nameEl) {
+          nameEl.textContent = 'Créer ou choisir un profil';
+        }
+      }
+
+      if (profilesList) {
+        profilesList.innerHTML = '';
+        state.profiles.forEach(p => {
+          const isActive = state.currentProfile && state.currentProfile.id === p.id;
+          const card = document.createElement('div');
+          card.className = `profile-select-card ${isActive ? 'active' : ''}`;
+          card.style.padding = '8px 10px';
+          card.innerHTML = `
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div class="profile-avatar-circle sm" style="background:${p.gradient};">${p.initials}</div>
+              <span style="font-size:12px; font-weight:700; color:var(--text-main);">${p.name}</span>
+            </div>
+            ${isActive ? '<span style="font-size:10px; color:var(--primary); font-weight:700;">Actif</span>' : '<button class="btn-secondary select-profile-btn" data-id="' + p.id + '" style="height:26px; font-size:10px; padding:0 8px;">Choisir</button>'}
+          `;
+          profilesList.appendChild(card);
+        });
+      }
+    }
+
+    /* ----------------------------------------------------
        Initialization
     ---------------------------------------------------- */
     document.addEventListener('DOMContentLoaded', () => {
@@ -3902,6 +4632,7 @@
       initPostits();
       initInterpointNotes();
       initInteractiveTour();
+      initMobileApp();
       updateSavedRoutesListUI(); // Load saved items from localStorage cache
       
       showToast('Bienvenue sur CycloTrek ! Connectez votre profil pour collaborer.', 'info', 4000);
@@ -4465,6 +5196,21 @@
           pillName.textContent = 'Choisir un profil';
         }
         if (displayCard) displayCard.classList.add('hidden');
+      }
+
+      // Update mobile topbar profile avatar & mobile account sheet
+      const mobAvatar = document.getElementById('mobile-profile-avatar-btn');
+      if (mobAvatar) {
+        if (state.currentProfile) {
+          mobAvatar.textContent = state.currentProfile.initials || '??';
+          mobAvatar.style.background = state.currentProfile.gradient || generateProfileGradient(state.currentProfile.name);
+        } else {
+          mobAvatar.textContent = '?';
+          mobAvatar.style.background = 'linear-gradient(135deg, #64748b, #475569)';
+        }
+      }
+      if (typeof updateAccountSheetUI === 'function') {
+        updateAccountSheetUI();
       }
     }
 
@@ -6837,6 +7583,8 @@
         state.trainLayers.forEach(l => state.map.removeLayer(l));
         state.trainLayers = [];
       }
+      const mobChip = document.getElementById('mobile-route-chip');
+      if (mobChip) mobChip.classList.add('hidden');
     }
 
     // Render all active transit segments (Train, Bus, Autre) on Leaflet map
@@ -6916,6 +7664,8 @@
 
       const badge = document.getElementById('calc-status-badge');
       if (badge) badge.classList.remove('hidden');
+      const mobDot = document.getElementById('mobile-calc-dot');
+      if (mobDot) mobDot.classList.remove('hidden');
 
       renderTransitSegmentsOnMap();
 
@@ -6962,6 +7712,7 @@
         updateAlternativesUI();
         updateTrekSummaryUI();
         if (badge) badge.classList.add('hidden');
+        if (mobDot) mobDot.classList.add('hidden');
         lucide.createIcons();
         return;
       }
@@ -7056,6 +7807,7 @@
       });
 
       if (badge) badge.classList.add('hidden');
+      if (mobDot) mobDot.classList.add('hidden');
 
       if (!state.routes[state.activeProfile]) {
         state.activeProfile = Object.keys(state.routes)[0];
@@ -7596,6 +8348,25 @@
       document.getElementById('summary-duration').innerText = formatDuration(route.duration);
       document.getElementById('summary-elevation-gain').innerText = `+${route.ascent}m`;
       document.getElementById('summary-elevation-loss').innerText = `-${route.descent}m`;
+
+      // Update Mobile Floating Route Chip on Map
+      const mobChip = document.getElementById('mobile-route-chip');
+      const mobStats = document.getElementById('mobile-route-stats');
+      const mobProfileTag = document.getElementById('mobile-route-profile-tag');
+      if (mobChip && mobStats) {
+        const distKm = (route.distance / 1000).toFixed(1);
+        const durationStr = formatDuration(route.duration);
+        mobStats.textContent = `${distKm} km · ${durationStr} · +${route.ascent}m`;
+        if (mobProfileTag) {
+          const profileNames = { trekking: 'Chemins (VTC)', fastbike: 'Route (Rapide)', safety: 'Sécurisé (Pistes)' };
+          mobProfileTag.textContent = profileNames[state.activeProfile] || 'Itinéraire';
+        }
+        if (route.distance > 0) {
+          mobChip.classList.remove('hidden');
+        } else {
+          mobChip.classList.add('hidden');
+        }
+      }
 
       const timeline = document.getElementById('stages-timeline');
       timeline.innerHTML = '';
