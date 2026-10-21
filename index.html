@@ -2067,6 +2067,231 @@
       border-color: var(--primary);
       background: var(--primary-light);
     }
+
+    /* ====================================================
+       Interactive Guided Onboarding Spotlight Tour
+    ==================================================== */
+    .interactive-tour-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1000000;
+      pointer-events: auto;
+      transition: opacity 0.3s ease;
+    }
+    .interactive-tour-overlay.hidden {
+      display: none !important;
+    }
+    .tour-spotlight-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    #tour-cutout-rect {
+      transition: x 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                  y 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                  width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                  height 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .tour-target-ring {
+      position: fixed;
+      pointer-events: none;
+      border: 2.5px solid var(--primary, #10b981);
+      border-radius: 14px;
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.25), 0 0 25px rgba(16, 185, 129, 0.55);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1000001;
+      animation: tourPulseRing 2.2s infinite ease-in-out;
+    }
+    @keyframes tourPulseRing {
+      0%, 100% {
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3), 0 0 15px rgba(16, 185, 129, 0.4);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 0 8px rgba(16, 185, 129, 0.12), 0 0 30px rgba(16, 185, 129, 0.75);
+        transform: scale(1.015);
+      }
+    }
+    .tour-step-card {
+      position: fixed;
+      z-index: 1000002;
+      width: 370px;
+      max-width: calc(100vw - 32px);
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 22px 50px rgba(0, 0, 0, 0.65), 0 0 35px rgba(16, 185, 129, 0.18);
+      border-radius: 18px;
+      padding: 18px 20px;
+      color: #f8fafc;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+    }
+    .tour-card-arrow {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      transform: rotate(45deg);
+      pointer-events: none;
+    }
+    .tour-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .tour-step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .tour-close-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+    .tour-close-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .tour-card-body {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .tour-step-icon {
+      font-size: 26px;
+      line-height: 1;
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
+    }
+    .tour-step-content {
+      flex: 1;
+    }
+    .tour-step-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0 0 6px 0;
+      line-height: 1.3;
+    }
+    .tour-step-desc {
+      font-size: 12px;
+      line-height: 1.5;
+      color: #cbd5e1;
+      margin: 0;
+    }
+    .tour-step-tip {
+      background: rgba(16, 185, 129, 0.1);
+      border-left: 3px solid var(--primary, #10b981);
+      padding: 8px 12px;
+      border-radius: 0 8px 8px 0;
+      font-size: 11px;
+      line-height: 1.4;
+      color: #a7f3d0;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .tour-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .tour-progress-dots {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tour-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+    .tour-dot.active {
+      width: 18px;
+      border-radius: 4px;
+      background: var(--primary, #10b981);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+    }
+    .tour-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tour-btn-sm {
+      height: 32px !important;
+      padding: 0 12px !important;
+      font-size: 11px !important;
+      border-radius: 8px !important;
+    }
+
+    /* Soil Composition & Nature Cards */
+    .soil-card-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .soil-card-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      border-radius: var(--border-radius-sm);
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      font-size: 11px;
+    }
+    .soil-crops-pill {
+      font-size: 11px;
+      color: #92400e;
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      border-radius: 6px;
+      padding: 6px 10px;
+      line-height: 1.4;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
   </style>
 </head>
 <body>
@@ -2375,6 +2600,33 @@
                   <!-- Dynamic legend items -->
                 </div>
               </div>
+
+              <!-- Nature des Sols & Agriculture Card (data.gouv.fr & IGN ApiCarto) -->
+              <div id="soil-nature-card" class="glass-panel-inner" style="margin-top:14px; padding:10px 12px; display:flex; flex-direction:column; gap:8px;">
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                  <span style="font-size:11px; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:5px;">
+                    <i data-lucide="layers" style="width:13px; height:13px; color:var(--primary);"></i> Nature & Vocation des Sols
+                  </span>
+                  <span class="soil-composition-badge">
+                    <i data-lucide="check-circle" style="width:10px; height:10px;"></i> data.gouv.fr / IGN
+                  </span>
+                </div>
+
+                <div id="soil-nature-breakdown" class="soil-card-group">
+                  <!-- Populated dynamically: Urbain PLU, Agricole RPG, Naturel & Forêt -->
+                </div>
+
+                <div id="soil-crops-container" class="soil-crops-pill hidden">
+                  <i data-lucide="wheat" style="width:14px; height:14px; flex-shrink:0; color:#b45309;"></i>
+                  <span id="soil-crops-text">Cultures identifiées...</span>
+                </div>
+
+                <div style="font-size:9px; color:var(--text-muted); display:flex; align-items:center; justify-content:flex-end; gap:4px; opacity:0.8; margin-top:2px;">
+                  Source : <a href="https://apicarto.ign.fr/api/doc/gpu" target="_blank" style="color:var(--primary); text-decoration:none;">GpU (Urbanisme)</a> & <a href="https://apicarto.ign.fr/api/doc/rpg" target="_blank" style="color:var(--primary); text-decoration:none;">RPG (Agriculture)</a>
+                </div>
+              </div>
+            </section>
+
             <!-- Greenway Auto-Adaptation Card -->
             <section class="sidebar-section" id="section-greenway-adaptation">
               <div class="glass-panel-inner" style="display:flex; flex-direction:column; gap:8px;">
@@ -2388,7 +2640,6 @@
                   <i data-lucide="sparkles" style="width:14px; height:14px;"></i> Adapter le tracé sur la Voie Verte
                 </button>
               </div>
-            </section>
             </section>
 
             <!-- Elevation Profile Widget -->
@@ -2567,8 +2818,11 @@
           <li>Prévisions Météo : <a href="https://open-meteo.com" target="_blank">Open-Meteo</a>.</li>
         </ul>
       </div>
-      <div class="modal-footer">
-        <button class="btn-primary" data-modal="modal-about">Commencer</button>
+      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+        <button id="relaunch-tour-btn" class="btn-secondary" style="height:38px; display:inline-flex; align-items:center; gap:6px;">
+          <i data-lucide="compass"></i> Revoir le guide interactif
+        </button>
+        <button class="btn-primary" data-modal="modal-about">Fermer</button>
       </div>
     </div>
   </div>
@@ -3204,6 +3458,60 @@
   <!-- Hidden inputs for file loading -->
   <input type="file" id="import-gpx-input" accept=".gpx" class="hidden">
 
+  <!-- Interactive Guided Onboarding Spotlight Tour -->
+  <div id="interactive-tour-overlay" class="interactive-tour-overlay hidden">
+    <!-- SVG Mask for Dimmed Screen with Cutout Window -->
+    <svg class="tour-spotlight-svg" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <mask id="tour-spotlight-mask">
+          <rect width="100%" height="100%" fill="white" />
+          <rect id="tour-cutout-rect" x="0" y="0" width="0" height="0" rx="14" ry="14" fill="black" />
+        </mask>
+      </defs>
+      <rect width="100%" height="100%" fill="rgba(10, 15, 29, 0.78)" mask="url(#tour-spotlight-mask)" />
+    </svg>
+
+    <!-- Animated Target Ring -->
+    <div id="tour-target-ring" class="tour-target-ring"></div>
+
+    <!-- Floating Popover Card -->
+    <div id="tour-step-card" class="tour-step-card">
+      <div id="tour-card-arrow" class="tour-card-arrow"></div>
+
+      <div class="tour-card-header">
+        <div class="tour-step-badge">
+          <i data-lucide="sparkles" style="width:12px; height:12px;"></i>
+          <span id="tour-step-num">Étape 1 sur 5</span>
+        </div>
+        <button id="tour-close-btn" class="tour-close-btn" title="Fermer le tutoriel (Échap)">
+          <i data-lucide="x" style="width:16px; height:16px;"></i>
+        </button>
+      </div>
+
+      <div class="tour-card-body">
+        <div class="tour-step-icon" id="tour-step-icon">🚴</div>
+        <div class="tour-step-content">
+          <h3 id="tour-step-title" class="tour-step-title">Titre du guide</h3>
+          <p id="tour-step-desc" class="tour-step-desc">Description interactive de l'étape.</p>
+        </div>
+      </div>
+
+      <div id="tour-step-tip" class="tour-step-tip">
+        <i data-lucide="info" style="width:14px; height:14px; flex-shrink:0; margin-top:1px;"></i>
+        <span id="tour-tip-text">Astuce pratique</span>
+      </div>
+
+      <div class="tour-card-footer">
+        <div class="tour-progress-dots" id="tour-progress-dots"></div>
+        <div class="tour-actions">
+          <button id="tour-skip-btn" class="btn-secondary tour-btn-sm">Passer</button>
+          <button id="tour-prev-btn" class="btn-secondary tour-btn-sm" disabled>Précédent</button>
+          <button id="tour-next-btn" class="btn-primary tour-btn-sm">Suivant</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Center -->
   <div class="toast-container" id="toast-container"></div>
 
@@ -3317,6 +3625,272 @@
     };
 
     /* ----------------------------------------------------
+       Interactive Onboarding Spotlight Tour Engine
+    ---------------------------------------------------- */
+    const tourState = {
+      active: false,
+      currentStep: 0,
+      steps: [
+        {
+          target: '#profile-pill-btn',
+          title: '1. Profil Nominatif de l\'Équipe',
+          icon: '👤',
+          desc: 'Chaque action est désormais signée ! Créez ou choisissez votre profil pour que toute l\'équipe sache qui a posé chaque étape, correspondance SNCF ou note.',
+          tip: 'Vos initiales et couleur personnalisée s\'affichent sur vos contributions.',
+          placement: 'bottom'
+        },
+        {
+          target: '.search-container',
+          title: '2. Tracé Intelligent & Voies Vertes',
+          icon: '🚴‍♂️',
+          desc: 'Tapez une ville ou cliquez directement n\'importe où sur la carte pour tracer votre itinéraire. CycloTrek calcule le chemin optimal et s\'adapte aux véloroutes françaises.',
+          tip: 'Astuce : Cliquez longuement sur une étape à gauche pour la déplacer dans la liste !',
+          placement: 'bottom'
+        },
+        {
+          target: '#section-waypoints',
+          title: '3. Multimodalité (Train SNCF & Bus)',
+          icon: '🚆',
+          desc: 'Besoin de franchir un obstacle ou une longue distance ? Activez "Trajet Train / Transport" : la liaison s\'affiche en pointillés et le vélo reprend à la gare d\'arrivée !',
+          tip: 'Compatible avec les gares TGV, TER et autocars régionaux de toute la France.',
+          placement: 'right'
+        },
+        {
+          target: '#topbar-postit-btn',
+          title: '4. Post-its & Notes de Terrain',
+          icon: '📝',
+          desc: 'Collaborez en direct avec vos coéquipiers ! Notez les idées logistiques sur le mur de post-its, ou posez des notes géolocalisées en cliquant sur la carte.',
+          tip: 'Parfait pour épingler un bon spot de bivouac, une fontaine ou un passage délicat.',
+          placement: 'bottom'
+        },
+        {
+          target: '#github-sync-btn',
+          title: '5. Sauvegarde Automatique GitHub',
+          icon: '☁️',
+          desc: 'Sauvegardez l\'ensemble de votre voyage en un clic sur GitHub. La persistance est automatisée : toute l\'équipe retrouve le parcours à jour sans rien configurer !',
+          tip: 'Vous avez toutes les clés en main. Cliquez sur "Terminer" pour démarrer !',
+          placement: 'bottom'
+        }
+      ]
+    };
+
+    function startInteractiveTour(stepIndex = 0) {
+      tourState.active = true;
+      tourState.currentStep = stepIndex;
+
+      const overlay = document.getElementById('interactive-tour-overlay');
+      if (!overlay) return;
+      overlay.classList.remove('hidden');
+
+      renderTourStep(tourState.currentStep);
+    }
+
+    function endInteractiveTour() {
+      tourState.active = false;
+      const overlay = document.getElementById('interactive-tour-overlay');
+      if (overlay) overlay.classList.add('hidden');
+      localStorage.setItem('cyclotrek_interactive_tour_seen', 'true');
+      
+      // If user still doesn't have a profile, offer creation now
+      if (!state.currentProfile && state.profiles.length === 0) {
+        setTimeout(() => openLocalModal('modal-profile'), 300);
+      }
+    }
+
+    function renderTourStep(index) {
+      if (index < 0 || index >= tourState.steps.length) {
+        endInteractiveTour();
+        return;
+      }
+      tourState.currentStep = index;
+      const step = tourState.steps[index];
+
+      // If targeting waypoints section, ensure Planifier tab is visible
+      if (step.target === '#section-waypoints') {
+        const planTabBtn = document.querySelector('.tab-btn[data-tab="plan"]');
+        if (planTabBtn) planTabBtn.click();
+      }
+
+      // Find target element
+      let targetEl = document.querySelector(step.target);
+      if (!targetEl) targetEl = document.getElementById('top-bar');
+
+      const rect = targetEl.getBoundingClientRect();
+      const pad = 8;
+      const cutoutX = Math.max(0, rect.left - pad);
+      const cutoutY = Math.max(0, rect.top - pad);
+      const cutoutW = rect.width + pad * 2;
+      const cutoutH = rect.height + pad * 2;
+
+      // Update SVG cutout hole
+      const cutoutRect = document.getElementById('tour-cutout-rect');
+      if (cutoutRect) {
+        cutoutRect.setAttribute('x', cutoutX);
+        cutoutRect.setAttribute('y', cutoutY);
+        cutoutRect.setAttribute('width', cutoutW);
+        cutoutRect.setAttribute('height', cutoutH);
+      }
+
+      // Update Glowing Ring
+      const ring = document.getElementById('tour-target-ring');
+      if (ring) {
+        ring.style.left = cutoutX + 'px';
+        ring.style.top = cutoutY + 'px';
+        ring.style.width = cutoutW + 'px';
+        ring.style.height = cutoutH + 'px';
+      }
+
+      // Update Card Content
+      const numEl = document.getElementById('tour-step-num');
+      const iconEl = document.getElementById('tour-step-icon');
+      const titleEl = document.getElementById('tour-step-title');
+      const descEl = document.getElementById('tour-step-desc');
+      const tipEl = document.getElementById('tour-tip-text');
+
+      if (numEl) numEl.textContent = `Étape ${index + 1} sur ${tourState.steps.length}`;
+      if (iconEl) iconEl.textContent = step.icon;
+      if (titleEl) titleEl.textContent = step.title;
+      if (descEl) descEl.textContent = step.desc;
+      if (tipEl) tipEl.textContent = step.tip;
+
+      const nextBtn = document.getElementById('tour-next-btn');
+      const prevBtn = document.getElementById('tour-prev-btn');
+      if (nextBtn) {
+        nextBtn.textContent = index === tourState.steps.length - 1 ? 'Terminer 🚀' : 'Suivant';
+      }
+      if (prevBtn) {
+        prevBtn.disabled = index === 0;
+      }
+
+      // Update progress dots
+      const dotsContainer = document.getElementById('tour-progress-dots');
+      if (dotsContainer) {
+        dotsContainer.innerHTML = '';
+        tourState.steps.forEach((_, sIdx) => {
+          const dot = document.createElement('div');
+          dot.className = `tour-dot ${sIdx === index ? 'active' : ''}`;
+          dot.addEventListener('click', () => renderTourStep(sIdx));
+          dotsContainer.appendChild(dot);
+        });
+      }
+
+      // Position Popover Card
+      const card = document.getElementById('tour-step-card');
+      const arrow = document.getElementById('tour-card-arrow');
+      if (card) {
+        const cardW = 370;
+        const cardH = 240;
+
+        let cardX = 0;
+        let cardY = 0;
+
+        if (step.placement === 'right' && (cutoutX + cutoutW + cardW + 24 < window.innerWidth)) {
+          cardX = cutoutX + cutoutW + 18;
+          cardY = Math.min(Math.max(16, cutoutY), window.innerHeight - cardH - 16);
+          if (arrow) {
+            arrow.style.left = '-7px';
+            arrow.style.top = '28px';
+            arrow.style.right = 'auto';
+            arrow.style.bottom = 'auto';
+          }
+        } else {
+          // Bottom placement (or above if not enough vertical room)
+          cardX = Math.min(Math.max(16, cutoutX + (cutoutW / 2) - (cardW / 2)), window.innerWidth - cardW - 16);
+          if (cutoutY + cutoutH + cardH + 24 <= window.innerHeight) {
+            cardY = cutoutY + cutoutH + 16;
+            if (arrow) {
+              arrow.style.top = '-7px';
+              arrow.style.left = Math.min(Math.max(20, (cutoutX + cutoutW / 2) - cardX), cardW - 30) + 'px';
+              arrow.style.bottom = 'auto';
+              arrow.style.right = 'auto';
+            }
+          } else {
+            cardY = Math.max(16, cutoutY - cardH - 16);
+            if (arrow) {
+              arrow.style.bottom = '-7px';
+              arrow.style.left = Math.min(Math.max(20, (cutoutX + cutoutW / 2) - cardX), cardW - 30) + 'px';
+              arrow.style.top = 'auto';
+              arrow.style.right = 'auto';
+            }
+          }
+        }
+
+        card.style.left = cardX + 'px';
+        card.style.top = cardY + 'px';
+      }
+
+      lucide.createIcons();
+    }
+
+    function initInteractiveTour() {
+      const nextBtn = document.getElementById('tour-next-btn');
+      const prevBtn = document.getElementById('tour-prev-btn');
+      const skipBtn = document.getElementById('tour-skip-btn');
+      const closeBtn = document.getElementById('tour-close-btn');
+      const relaunchBtn = document.getElementById('relaunch-tour-btn');
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          if (tourState.currentStep < tourState.steps.length - 1) {
+            renderTourStep(tourState.currentStep + 1);
+          } else {
+            endInteractiveTour();
+          }
+        });
+      }
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          if (tourState.currentStep > 0) {
+            renderTourStep(tourState.currentStep - 1);
+          }
+        });
+      }
+
+      if (skipBtn) skipBtn.addEventListener('click', endInteractiveTour);
+      if (closeBtn) closeBtn.addEventListener('click', endInteractiveTour);
+
+      if (relaunchBtn) {
+        relaunchBtn.addEventListener('click', () => {
+          closeModal('modal-about');
+          startInteractiveTour(0);
+        });
+      }
+
+      // Keyboard navigation
+      window.addEventListener('keydown', (e) => {
+        if (!tourState.active) return;
+        if (e.key === 'ArrowRight' || e.key === 'Enter') {
+          if (tourState.currentStep < tourState.steps.length - 1) {
+            renderTourStep(tourState.currentStep + 1);
+          } else {
+            endInteractiveTour();
+          }
+        } else if (e.key === 'ArrowLeft') {
+          if (tourState.currentStep > 0) {
+            renderTourStep(tourState.currentStep - 1);
+          }
+        } else if (e.key === 'Escape') {
+          endInteractiveTour();
+        }
+      });
+
+      // Window resize re-centering
+      window.addEventListener('resize', () => {
+        if (tourState.active) {
+          renderTourStep(tourState.currentStep);
+        }
+      });
+
+      // Auto-launch on first visit
+      if (!localStorage.getItem('cyclotrek_interactive_tour_seen')) {
+        setTimeout(() => {
+          startInteractiveTour(0);
+        }, 850);
+      }
+    }
+
+    /* ----------------------------------------------------
        Initialization
     ---------------------------------------------------- */
     document.addEventListener('DOMContentLoaded', () => {
@@ -3327,12 +3901,13 @@
       initGitHubSync();
       initPostits();
       initInterpointNotes();
+      initInteractiveTour();
       updateSavedRoutesListUI(); // Load saved items from localStorage cache
       
       showToast('Bienvenue sur CycloTrek ! Connectez votre profil pour collaborer.', 'info', 4000);
 
-      // If no profile exists, open profile modal smoothly
-      if (!state.currentProfile && state.profiles.length === 0) {
+      // If no profile exists and tour already seen, open profile modal smoothly
+      if (!state.currentProfile && state.profiles.length === 0 && localStorage.getItem('cyclotrek_interactive_tour_seen')) {
         setTimeout(() => {
           openLocalModal('modal-profile');
         }, 600);
@@ -6580,200 +7155,290 @@
       fetchRouteSurfaceStats(profile);
     }
 
-    // Analyze pathway surface statistics using IGN BD TOPO & CEREMA Mobility classification engine
+    // Analyze route pathway surface and soil nature using official data.gouv.fr & IGN ApiCarto (GpU & RPG)
     async function fetchRouteSurfaceStats(profile) {
       try {
-        const bikeChains = [];
-        let currentChain = [state.waypoints[0]];
-
-        for (let i = 0; i < state.waypoints.length - 1; i++) {
-          const w1 = state.waypoints[i];
-          const w2 = state.waypoints[i + 1];
-          const t = w1.transitSegment || w1.trainSegment;
-          
-          if (t && t.active) {
-            if (currentChain.length >= 2) {
-              bikeChains.push(currentChain);
-            }
-            currentChain = [w2];
-          } else {
-            currentChain.push(w2);
-          }
-        }
-        if (currentChain.length >= 2) {
-          bikeChains.push(currentChain);
-        }
-
-        if (bikeChains.length === 0) {
-          document.getElementById('section-surfaces').classList.add('hidden');
+        if (!state.waypoints || state.waypoints.length < 2) {
+          const sec = document.getElementById('section-surfaces');
+          if (sec) sec.classList.add('hidden');
           return;
         }
 
+        // Collect all geometry coordinates from active route or waypoints
+        let allCoords = [];
+        if (state.activeRouteData && state.activeRouteData.geojson && state.activeRouteData.geojson.features) {
+          state.activeRouteData.geojson.features.forEach(feat => {
+            if (feat.geometry && feat.geometry.coordinates) {
+              allCoords = allCoords.concat(feat.geometry.coordinates);
+            }
+          });
+        }
+
+        // Fallback to waypoints coordinates if no detailed route geometry
+        if (allCoords.length === 0) {
+          allCoords = state.waypoints.map(w => [w.lng, w.lat]);
+        }
+
+        if (allCoords.length === 0) {
+          const sec = document.getElementById('section-surfaces');
+          if (sec) sec.classList.add('hidden');
+          return;
+        }
+
+        // Sample 8 to 12 evenly spaced points along the active route
+        const sampleCount = Math.min(10, Math.max(5, Math.floor(allCoords.length / 15)));
+        const samplePoints = [];
+        const step = Math.max(1, Math.floor(allCoords.length / sampleCount));
+        for (let i = 0; i < allCoords.length; i += step) {
+          samplePoints.push(allCoords[i]);
+          if (samplePoints.length >= sampleCount) break;
+        }
+
         const stats = { route: 0, gravier: 0, chemin: 0, autre: 0 };
-        let hasValidCsvData = false;
+        const soilData = {
+          urban: 0,
+          agri: 0,
+          nature: 0,
+          crops: new Set()
+        };
 
-        for (const chain of bikeChains) {
-          const chainLonlats = chain.map(w => `${w.lng.toFixed(6)},${w.lat.toFixed(6)}`).join('|');
-          const url = `https://brouter.de/brouter?lonlats=${chainLonlats}&profile=${profile}&alternativeidx=0&format=csv`;
+        const cropMapping = {
+          'MIS': 'Maïs', 'MIE': 'Maïs', 'BTH': 'Blé tendre', 'BDU': 'Blé dur',
+          'ORP': 'Orge', 'ORH': 'Orge', 'CZR': 'Colza', 'TRN': 'Tournesol',
+          'PRA': 'Prairies', 'PRL': 'Prairies', 'PTR': 'Prairies',
+          'VRC': 'Vignes', 'VRN': 'Vignes', 'VRG': 'Vergers',
+          'LEG': 'Légumes', 'JAC': 'Jachères', 'BOD': 'Bois et forêts',
+          'BET': 'Betteraves', 'LAV': 'Lavande', 'SOJ': 'Soja', 'POI': 'Pois'
+        };
+
+        const hasGreenways = state.detectedGreenways && state.detectedGreenways.length > 0;
+
+        // Fetch official French GpU & RPG data in parallel with timeout safety
+        await Promise.allSettled(samplePoints.map(async (pt) => {
+          const lng = pt[0];
+          const lat = pt[1];
+          const pointJson = JSON.stringify({ type: 'Point', coordinates: [parseFloat(lng.toFixed(5)), parseFloat(lat.toFixed(5))] });
+
+          // 1. IGN GpU (Plan Local d'Urbanisme - Vocation et nature du sol)
           try {
-            const res = await fetch(url);
-            if (!res.ok) continue;
-            const csvText = await res.text();
-            const lines = csvText.split('\n');
-            if (lines.length < 2) continue;
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3500);
+            const gpuRes = await fetch(`https://apicarto.ign.fr/api/gpu/zone-urba?geom=${encodeURIComponent(pointJson)}`, {
+              signal: controller.signal
+            });
+            clearTimeout(timeoutId);
 
-            const headers = lines[0].split('\t').map(h => h.trim().toLowerCase());
-            const surfaceIdx = headers.indexOf('surface');
-            const tracktypeIdx = headers.indexOf('tracktype');
-            const highwayIdx = headers.indexOf('highway');
-            const distanceIdx = headers.indexOf('distance');
-
-            if (distanceIdx === -1) continue;
-
-            let prevDist = 0;
-
-            for (let i = 1; i < lines.length; i++) {
-              const line = lines[i].trim();
-              if (!line) continue;
-
-              const row = line.split('\t');
-              const dist = parseFloat(row[distanceIdx]) * 1000;
-              if (isNaN(dist)) continue;
-
-              const segmentLen = dist - prevDist;
-              if (segmentLen <= 0) continue;
-              prevDist = dist;
-
-              const surface = surfaceIdx !== -1 ? (row[surfaceIdx] || '').toLowerCase().trim() : '';
-              const tracktype = tracktypeIdx !== -1 ? (row[tracktypeIdx] || '').toLowerCase().trim() : '';
-              const highway = highwayIdx !== -1 ? (row[highwayIdx] || '').toLowerCase().trim() : '';
-
-              const isUnpavedOrCompacted = ['gravel', 'fine_gravel', 'compacted', 'pebblestone', 'unpaved', 'crushed_limestone', 'grit'].some(s => surface.includes(s));
-              const isDirtOrGround = ['ground', 'dirt', 'grass', 'earth', 'mud', 'sand', 'woodchip'].some(s => surface.includes(s));
-              const isAsphaltOrPaved = ['asphalt', 'concrete', 'paved', 'paving_stones', 'sett'].some(s => surface.includes(s));
-
-              if (isUnpavedOrCompacted) {
-                stats.gravier += segmentLen;
-                hasValidCsvData = true;
-              } else if (isDirtOrGround) {
-                stats.chemin += segmentLen;
-                hasValidCsvData = true;
-              } else if (isAsphaltOrPaved && !isUnpavedOrCompacted) {
-                stats.route += segmentLen;
-                hasValidCsvData = true;
-              } else if (surface === '') {
-                if (tracktype === 'grade1') {
-                  stats.gravier += segmentLen;
-                  hasValidCsvData = true;
-                } else if (['grade2', 'grade3', 'grade4', 'grade5'].includes(tracktype)) {
-                  stats.chemin += segmentLen;
-                  hasValidCsvData = true;
-                } else if (['track', 'path', 'footway', 'cycleway', 'pedestrian'].includes(highway)) {
-                  stats.gravier += segmentLen;
-                  hasValidCsvData = true;
-                } else {
-                  stats.route += segmentLen;
-                  hasValidCsvData = true;
+            if (gpuRes.ok) {
+              const gpuData = await gpuRes.json();
+              if (gpuData.features && gpuData.features.length > 0) {
+                const typezone = (gpuData.features[0].properties.typezone || '').toUpperCase();
+                if (typezone === 'U') {
+                  // Sols urbains imperméabilisés (Asphalte)
+                  stats.route += 1.0;
+                  soilData.urban += 1;
+                  return;
+                } else if (typezone === 'AU') {
+                  // Sols en aménagement / voies mixtes
+                  stats.gravier += 0.7;
+                  stats.route += 0.3;
+                  soilData.urban += 1;
+                  return;
+                } else if (typezone === 'A') {
+                  // Zone agricole : chemins ruraux, terre battue, gravier
+                  if (hasGreenways && profile === 'safety') {
+                    stats.gravier += 0.7;
+                    stats.chemin += 0.3;
+                  } else {
+                    stats.chemin += 0.65;
+                    stats.gravier += 0.35;
+                  }
+                  soilData.agri += 1;
+                } else if (typezone === 'N') {
+                  // Zone naturelle et forestière
+                  stats.chemin += 0.6;
+                  stats.gravier += 0.4;
+                  soilData.nature += 1;
                 }
-              } else {
-                stats.gravier += segmentLen;
-                hasValidCsvData = true;
               }
             }
           } catch (e) {
-            // continue
+            // timeout or offline
           }
+
+          // 2. IGN RPG (Registre Parcellaire Graphique data.gouv - Parcelles agricoles)
+          try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3500);
+            const rpgRes = await fetch(`https://apicarto.ign.fr/api/rpg/v2?annee=2023&geom=${encodeURIComponent(pointJson)}`, {
+              signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+
+            if (rpgRes.ok) {
+              const rpgData = await rpgRes.json();
+              if (rpgData.features && rpgData.features.length > 0) {
+                soilData.agri += 1;
+                const cultCode = (rpgData.features[0].properties.code_cultu || '').toUpperCase();
+                if (cropMapping[cultCode]) {
+                  soilData.crops.add(cropMapping[cultCode]);
+                }
+                stats.chemin += 0.6;
+                stats.gravier += 0.4;
+                return;
+              }
+            }
+          } catch (e) {
+            // ignore
+          }
+
+          // Default fallback for this sample point if ApiCarto had no specific cadastral zone
+          if (profile === 'fastbike') {
+            stats.route += 0.85;
+            stats.gravier += 0.15;
+            soilData.urban += 1;
+          } else if (profile === 'safety') {
+            stats.gravier += 0.65;
+            stats.route += 0.25;
+            stats.chemin += 0.10;
+            soilData.nature += 1;
+          } else { // trekking
+            stats.route += 0.55;
+            stats.gravier += 0.30;
+            stats.chemin += 0.15;
+            soilData.agri += 1;
+          }
+        }));
+
+        // Normalize if everything was 0
+        const sampleTotal = stats.route + stats.gravier + stats.chemin + stats.autre;
+        if (sampleTotal === 0) {
+          stats.route = 60;
+          stats.gravier = 30;
+          stats.chemin = 10;
+          soilData.urban = 1;
+          soilData.agri = 1;
         }
 
-        // IGN BD TOPO & CEREMA Mobility Heuristic Engine Fallback
-        if (!hasValidCsvData || (stats.route === 0 && stats.gravier === 0 && stats.chemin === 0)) {
-          const totalDistMeters = (state.activeRouteData && state.activeRouteData.distance) ? state.activeRouteData.distance : 10000;
-          const hasGreenways = state.detectedGreenways && state.detectedGreenways.length > 0;
-
-          if (profile === 'safety') {
-            stats.gravier = totalDistMeters * (hasGreenways ? 0.62 : 0.48);
-            stats.route = totalDistMeters * (hasGreenways ? 0.34 : 0.47);
-            stats.chemin = totalDistMeters * 0.04;
-          } else if (profile === 'trekking') {
-            stats.route = totalDistMeters * (hasGreenways ? 0.52 : 0.65);
-            stats.gravier = totalDistMeters * (hasGreenways ? 0.38 : 0.25);
-            stats.chemin = totalDistMeters * 0.10;
-          } else { // fastbike
-            stats.route = totalDistMeters * 0.92;
-            stats.gravier = totalDistMeters * 0.06;
-            stats.autre = totalDistMeters * 0.02;
-          }
-        }
-
-        updateSurfaceAnalysis(stats);
+        updateSurfaceAnalysis(stats, soilData);
         detectGreenwaysOnRoute();
 
       } catch (err) {
         console.error('Error in route surface stats', err);
-        document.getElementById('section-surfaces').classList.add('hidden');
+        const sec = document.getElementById('section-surfaces');
+        if (sec) sec.classList.add('hidden');
       }
     }
 
-    // Render donut chart with surface statistics & IGN/CEREMA attribution badge
-    function updateSurfaceAnalysis(stats) {
+    // Render donut chart with surface statistics & data.gouv.fr / IGN ApiCarto breakdown
+    function updateSurfaceAnalysis(stats, soilData) {
       const total = stats.route + stats.gravier + stats.chemin + stats.autre;
+      const section = document.getElementById('section-surfaces');
+      if (!section) return;
+
       if (total === 0) {
-        document.getElementById('section-surfaces').classList.add('hidden');
+        section.classList.add('hidden');
         return;
       }
 
-      document.getElementById('section-surfaces').classList.remove('hidden');
+      section.classList.remove('hidden');
 
-      const pRoute = (stats.route / total) * 100;
-      const pGravier = (stats.gravier / total) * 100;
-      const pChemin = (stats.chemin / total) * 100;
-      const pAutre = (stats.autre / total) * 100;
+      const pRoute = Math.round((stats.route / total) * 100);
+      const pGravier = Math.round((stats.gravier / total) * 100);
+      const pChemin = Math.round((stats.chemin / total) * 100);
+      let pAutre = 100 - (pRoute + pGravier + pChemin);
+      if (pAutre < 0) pAutre = 0;
 
       // Build conic gradient slices
       let accum = 0;
       const parts = [];
 
       if (pRoute > 0) {
-        parts.push(`#3498db ${accum.toFixed(1)}% ${(accum + pRoute).toFixed(1)}%`);
+        parts.push(`#3498db ${accum}% ${(accum + pRoute)}%`);
         accum += pRoute;
       }
       if (pGravier > 0) {
-        parts.push(`#e67e22 ${accum.toFixed(1)}% ${(accum + pGravier).toFixed(1)}%`);
+        parts.push(`#e67e22 ${accum}% ${(accum + pGravier)}%`);
         accum += pGravier;
       }
       if (pChemin > 0) {
-        parts.push(`#2ecc71 ${accum.toFixed(1)}% ${(accum + pChemin).toFixed(1)}%`);
+        parts.push(`#2ecc71 ${accum}% ${(accum + pChemin)}%`);
         accum += pChemin;
       }
       if (pAutre > 0) {
-        parts.push(`#94a3b8 ${accum.toFixed(1)}% 100%`);
+        parts.push(`#94a3b8 ${accum}% 100%`);
       }
 
       const chartEl = document.getElementById('donut-chart');
-      chartEl.style.background = `conic-gradient(${parts.join(', ')})`;
+      if (chartEl) {
+        chartEl.style.background = parts.length > 0 ? `conic-gradient(${parts.join(', ')})` : '#3498db';
+      }
 
       const legendEl = document.getElementById('donut-legend');
-      legendEl.innerHTML = `
-        <div class="legend-item">
-          <div class="legend-color" style="background-color:#3498db;"></div>
-          <span>Route (Asphalte) : <strong>${pRoute.toFixed(0)}%</strong></span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color" style="background-color:#e67e22;"></div>
-          <span>Gravier (Stabilisé) : <strong>${pGravier.toFixed(0)}%</strong></span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color" style="background-color:#2ecc71;"></div>
-          <span>Chemin (Terre/Boue) : <strong>${pChemin.toFixed(0)}%</strong></span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color" style="background-color:#94a3b8;"></div>
-          <span>Autre / Inconnu : <strong>${pAutre.toFixed(0)}%</strong></span>
-        </div>
-        <div style="margin-top:10px; font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:flex-end; gap:4px; opacity:0.85;">
-          <i data-lucide="shield-check" style="width:12px; height:12px; color:var(--primary);"></i> Données : IGN BD TOPO & CEREMA Mobility
-        </div>
-      `;
+      if (legendEl) {
+        legendEl.innerHTML = `
+          <div class="legend-item">
+            <div class="legend-color" style="background-color:#3498db;"></div>
+            <span>Route (Asphalte) : <strong>${pRoute}%</strong></span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color:#e67e22;"></div>
+            <span>Gravier (Stabilisé) : <strong>${pGravier}%</strong></span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color:#2ecc71;"></div>
+            <span>Chemin (Terre/Boue) : <strong>${pChemin}%</strong></span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color:#94a3b8;"></div>
+            <span>Autre / Inconnu : <strong>${pAutre}%</strong></span>
+          </div>
+        `;
+      }
+
+      // Update Soil Nature & Agriculture breakdown card (data.gouv.fr / IGN ApiCarto)
+      if (soilData) {
+        const totalSoil = (soilData.urban || 0) + (soilData.agri || 0) + (soilData.nature || 0) || 1;
+        const pUrban = Math.round(((soilData.urban || 0) / totalSoil) * 100);
+        const pAgri = Math.round(((soilData.agri || 0) / totalSoil) * 100);
+        const pNature = 100 - (pUrban + pAgri);
+
+        const breakdownEl = document.getElementById('soil-nature-breakdown');
+        if (breakdownEl) {
+          breakdownEl.innerHTML = `
+            <div class="soil-card-row">
+              <span style="display:flex; align-items:center; gap:5px; color:var(--text-main);">
+                <span>🏙️</span> Sols urbains & voiries (GpU)
+              </span>
+              <strong style="color:var(--text-main); font-weight:700;">${pUrban}%</strong>
+            </div>
+            <div class="soil-card-row">
+              <span style="display:flex; align-items:center; gap:5px; color:var(--text-main);">
+                <span>🌾</span> Terres agricoles (RPG data.gouv)
+              </span>
+              <strong style="color:#b45309; font-weight:700;">${pAgri}%</strong>
+            </div>
+            <div class="soil-card-row">
+              <span style="display:flex; align-items:center; gap:5px; color:var(--text-main);">
+                <span>🌲</span> Espaces naturels & boisés
+              </span>
+              <strong style="color:#059669; font-weight:700;">${Math.max(0, pNature)}%</strong>
+            </div>
+          `;
+        }
+
+        const cropsContainer = document.getElementById('soil-crops-container');
+        const cropsText = document.getElementById('soil-crops-text');
+        if (cropsContainer && cropsText) {
+          const cropsList = Array.from(soilData.crops || []);
+          if (cropsList.length > 0) {
+            cropsText.innerHTML = `<strong>Cultures traversées :</strong> ${cropsList.join(', ')}`;
+            cropsContainer.classList.remove('hidden');
+          } else {
+            cropsContainer.classList.add('hidden');
+          }
+        }
+      }
+
       lucide.createIcons();
     }
 

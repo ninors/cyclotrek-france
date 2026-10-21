@@ -1,4 +1,4 @@
-name: CycloTrek Route Sync & Workflow
+name: CycloTrek Route Manual Sync
 
 on:
   workflow_dispatch:
@@ -9,19 +9,12 @@ on:
         default: 'CycloTrek User'
   repository_dispatch:
     types: [sync-trek]
-  push:
-    branches:
-      - main
-    paths:
-      - 'data/**'
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
-  sync-and-deploy:
+  sync-data:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -43,6 +36,4 @@ jobs:
         run: |
           if [ -f "data/route.json" ]; then
             python3 -m json.tool data/route.json > /dev/null && echo "✅ data/route.json is valid"
-          else
-            echo "ℹ️ No data/route.json yet."
           fi
