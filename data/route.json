@@ -1,20 +1,71 @@
 {
   "version": "2.0",
-  "updatedAt": "2026-10-21T15:42:07.720Z",
+  "updatedAt": "2026-10-21T15:43:29.749Z",
   "updatedBy": {
-    "id": "usr_1792597325714_kee0q0",
-    "name": "Youen Coudrais",
-    "firstName": "Youen",
-    "initials": "YC",
-    "gradient": "linear-gradient(135deg, #84cc16, #16a34a)"
+    "id": "usr_1792596095925_d9mudt",
+    "name": "Nino Roux Soumy",
+    "firstName": "Nino",
+    "initials": "NR",
+    "gradient": "linear-gradient(135deg, #14b8a6, #0f766e)"
   },
   "trip": {
     "name": "Randonnée CycloTrek France",
     "activeProfile": "trekking",
     "waypoints": [],
-    "interpointNotes": [],
+    "interpointNotes": [
+      {
+        "id": "nt_1792597407730_agg5v8",
+        "lat": 47.843797,
+        "lng": 1.713867,
+        "category": "info",
+        "title": "test",
+        "text": "",
+        "author": {
+          "id": "usr_1792596095925_d9mudt",
+          "firstName": "Nino",
+          "lastName": "Roux Soumy",
+          "name": "Nino Roux Soumy",
+          "initials": "NR",
+          "gradient": "linear-gradient(135deg, #14b8a6, #0f766e)",
+          "createdAt": "2026-10-21T15:21:35.925Z"
+        },
+        "createdAt": "2026-10-21T15:43:27.730Z"
+      }
+    ],
     "postits": [],
     "auditLog": [
+      {
+        "id": "act_1792597407737_z33c3",
+        "type": "add_map_note",
+        "description": "Note placée : \"test\"",
+        "timestamp": "2026-10-21T15:43:27.737Z",
+        "author": {
+          "id": "usr_1792596095925_d9mudt",
+          "name": "Nino Roux Soumy",
+          "firstName": "Nino",
+          "initials": "NR",
+          "gradient": "linear-gradient(135deg, #14b8a6, #0f766e)"
+        },
+        "details": {
+          "noteId": "nt_1792597407730_agg5v8"
+        }
+      },
+      {
+        "id": "act_1792597383873_6zbzl",
+        "type": "profile_switched",
+        "description": "Session passée sur le profil Nino Roux Soumy",
+        "timestamp": "2026-10-21T15:43:03.873Z",
+        "author": {
+          "id": "usr_1792596095925_d9mudt",
+          "name": "Nino Roux Soumy",
+          "firstName": "Nino",
+          "initials": "NR",
+          "gradient": "linear-gradient(135deg, #14b8a6, #0f766e)"
+        },
+        "details": {
+          "profileId": "usr_1792596095925_d9mudt"
+        }
+      },
       {
         "id": "act_1792597325714_q48vm",
         "type": "profile_created",
