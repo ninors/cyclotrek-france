@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "updatedAt": "2026-10-21T15:43:42.242Z",
+  "updatedAt": "2026-10-21T16:39:03.646Z",
   "updatedBy": {
     "id": "usr_1792596095925_d9mudt",
     "name": "Nino Roux Soumy",
@@ -11,10 +11,61 @@
   "trip": {
     "name": "Randonnée CycloTrek France",
     "activeProfile": "trekking",
-    "waypoints": [],
+    "waypoints": [
+      {
+        "id": "1792600711544hcu8y",
+        "lat": 48.1244503,
+        "lng": -1.214331,
+        "name": "Vitré (Ille-et-Vilaine)",
+        "logistics": null,
+        "transitSegment": null,
+        "author": null,
+        "createdAt": null
+      },
+      {
+        "id": "1792600720271v3pde",
+        "lat": 48.6359541,
+        "lng": -1.51146,
+        "name": "Le Mont-Saint-Michel (Manche)",
+        "logistics": null,
+        "transitSegment": null,
+        "author": null,
+        "createdAt": null
+      }
+    ],
     "interpointNotes": [],
-    "postits": [],
+    "postits": [
+      {
+        "id": "pst_1792600741624_lcsyi7",
+        "text": "je rajoute les autres étapes ce soir",
+        "color": "yellow",
+        "author": {
+          "id": "usr_1792596095925_d9mudt",
+          "firstName": "Nino",
+          "lastName": "Roux Soumy",
+          "name": "Nino Roux Soumy",
+          "initials": "NR",
+          "gradient": "linear-gradient(135deg, #14b8a6, #0f766e)",
+          "createdAt": "2026-10-21T15:21:35.925Z"
+        },
+        "createdAt": "2026-10-21T16:39:01.624Z"
+      }
+    ],
     "auditLog": [
+      {
+        "id": "act_1792600741629_68729",
+        "type": "add_postit",
+        "description": "Post-it épinglé : \"je rajoute les autres étapes ce ...\"",
+        "timestamp": "2026-10-21T16:39:01.629Z",
+        "author": {
+          "id": "usr_1792596095925_d9mudt",
+          "name": "Nino Roux Soumy",
+          "firstName": "Nino",
+          "initials": "NR",
+          "gradient": "linear-gradient(135deg, #14b8a6, #0f766e)"
+        },
+        "details": null
+      },
       {
         "id": "act_1792597420238_owpl9",
         "type": "delete_map_note",
