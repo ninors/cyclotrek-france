@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "updatedAt": "2026-10-21T16:39:03.646Z",
+  "updatedAt": "2026-10-21T16:39:33.261Z",
   "updatedBy": {
     "id": "usr_1792596095925_d9mudt",
     "name": "Nino Roux Soumy",
@@ -31,9 +31,38 @@
         "transitSegment": null,
         "author": null,
         "createdAt": null
+      },
+      {
+        "id": "1792600755720oo1sh",
+        "lat": 48.396472134515236,
+        "lng": -1.3362121582031252,
+        "name": "Maen-Roch (Ille-et-Vilaine)",
+        "logistics": null,
+        "transitSegment": null,
+        "author": null,
+        "createdAt": null
       }
     ],
-    "interpointNotes": [],
+    "interpointNotes": [
+      {
+        "id": "nt_1792600771234_9rdqze",
+        "lat": 48.396472,
+        "lng": -1.336212,
+        "category": "info",
+        "title": "infos manquantes",
+        "text": "je rajoute els bonnes infos ce soir",
+        "author": {
+          "id": "usr_1792596095925_d9mudt",
+          "firstName": "Nino",
+          "lastName": "Roux Soumy",
+          "name": "Nino Roux Soumy",
+          "initials": "NR",
+          "gradient": "linear-gradient(135deg, #14b8a6, #0f766e)",
+          "createdAt": "2026-10-21T15:21:35.925Z"
+        },
+        "createdAt": "2026-10-21T16:39:31.234Z"
+      }
+    ],
     "postits": [
       {
         "id": "pst_1792600741624_lcsyi7",
@@ -52,6 +81,22 @@
       }
     ],
     "auditLog": [
+      {
+        "id": "act_1792600771242_m3wpl",
+        "type": "add_map_note",
+        "description": "Note placée : \"infos manquantes\"",
+        "timestamp": "2026-10-21T16:39:31.242Z",
+        "author": {
+          "id": "usr_1792596095925_d9mudt",
+          "name": "Nino Roux Soumy",
+          "firstName": "Nino",
+          "initials": "NR",
+          "gradient": "linear-gradient(135deg, #14b8a6, #0f766e)"
+        },
+        "details": {
+          "noteId": "nt_1792600771234_9rdqze"
+        }
+      },
       {
         "id": "act_1792600741629_68729",
         "type": "add_postit",
