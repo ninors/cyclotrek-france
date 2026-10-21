@@ -1,12 +1,12 @@
 {
   "version": "2.0",
-  "updatedAt": "2026-10-21T16:46:34.258Z",
+  "updatedAt": "2026-10-21T20:56:39.954Z",
   "updatedBy": {
-    "id": "usr_1792596095925_d9mudt",
-    "name": "Nino Roux Soumy",
-    "firstName": "Nino",
-    "initials": "NR",
-    "gradient": "linear-gradient(135deg, #14b8a6, #0f766e)"
+    "id": "usr_1792597325714_kee0q0",
+    "name": "Youen Coudrais",
+    "firstName": "Youen",
+    "initials": "YC",
+    "gradient": "linear-gradient(135deg, #84cc16, #16a34a)"
   },
   "trip": {
     "name": "Randonnée CycloTrek France",
@@ -65,6 +65,25 @@
     ],
     "postits": [
       {
+        "id": "pst_1792616197931_wdm3pt",
+        "text": "Test",
+        "color": "yellow",
+        "author": {
+          "id": "usr_1792597325714_kee0q0",
+          "firstName": "Youen",
+          "lastName": "Coudrais",
+          "name": "Youen Coudrais",
+          "initials": "YC",
+          "gradient": "linear-gradient(135deg, #84cc16, #16a34a)",
+          "createdAt": "2026-10-21T15:42:05.714Z"
+        },
+        "createdAt": "2026-10-21T20:56:37.931Z",
+        "isPoll": false,
+        "poll": null,
+        "replyToId": null,
+        "replyToAuthor": null
+      },
+      {
         "id": "pst_1792600741624_lcsyi7",
         "text": "je rajoute les autres étapes ce soir",
         "color": "yellow",
@@ -81,6 +100,20 @@
       }
     ],
     "auditLog": [
+      {
+        "id": "act_1792616197946_2ucjb",
+        "type": "add_postit",
+        "description": "Post-it épinglé : \"Test\"",
+        "timestamp": "2026-10-21T20:56:37.946Z",
+        "author": {
+          "id": "usr_1792597325714_kee0q0",
+          "name": "Youen Coudrais",
+          "firstName": "Youen",
+          "initials": "YC",
+          "gradient": "linear-gradient(135deg, #84cc16, #16a34a)"
+        },
+        "details": null
+      },
       {
         "id": "act_1792600771242_m3wpl",
         "type": "add_map_note",
